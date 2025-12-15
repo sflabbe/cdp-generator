@@ -840,7 +840,7 @@ def calculate_stress_strain_temp(f_cm, e_c1, e_clim, l_ch):
 # Plotting Functions
 # ============================================================================
 
-def plot_curve(x, y, title, xlabel, ylabel, var, style=None):
+def plot_curve(x, y, title, xlabel, ylabel, var, mode='strain_rate', style=None):
     """
     Plot a single curve with appropriate labeling.
 
@@ -851,16 +851,17 @@ def plot_curve(x, y, title, xlabel, ylabel, var, style=None):
         xlabel: X-axis label
         ylabel: Y-axis label
         var: Variable value (strain rate or temperature)
+        mode: 'strain_rate' or 'temperature' to determine label format
         style: Optional style dictionary
     """
     if style is None:
         style = {"color": "#1f77b4", "marker": "o"}
 
-    # Determine if strain rate or temperature based on value
-    if var < 1:
-        label = r'$\dot{\varepsilon}=$' + str(var) + ' [s$^{-1}$]'
-    else:
+    # Create label based on mode
+    if mode == 'temperature':
         label = r'$T=$' + str(int(var)) + ' [°C]'
+    else:
+        label = r'$\dot{\varepsilon}=$' + str(var) + ' [s$^{-1}$]'
 
     plt.plot(x, y, label=label, **style, linestyle='-')
     plt.title(title)
@@ -868,7 +869,7 @@ def plot_curve(x, y, title, xlabel, ylabel, var, style=None):
     plt.ylabel(ylabel)
 
 
-def plot_multiple_curves(x, y, title, xlabel, ylabel, var):
+def plot_multiple_curves(x, y, title, xlabel, ylabel, var, mode='strain_rate'):
     """
     Create a figure with multiple curves.
 
@@ -879,6 +880,7 @@ def plot_multiple_curves(x, y, title, xlabel, ylabel, var):
         xlabel: X-axis label
         ylabel: Y-axis label
         var: List of variable values (strain rates or temperatures)
+        mode: 'strain_rate' or 'temperature' to determine label format
     """
     custom_colors = [
         "#1f77b4", "#ff7f0e", "#2ca02c", "#d62728",
@@ -898,12 +900,12 @@ def plot_multiple_curves(x, y, title, xlabel, ylabel, var):
         # Single x-array for all curves
         for i in range(len(y)):
             style = next(custom_style)
-            plot_curve(x, y[i], title, xlabel, ylabel, var[i], style)
+            plot_curve(x, y[i], title, xlabel, ylabel, var[i], mode, style)
     else:
         # Different x-array for each curve
         for i in range(len(y)):
             style = next(custom_style)
-            plot_curve(x[i], y[i], title, xlabel, ylabel, var[i], style)
+            plot_curve(x[i], y[i], title, xlabel, ylabel, var[i], mode, style)
 
     plt.grid()
     plt.legend(loc="upper right")
@@ -944,6 +946,7 @@ if __name__ == "__main__":
         results = calculate_stress_strain(f_cm, e_c1, e_clim, l_ch, strain_rates)
         var = strain_rates
         var_label = 'Strain Rate [1/s]'
+        mode = 'strain_rate'
 
         # Plot compression
         plot_multiple_curves(
@@ -952,7 +955,8 @@ if __name__ == "__main__":
             'Compressive Strain - Compressive Stress',
             'Compressive Strain [-]',
             'Compressive Stress [MPa]',
-            var
+            var,
+            mode
         )
         plot_multiple_curves(
             results['compression']['inelastic strain'],
@@ -960,12 +964,14 @@ if __name__ == "__main__":
             'Compressive Inelastic Strain - Compressive Stress',
             'Compressive Inelastic Strain [-]',
             'Compressive Stress [MPa]',
-            var
+            var,
+            mode
         )
     else:
         results = calculate_stress_strain_temp(f_cm, e_c1, e_clim, l_ch)
         var = temperatures
         var_label = 'Temperature [°C]'
+        mode = 'temperature'
 
         # Plot compression (using temperature-specific strain arrays)
         plot_multiple_curves(
@@ -974,7 +980,8 @@ if __name__ == "__main__":
             'Compressive Strain - Compressive Stress',
             'Compressive Strain [-]',
             'Compressive Stress [MPa]',
-            var
+            var,
+            mode
         )
         plot_multiple_curves(
             results['compression']['inelastic strain'],
@@ -982,7 +989,8 @@ if __name__ == "__main__":
             'Compressive Inelastic Strain - Compressive Stress',
             'Compressive Inelastic Strain [-]',
             'Compressive Stress [MPa]',
-            var
+            var,
+            mode
         )
 
     # Plot compression damage
@@ -993,7 +1001,8 @@ if __name__ == "__main__":
         'Compressive Damage',
         'Compressive Inelastic Strain [-]',
         'Damage [-]',
-        var[0]
+        var[0],
+        mode
     )
     plt.grid()
     plt.show()
@@ -1005,7 +1014,8 @@ if __name__ == "__main__":
         'Crack Opening - Tensile Stress (Bilinear)',
         'Crack Opening [mm]',
         'Cracking Stress [MPa]',
-        var
+        var,
+        mode
     )
     plot_multiple_curves(
         results['tension']['crack opening'],
@@ -1013,7 +1023,8 @@ if __name__ == "__main__":
         'Crack Opening - Tensile Stress (Power Law)',
         'Crack Opening [mm]',
         'Cracking Stress [MPa]',
-        var
+        var,
+        mode
     )
     plot_multiple_curves(
         results['tension']['cracking strain'],
@@ -1021,7 +1032,8 @@ if __name__ == "__main__":
         'Cracking Strain - Tensile Stress',
         'Cracking Strain [-]',
         'Cracking Stress [MPa]',
-        var
+        var,
+        mode
     )
     plot_multiple_curves(
         results['tension']['cracking strain'],
@@ -1029,7 +1041,8 @@ if __name__ == "__main__":
         'Cracking Strain - Tensile Stress (Power Law)',
         'Cracking Strain [-]',
         'Cracking Stress [MPa]',
-        var
+        var,
+        mode
     )
 
     # Plot tension damage
@@ -1040,7 +1053,8 @@ if __name__ == "__main__":
         'Tension Damage (Bilinear)',
         'Cracking Strain [-]',
         'Damage [-]',
-        var[0]
+        var[0],
+        mode
     )
     plt.grid()
     plt.show()
@@ -1052,7 +1066,8 @@ if __name__ == "__main__":
         'Tension Damage (Power Law)',
         'Cracking Strain [-]',
         'Damage [-]',
-        var[0]
+        var[0],
+        mode
     )
     plt.grid()
     plt.show()
