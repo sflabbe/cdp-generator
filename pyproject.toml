@@ -1,0 +1,71 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cdp-generator"
+version = "1.0.0"
+description = "Concrete Damage Plasticity (CDP) Model Input Parameter Generator for ABAQUS"
+readme = "README.md"
+authors = [
+    { name = "CDP Generator Contributors" }
+]
+license = { text = "MIT" }
+requires-python = ">=3.8"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+keywords = ["concrete", "damage-plasticity", "CDP", "ABAQUS", "finite-element", "material-modeling"]
+
+dependencies = [
+    "numpy>=1.20.0",
+    "pandas>=1.3.0",
+    "matplotlib>=3.3.0",
+    "openpyxl>=3.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "black>=22.0.0",
+    "isort>=5.0.0",
+    "flake8>=5.0.0",
+]
+
+[project.scripts]
+cdp-generator = "cdp_generator.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/sflabbe/cdp-generator"
+Repository = "https://github.com/sflabbe/cdp-generator"
+Issues = "https://github.com/sflabbe/cdp-generator/issues"
+
+[tool.setuptools]
+packages = ["cdp_generator"]
+
+[tool.setuptools.package-data]
+cdp_generator = ["py.typed"]
+
+[tool.black]
+line-length = 100
+target-version = ["py38", "py39", "py310", "py311"]
+
+[tool.isort]
+profile = "black"
+line_length = 100
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
