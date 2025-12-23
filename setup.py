@@ -13,7 +13,7 @@ setup(
     name="cdp-generator",
     version="1.0.0",
     author="CDP Generator Contributors",
-    description="Concrete Damage Plasticity (CDP) Model Input Parameter Generator for ABAQUS",
+    description="Material model parameter generator: CDP (concrete) & Johnson-Cook (steel) for ABAQUS",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/sflabbe/cdp-generator",
@@ -49,7 +49,8 @@ setup(
     entry_points={
         "console_scripts": [
             "cdp-generator=cdp_generator.cli:main",
+            "cdp-steel=cdp_generator.steel.cli:main",
         ],
     },
-    keywords="concrete damage-plasticity CDP ABAQUS finite-element material-modeling",
+    keywords="concrete steel damage-plasticity CDP Johnson-Cook ABAQUS finite-element material-modeling",
 )
