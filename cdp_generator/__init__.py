@@ -1,8 +1,12 @@
 """
-CDP Generator - Concrete Damage Plasticity Model Input Parameter Generator
+CDP Generator - Concrete Damage Plasticity & Steel Johnson-Cook Parameter Generator
 
-This package generates input parameters for the Concrete Damage Plasticity (CDP)
-model in ABAQUS, with support for strain-rate and temperature-dependent properties.
+This package generates input parameters for:
+1. Concrete Damage Plasticity (CDP) model in ABAQUS
+2. Steel Johnson-Cook (JC) plasticity model
+
+=== CONCRETE (CDP) ===
+Generates CDP parameters with support for strain-rate and temperature effects.
 
 Example usage:
     from cdp_generator import calculate_stress_strain, calculate_stress_strain_temp
@@ -24,6 +28,31 @@ Example usage:
         l_ch=1.0,
         verbose=True
     )
+
+=== STEEL (Johnson-Cook) ===
+Generates JC parameters from steel standards or custom properties.
+
+Example usage:
+    from cdp_generator.steel import (
+        get_steel_spec, calibrate_jc_from_spec,
+        generate_jc_curves_multicase, export_steel_to_excel
+    )
+
+    # Get standard specification
+    spec = get_steel_spec("EC2", "B500C")
+
+    # Calibrate JC parameters
+    params = calibrate_jc_from_spec(spec)
+
+    # Generate curves
+    results = generate_jc_curves_multicase(
+        params, E=200000,
+        strain_rates=[1e-4, 1e-2, 1, 100],
+        temperatures=[20, 400, 800]
+    )
+
+    # Export
+    export_steel_to_excel(results, "steel_results.xlsx")
 """
 
 __version__ = "1.0.0"
@@ -72,7 +101,13 @@ from .tension import (
 from .plotting import plot_curve, plot_multiple_curves, plot_all_results
 from .export import export_to_excel, print_properties
 
+# Steel subpackage (imported for convenience, but prefer explicit imports)
+from . import steel
+
 __all__ = [
+    # Subpackages
+    'steel',
+
     # Core functions
     'calculate_stress_strain',
     'calculate_stress_strain_temp',

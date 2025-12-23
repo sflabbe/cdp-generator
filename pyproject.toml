@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "cdp-generator"
 version = "1.0.0"
-description = "Concrete Damage Plasticity (CDP) Model Input Parameter Generator for ABAQUS"
+description = "Material model parameter generator: CDP (concrete) & Johnson-Cook (steel) for ABAQUS"
 readme = "README.md"
 authors = [
     { name = "CDP Generator Contributors" }
@@ -24,7 +24,7 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
 ]
-keywords = ["concrete", "damage-plasticity", "CDP", "ABAQUS", "finite-element", "material-modeling"]
+keywords = ["concrete", "steel", "damage-plasticity", "CDP", "Johnson-Cook", "ABAQUS", "finite-element", "material-modeling"]
 
 dependencies = [
     "numpy>=1.20.0",
@@ -44,6 +44,7 @@ dev = [
 
 [project.scripts]
 cdp-generator = "cdp_generator.cli:main"
+cdp-steel = "cdp_generator.steel.cli:main"
 
 [project.urls]
 Homepage = "https://github.com/sflabbe/cdp-generator"
@@ -51,7 +52,7 @@ Repository = "https://github.com/sflabbe/cdp-generator"
 Issues = "https://github.com/sflabbe/cdp-generator/issues"
 
 [tool.setuptools]
-packages = ["cdp_generator"]
+packages = ["cdp_generator", "cdp_generator.steel"]
 
 [tool.setuptools.package-data]
 cdp_generator = ["py.typed"]
