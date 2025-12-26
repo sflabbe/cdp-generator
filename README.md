@@ -508,7 +508,7 @@ This package implements:
 
 ## Disclaimer
 
-⚠️ This package is provided for research and engineering purposes. Users should:
+⚠️ This package is provided for research purposes. Users should:
 
 - Verify all outputs for plausibility
 - Understand the underlying assumptions and models
@@ -525,19 +525,7 @@ Contributions are welcome! Please feel free to submit pull requests or open issu
 
 MIT License - see LICENSE file for details
 
-## Future Development
-
-This package is designed to be part of a larger ABAQUS materials library. Future enhancements may include:
-
-- Additional concrete models (CDPM2, Microplane, etc.)
-- ✅ ~~Steel material models~~ - **IMPLEMENTED** (Johnson-Cook)
-- Enhanced steel calibration with experimental curve fitting
-- Composite material models
-- Direct ABAQUS input file generation with full model setup
-- Database of standard concrete grades
-- Extended steel standards database
-- Web interface
-
 ## Contact
 
 For questions, issues, or suggestions, please open an issue on GitHub.
+
