@@ -5,18 +5,17 @@ This module provides Excel export functionality for steel stress-strain curves
 and material properties, following the style of the CDP concrete export.
 """
 
-from typing import Dict, Any, Optional
-import pandas as pd
+from typing import Any, Dict, Optional
+
 import numpy as np
+import pandas as pd
 
 from .johnson_cook import JohnsonCookParams
 from .standards import SteelSpec
 
 
 def export_steel_to_excel(
-    results: Dict[str, Any],
-    filename: str = "Steel-JC-Results.xlsx",
-    verbose: bool = True
+    results: Dict[str, Any], filename: str = "Steel-JC-Results.xlsx", verbose: bool = True
 ) -> None:
     """
     Export steel Johnson-Cook results to Excel file.
@@ -47,29 +46,29 @@ def export_steel_to_excel(
     if verbose:
         print(f"\nExporting steel results to {filename}...")
 
-    curves = results['curves']
-    params = results['params']
-    E = results['E']
-    strain_rates = results['strain_rates']
-    temperatures = results['temperatures']
+    curves = results["curves"]
+    params = results["params"]
+    E = results["E"]
+    strain_rates = results["strain_rates"]
+    temperatures = results["temperatures"]
 
     # Prepare Excel writer
-    with pd.ExcelWriter(filename, engine='openpyxl') as writer:
+    with pd.ExcelWriter(filename, engine="openpyxl") as writer:
 
         # ====================================================================
         # Sheet 1: Steel Properties
         # ====================================================================
         props_data = {
-            'Property': [
-                'Elastic Modulus',
-                'Reference Strain Rate',
-                'Room Temperature',
-                'Melting Temperature',
-                'Number of Cases',
-                'Number of Strain Rates',
-                'Number of Temperatures',
+            "Property": [
+                "Elastic Modulus",
+                "Reference Strain Rate",
+                "Room Temperature",
+                "Melting Temperature",
+                "Number of Cases",
+                "Number of Strain Rates",
+                "Number of Temperatures",
             ],
-            'Value': [
+            "Value": [
                 f"{E:.0f} MPa",
                 f"{params.epsdot0:.2e} 1/s",
                 f"{params.T_room:.1f} °C",
@@ -78,18 +77,18 @@ def export_steel_to_excel(
                 len(strain_rates),
                 len(temperatures),
             ],
-            'Description': [
-                'Young\'s modulus',
-                'Reference strain rate for JC model',
-                'Reference temperature',
-                'Material melting temperature',
-                'Total number of cases analyzed',
-                'Strain rates analyzed',
-                'Temperatures analyzed',
-            ]
+            "Description": [
+                "Young's modulus",
+                "Reference strain rate for JC model",
+                "Reference temperature",
+                "Material melting temperature",
+                "Total number of cases analyzed",
+                "Strain rates analyzed",
+                "Temperatures analyzed",
+            ],
         }
         df_props = pd.DataFrame(props_data)
-        df_props.to_excel(writer, sheet_name='Steel Properties', index=False)
+        df_props.to_excel(writer, sheet_name="Steel Properties", index=False)
 
         if verbose:
             print("  ✓ Sheet 'Steel Properties' created")
@@ -98,8 +97,8 @@ def export_steel_to_excel(
         # Sheet 2: JC Parameters
         # ====================================================================
         jc_data = {
-            'Parameter': ['A', 'B', 'n', 'C', 'm', 'ε̇₀', 'T_room', 'T_melt'],
-            'Value': [
+            "Parameter": ["A", "B", "n", "C", "m", "ε̇₀", "T_room", "T_melt"],
+            "Value": [
                 params.A,
                 params.B,
                 params.n,
@@ -109,20 +108,20 @@ def export_steel_to_excel(
                 params.T_room,
                 params.T_melt,
             ],
-            'Unit': ['MPa', 'MPa', '-', '-', '-', '1/s', '°C', '°C'],
-            'Description': [
-                'Yield stress',
-                'Strain hardening coefficient',
-                'Strain hardening exponent',
-                'Strain rate sensitivity coefficient',
-                'Thermal softening exponent',
-                'Reference strain rate',
-                'Room temperature',
-                'Melting temperature',
-            ]
+            "Unit": ["MPa", "MPa", "-", "-", "-", "1/s", "°C", "°C"],
+            "Description": [
+                "Yield stress",
+                "Strain hardening coefficient",
+                "Strain hardening exponent",
+                "Strain rate sensitivity coefficient",
+                "Thermal softening exponent",
+                "Reference strain rate",
+                "Room temperature",
+                "Melting temperature",
+            ],
         }
         df_jc = pd.DataFrame(jc_data)
-        df_jc.to_excel(writer, sheet_name='JC Parameters', index=False)
+        df_jc.to_excel(writer, sheet_name="JC Parameters", index=False)
 
         if verbose:
             print("  ✓ Sheet 'JC Parameters' created")
@@ -132,17 +131,19 @@ def export_steel_to_excel(
         # ====================================================================
         summary_data = []
         for i, curve in enumerate(curves):
-            summary_data.append({
-                'Case ID': i + 1,
-                'Label': curve.get('case_id', f"Case {i+1}"),
-                'Strain Rate [1/s]': curve['epsdot'],
-                'Temperature [°C]': curve['T'],
-                'Output Type': curve['output_kind'],
-                'Max Strain [-]': curve['strain'][-1],
-                'Max Stress [MPa]': curve['stress'][-1],
-            })
+            summary_data.append(
+                {
+                    "Case ID": i + 1,
+                    "Label": curve.get("case_id", f"Case {i+1}"),
+                    "Strain Rate [1/s]": curve["epsdot"],
+                    "Temperature [°C]": curve["T"],
+                    "Output Type": curve["output_kind"],
+                    "Max Strain [-]": curve["strain"][-1],
+                    "Max Stress [MPa]": curve["stress"][-1],
+                }
+            )
         df_summary = pd.DataFrame(summary_data)
-        df_summary.to_excel(writer, sheet_name='Summary', index=False)
+        df_summary.to_excel(writer, sheet_name="Summary", index=False)
 
         if verbose:
             print("  ✓ Sheet 'Summary' created")
@@ -156,44 +157,44 @@ def export_steel_to_excel(
         # - Stress vs plastic strain
 
         # Check if we have engineering or true curves
-        has_eng = any(c['output_kind'] == 'engineering' for c in curves)
-        has_true = any(c['output_kind'] == 'true' for c in curves)
+        has_eng = any(c["output_kind"] == "engineering" for c in curves)
+        has_true = any(c["output_kind"] == "true" for c in curves)
 
         # Engineering stress-strain
         if has_eng:
             df_eng = _build_curve_dataframe(
-                curves=[c for c in curves if c['output_kind'] == 'engineering'],
-                x_key='strain',
-                y_key='stress',
-                x_label='Engineering Strain',
-                y_label='Engineering Stress [MPa]'
+                curves=[c for c in curves if c["output_kind"] == "engineering"],
+                x_key="strain",
+                y_key="stress",
+                x_label="Engineering Strain",
+                y_label="Engineering Stress [MPa]",
             )
-            df_eng.to_excel(writer, sheet_name='Stress-Strain (eng)', index=False)
+            df_eng.to_excel(writer, sheet_name="Stress-Strain (eng)", index=False)
             if verbose:
                 print("  ✓ Sheet 'Stress-Strain (eng)' created")
 
         # True stress-strain
         if has_true:
             df_true = _build_curve_dataframe(
-                curves=[c for c in curves if c['output_kind'] == 'true'],
-                x_key='strain',
-                y_key='stress',
-                x_label='True Strain',
-                y_label='True Stress [MPa]'
+                curves=[c for c in curves if c["output_kind"] == "true"],
+                x_key="strain",
+                y_key="stress",
+                x_label="True Strain",
+                y_label="True Stress [MPa]",
             )
-            df_true.to_excel(writer, sheet_name='Stress-Strain (true)', index=False)
+            df_true.to_excel(writer, sheet_name="Stress-Strain (true)", index=False)
             if verbose:
                 print("  ✓ Sheet 'Stress-Strain (true)' created")
 
         # Stress vs Plastic Strain (always in true plastic strain)
         df_plastic = _build_curve_dataframe(
             curves=curves,
-            x_key='plastic_strain',
-            y_key='stress',
-            x_label='Plastic Strain',
-            y_label='Stress [MPa]'
+            x_key="plastic_strain",
+            y_key="stress",
+            x_label="Plastic Strain",
+            y_label="Stress [MPa]",
         )
-        df_plastic.to_excel(writer, sheet_name='Stress-PlasticStrain', index=False)
+        df_plastic.to_excel(writer, sheet_name="Stress-PlasticStrain", index=False)
         if verbose:
             print("  ✓ Sheet 'Stress-PlasticStrain' created")
 
@@ -201,15 +202,19 @@ def export_steel_to_excel(
         # Sheet: Strain Rates and Temperatures Lists
         # ====================================================================
         params_list_data = {
-            'Strain Rates [1/s]': list(strain_rates) + [''] * (len(temperatures) - len(strain_rates))
+            "Strain Rates [1/s]": (
+                list(strain_rates) + [""] * (len(temperatures) - len(strain_rates))
                 if len(temperatures) > len(strain_rates)
-                else list(strain_rates),
-            'Temperatures [°C]': list(temperatures) + [''] * (len(strain_rates) - len(temperatures))
+                else list(strain_rates)
+            ),
+            "Temperatures [°C]": (
+                list(temperatures) + [""] * (len(strain_rates) - len(temperatures))
                 if len(strain_rates) > len(temperatures)
-                else list(temperatures),
+                else list(temperatures)
+            ),
         }
         df_params_list = pd.DataFrame(params_list_data)
-        df_params_list.to_excel(writer, sheet_name='Cases Parameters', index=False)
+        df_params_list.to_excel(writer, sheet_name="Cases Parameters", index=False)
         if verbose:
             print("  ✓ Sheet 'Cases Parameters' created")
 
@@ -219,11 +224,7 @@ def export_steel_to_excel(
 
 
 def _build_curve_dataframe(
-    curves: list,
-    x_key: str,
-    y_key: str,
-    x_label: str,
-    y_label: str
+    curves: list, x_key: str, y_key: str, x_label: str, y_label: str
 ) -> pd.DataFrame:
     """
     Build a pandas DataFrame for multiple curves.
@@ -257,10 +258,9 @@ def _build_curve_dataframe(
         # Interpolate curve onto common x-axis
         y_interp = np.interp(x_common, curve[x_key], curve[y_key])
 
-        # Create column label with case info
-        case_label = curve.get('case_id', f"Case {i+1}")
-        epsdot = curve['epsdot']
-        T = curve['T']
+        # Create column label with curve data.
+        epsdot = curve["epsdot"]
+        T = curve["T"]
         col_name = f"{y_label} (ε̇={epsdot:.2e}, T={T:.1f}°C)"
 
         data[col_name] = y_interp
@@ -268,11 +268,7 @@ def _build_curve_dataframe(
     return pd.DataFrame(data)
 
 
-def print_steel_properties(
-    spec: Optional[SteelSpec],
-    params: JohnsonCookParams,
-    E: float
-) -> None:
+def print_steel_properties(spec: Optional[SteelSpec], params: JohnsonCookParams, E: float) -> None:
     """
     Print steel properties and Johnson-Cook parameters to console.
 
@@ -290,21 +286,21 @@ def print_steel_properties(
         print(f"Grade: {spec.grade}")
         if spec.ductility_class:
             print(f"Ductility Class: {spec.ductility_class}")
-        if spec.metadata and 'description' in spec.metadata:
+        if spec.metadata and "description" in spec.metadata:
             print(f"Description: {spec.metadata['description']}")
 
-        print(f"\nCharacteristic Properties:")
+        print("\nCharacteristic Properties:")
         print(f"  fy = {spec.fy:.2f} MPa")
         print(f"  fu = {spec.fu:.2f} MPa")
         print(f"  fu/fy = {spec.fu_fy_ratio:.3f}")
         print(f"  Agt = {spec.Agt:.2f} %")
 
-    print(f"\nElastic Properties:")
+    print("\nElastic Properties:")
     print(f"  E = {E:.0f} MPa")
     if spec is not None and spec.nu is not None:
         print(f"  ν = {spec.nu:.3f}")
 
-    print(f"\nJohnson-Cook Parameters:")
+    print("\nJohnson-Cook Parameters:")
     print(f"  A = {params.A:.2f} MPa  (yield stress)")
     print(f"  B = {params.B:.2f} MPa  (hardening coefficient)")
     print(f"  n = {params.n:.4f}  (hardening exponent)")
@@ -322,7 +318,7 @@ def export_abaqus_material_card(
     E: float,
     nu: float = 0.30,
     density: Optional[float] = None,
-    filename: str = "steel_abaqus_material.inp"
+    filename: str = "steel_abaqus_material.inp",
 ) -> None:
     """
     Export ABAQUS material card for Johnson-Cook plasticity.
@@ -351,7 +347,7 @@ def export_abaqus_material_card(
         "*Elastic",
         f"{E:.1f}, {nu:.3f}",
         "*Plastic, hardening=JOHNSON COOK",
-        f"** A,         B,        n,      C,      m,      T_melt,  T_room,   eps_dot_0",
+        "** A,         B,        n,      C,      m,      T_melt,  T_room,   eps_dot_0",
         f"{params.A:.2f}, {params.B:.2f}, {params.n:.4f}, "
         f"{params.C:.4f}, {params.m:.4f}, {T_melt_K:.2f}, {T_room_K:.2f}, {params.epsdot0:.2e}",
     ]
@@ -362,7 +358,7 @@ def export_abaqus_material_card(
 
     content = "\n".join(lines) + "\n"
 
-    with open(filename, 'w') as f:
+    with open(filename, "w") as f:
         f.write(content)
 
     print(f"\n✅ ABAQUS material card exported: {filename}")

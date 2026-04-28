@@ -27,32 +27,29 @@ def calculate_compression_behavior(f_cm, e_c1, E_ci, E_c1, n_points, e_max):
 
     # CEB-90 parameters
     eta_E = E_ci / E_c1
-    e_clim = e_c1 * (0.5 * (0.5 * eta_E + 1) +
-                     (0.25 * ((0.5 * eta_E + 1) ** 2) - 0.5) ** 0.5)
-    eta = strain / e_c1
+    e_clim = e_c1 * (0.5 * (0.5 * eta_E + 1) + (0.25 * ((0.5 * eta_E + 1) ** 2) - 0.5) ** 0.5)
     eta_lim = e_clim / e_c1
 
-    xi = 4 * (eta_lim**2 * (eta_E - 2) + 2 * eta_lim - eta_E) / \
-         ((eta_lim * (eta_E - 2) + 1) ** 2)
+    xi = 4 * (eta_lim**2 * (eta_E - 2) + 2 * eta_lim - eta_E) / ((eta_lim * (eta_E - 2) + 1) ** 2)
 
     # Calculate stress
     stress = np.zeros_like(strain)
     for i in range(len(strain)):
         if strain[i] <= e_clim:
             # Ascending branch
-            stress[i] = (eta_E * strain[i] / e_c1 - (strain[i] / e_c1) ** 2) / \
-                       (1 + (eta_E - 2) * (strain[i] / e_c1)) * f_cm
+            stress[i] = (
+                (eta_E * strain[i] / e_c1 - (strain[i] / e_c1) ** 2)
+                / (1 + (eta_E - 2) * (strain[i] / e_c1))
+                * f_cm
+            )
         else:
             # Descending branch
-            stress[i] = f_cm / ((xi / eta_lim - 2 / (eta_lim**2)) *
-                               ((strain[i] / e_c1) ** 2) +
-                               (4 / eta_lim - xi) * strain[i] / e_c1)
+            stress[i] = f_cm / (
+                (xi / eta_lim - 2 / (eta_lim**2)) * ((strain[i] / e_c1) ** 2)
+                + (4 / eta_lim - xi) * strain[i] / e_c1
+            )
 
-    return {
-        'strain': strain,
-        'stress': stress,
-        'e_clim': e_clim
-    }
+    return {"strain": strain, "stress": stress, "e_clim": e_clim}
 
 
 def calculate_inelastic_compression(strain, stress, f_cm, E_c1):
@@ -88,8 +85,8 @@ def calculate_inelastic_compression(strain, stress, f_cm, E_c1):
             inelastic_stress.append(stress[i])
 
     return {
-        'inelastic_strain': np.array(inelastic_strain),
-        'inelastic_stress': np.array(inelastic_stress)
+        "inelastic_strain": np.array(inelastic_strain),
+        "inelastic_stress": np.array(inelastic_stress),
     }
 
 

@@ -34,12 +34,7 @@ def calculate_tension_bilinear(f_ctm, G_f, n_points):
         else:
             stress[i] = f_ctm * (0.25 - 0.05 * crack_opening[i] / w_1)
 
-    return {
-        'crack_opening': crack_opening,
-        'stress': stress,
-        'w_1': w_1,
-        'w_c': w_c
-    }
+    return {"crack_opening": crack_opening, "stress": stress, "w_1": w_1, "w_c": w_c}
 
 
 def calculate_tension_power_law(f_ctm, G_f, w_c, crack_opening):

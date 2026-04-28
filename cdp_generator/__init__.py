@@ -58,90 +58,77 @@ Example usage:
 __version__ = "1.0.0"
 __author__ = "CDP Generator Contributors"
 
-# Core calculation functions
-from .core import calculate_stress_strain, calculate_stress_strain_temp
-
-# Material property functions
-from .material_properties import (
-    calculate_concrete_strength_properties,
-    calculate_elastic_modulus,
-    calculate_poisson_ratios,
-    calculate_cdp_parameters,
-    calculate_fracture_energy,
-    calculate_characteristic_length
-)
-
-# Strain rate functions
-from .strain_rate import (
-    apply_strain_rate_effects,
-    apply_fracture_energy_rate_effects
-)
-
-# Temperature functions
-from .temperature import (
-    get_eurocode_temperature_table,
-    apply_temperature_effects
-)
+# Steel subpackage (imported for convenience, but prefer explicit imports)
+from . import steel
 
 # Compression functions
 from .compression import (
     calculate_compression_behavior,
+    calculate_compression_damage,
     calculate_inelastic_compression,
-    calculate_compression_damage
 )
+
+# Core calculation functions
+from .core import calculate_stress_strain, calculate_stress_strain_temp
+from .export import export_to_excel, print_properties
+
+# Material property functions
+from .material_properties import (
+    calculate_cdp_parameters,
+    calculate_characteristic_length,
+    calculate_concrete_strength_properties,
+    calculate_elastic_modulus,
+    calculate_fracture_energy,
+    calculate_poisson_ratios,
+)
+
+# Plotting and export functions
+from .plotting import plot_all_results, plot_curve, plot_multiple_curves
+
+# Strain rate functions
+from .strain_rate import apply_fracture_energy_rate_effects, apply_strain_rate_effects
+
+# Temperature functions
+from .temperature import apply_temperature_effects, get_eurocode_temperature_table
 
 # Tension functions
 from .tension import (
     calculate_tension_bilinear,
+    calculate_tension_damage,
     calculate_tension_power_law,
-    calculate_tension_damage
 )
-
-# Plotting and export functions
-from .plotting import plot_curve, plot_multiple_curves, plot_all_results
-from .export import export_to_excel, print_properties
-
-# Steel subpackage (imported for convenience, but prefer explicit imports)
-from . import steel
 
 __all__ = [
     # Subpackages
-    'steel',
-
+    "steel",
     # Core functions
-    'calculate_stress_strain',
-    'calculate_stress_strain_temp',
-
+    "calculate_stress_strain",
+    "calculate_stress_strain_temp",
     # Material properties
-    'calculate_concrete_strength_properties',
-    'calculate_elastic_modulus',
-    'calculate_poisson_ratios',
-    'calculate_cdp_parameters',
-    'calculate_fracture_energy',
-    'calculate_characteristic_length',
-
+    "calculate_concrete_strength_properties",
+    "calculate_elastic_modulus",
+    "calculate_poisson_ratios",
+    "calculate_cdp_parameters",
+    "calculate_fracture_energy",
+    "calculate_characteristic_length",
     # Strain rate
-    'apply_strain_rate_effects',
-    'apply_fracture_energy_rate_effects',
-
+    "apply_strain_rate_effects",
+    "apply_fracture_energy_rate_effects",
     # Temperature
-    'get_eurocode_temperature_table',
-    'apply_temperature_effects',
-
+    "get_eurocode_temperature_table",
+    "apply_temperature_effects",
     # Compression
-    'calculate_compression_behavior',
-    'calculate_inelastic_compression',
-    'calculate_compression_damage',
-
+    "calculate_compression_behavior",
+    "calculate_inelastic_compression",
+    "calculate_compression_damage",
     # Tension
-    'calculate_tension_bilinear',
-    'calculate_tension_power_law',
-    'calculate_tension_damage',
-
+    "calculate_tension_bilinear",
+    "calculate_tension_power_law",
+    "calculate_tension_damage",
     # Plotting and export
-    'plot_curve',
-    'plot_multiple_curves',
-    'plot_all_results',
-    'export_to_excel',
-    'print_properties',
+    "plot_curve",
+    "plot_multiple_curves",
+    "plot_all_results",
+    "export_to_excel",
+    "print_properties",
 ]

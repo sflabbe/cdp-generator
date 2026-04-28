@@ -19,7 +19,8 @@ Units:
 """
 
 from dataclasses import dataclass
-from typing import Optional, Dict, Any
+from typing import Any, Dict, Optional
+
 import numpy as np
 
 from .johnson_cook import JohnsonCookParams, eng_to_true
@@ -45,6 +46,7 @@ class SteelSpec:
         T_melt: Melting temperature [°C]
         metadata: Additional information (source, notes, etc.)
     """
+
     standard: str
     grade: str
     ductility_class: Optional[str] = None
@@ -99,7 +101,7 @@ STANDARDS_DB = {
             "fu_fy_ratio": 1.05,  # APPROXIMATE - minimum ratio
             "Agt": 2.5,  # % APPROXIMATE - minimum elongation at max force
             "ductility_class": "A",
-            "note": "APPROXIMATE VALUES - Verify with EN 10080 for your region"
+            "note": "APPROXIMATE VALUES - Verify with EN 10080 for your region",
         },
         "B500B": {
             "description": "Eurocode 2 - B500 Class B (Normal ductility)",
@@ -107,7 +109,7 @@ STANDARDS_DB = {
             "fu_fy_ratio": 1.08,  # APPROXIMATE
             "Agt": 5.0,  # % APPROXIMATE
             "ductility_class": "B",
-            "note": "APPROXIMATE VALUES - Verify with EN 10080 for your region"
+            "note": "APPROXIMATE VALUES - Verify with EN 10080 for your region",
         },
         "B500C": {
             "description": "Eurocode 2 - B500 Class C (High ductility)",
@@ -115,10 +117,9 @@ STANDARDS_DB = {
             "fu_fy_ratio": 1.15,  # APPROXIMATE - higher ductility requires higher ratio
             "Agt": 7.5,  # % APPROXIMATE
             "ductility_class": "C",
-            "note": "APPROXIMATE VALUES - Verify with EN 10080 for your region"
+            "note": "APPROXIMATE VALUES - Verify with EN 10080 for your region",
         },
     },
-
     # ========================================================================
     # ACI / ASTM - US Standards
     # ========================================================================
@@ -128,24 +129,23 @@ STANDARDS_DB = {
             "fy": 414.0,  # MPa (60 ksi)
             "fu": 620.0,  # MPa (90 ksi) APPROXIMATE minimum
             "Agt": 9.0,  # % APPROXIMATE for grade 60
-            "note": "APPROXIMATE VALUES - Verify with ASTM A615 for exact requirements"
+            "note": "APPROXIMATE VALUES - Verify with ASTM A615 for exact requirements",
         },
         "A615_75": {
             "description": "ASTM A615 Grade 75",
             "fy": 517.0,  # MPa (75 ksi)
             "fu": 690.0,  # MPa (100 ksi) APPROXIMATE
             "Agt": 7.0,  # % APPROXIMATE
-            "note": "APPROXIMATE VALUES - Verify with ASTM A615"
+            "note": "APPROXIMATE VALUES - Verify with ASTM A615",
         },
         "A706_60": {
             "description": "ASTM A706 Grade 60 (Low-alloy, seismic)",
             "fy": 414.0,  # MPa (60 ksi)
             "fu": 550.0,  # MPa APPROXIMATE - A706 has tighter fu/fy control
             "Agt": 14.0,  # % APPROXIMATE - higher ductility for seismic
-            "note": "APPROXIMATE VALUES - A706 has specific fu/fy ratio requirements. Verify standard."
+            "note": "APPROXIMATE VALUES - A706 has specific fu/fy ratio requirements. Verify standard.",
         },
     },
-
     # ========================================================================
     # NCh - Chilean Standard
     # ========================================================================
@@ -155,14 +155,14 @@ STANDARDS_DB = {
             "fy": 420.0,  # MPa
             "fu_fy_ratio": 1.25,  # APPROXIMATE
             "Agt": 8.0,  # % APPROXIMATE
-            "note": "APPROXIMATE VALUES - Verify with NCh 204 standard"
+            "note": "APPROXIMATE VALUES - Verify with NCh 204 standard",
         },
         "A440-280H": {
             "description": "NCh 204 - A440-280H",
             "fy": 280.0,  # MPa
             "fu_fy_ratio": 1.20,  # APPROXIMATE
             "Agt": 10.0,  # % APPROXIMATE
-            "note": "APPROXIMATE VALUES - Verify with NCh 204 standard"
+            "note": "APPROXIMATE VALUES - Verify with NCh 204 standard",
         },
     },
 }
@@ -173,7 +173,7 @@ def get_steel_spec(
     grade: str,
     ductility_class: Optional[str] = None,
     bar_diameter: Optional[float] = None,
-    overrides: Optional[Dict[str, Any]] = None
+    overrides: Optional[Dict[str, Any]] = None,
 ) -> SteelSpec:
     """
     Retrieve steel specification from standards database.
@@ -203,9 +203,7 @@ def get_steel_spec(
     # Check if standard exists (case-sensitive for database keys)
     if standard_normalized not in STANDARDS_DB and standard.upper() != "CUSTOM":
         available = list(STANDARDS_DB.keys()) + ["CUSTOM"]
-        raise ValueError(
-            f"Standard '{standard}' not found. Available: {available}"
-        )
+        raise ValueError(f"Standard '{standard}' not found. Available: {available}")
 
     # Handle custom specification
     if standard.upper() == "CUSTOM":
@@ -238,9 +236,7 @@ def get_steel_spec(
     # Retrieve from database
     if grade not in STANDARDS_DB[standard]:
         available_grades = list(STANDARDS_DB[standard].keys())
-        raise ValueError(
-            f"Grade '{grade}' not found in {standard}. Available: {available_grades}"
-        )
+        raise ValueError(f"Grade '{grade}' not found in {standard}. Available: {available_grades}")
 
     db_entry = STANDARDS_DB[standard][grade]
 
@@ -257,8 +253,8 @@ def get_steel_spec(
         "metadata": {
             "description": db_entry.get("description", ""),
             "note": db_entry.get("note", ""),
-            "source": "Built-in standards database (APPROXIMATE VALUES)"
-        }
+            "source": "Built-in standards database (APPROXIMATE VALUES)",
+        },
     }
 
     # Apply overrides
@@ -272,6 +268,7 @@ def get_steel_spec(
 # JOHNSON-COOK CALIBRATION FROM STANDARDS
 # ============================================================================
 
+
 def calibrate_jc_from_spec(
     spec: SteelSpec,
     *,
@@ -280,7 +277,7 @@ def calibrate_jc_from_spec(
     C_default: float = 0.0,
     m_default: float = 0.0,
     epsdot0: float = 1e-3,
-    verbose: bool = False
+    verbose: bool = False,
 ) -> JohnsonCookParams:
     """
     Calibrate Johnson-Cook parameters from steel specification.
@@ -361,8 +358,14 @@ def calibrate_jc_from_spec(
 
     # Convert to true stress-strain
     eps_u_true_arr, sigma_u_true_arr = eng_to_true(eps_u_eng, sigma_u_eng)
-    eps_u_true = float(eps_u_true_arr[0]) if hasattr(eps_u_true_arr, '__len__') else float(eps_u_true_arr)
-    sigma_u_true = float(sigma_u_true_arr[0]) if hasattr(sigma_u_true_arr, '__len__') else float(sigma_u_true_arr)
+    eps_u_true = (
+        float(eps_u_true_arr[0]) if hasattr(eps_u_true_arr, "__len__") else float(eps_u_true_arr)
+    )
+    sigma_u_true = (
+        float(sigma_u_true_arr[0])
+        if hasattr(sigma_u_true_arr, "__len__")
+        else float(sigma_u_true_arr)
+    )
 
     # Calculate plastic strain at ultimate point
     eps_p_u = eps_u_true - sigma_u_true / spec.E
@@ -401,14 +404,7 @@ def calibrate_jc_from_spec(
 
     # Create JC parameters
     params = JohnsonCookParams(
-        A=A,
-        B=B,
-        n=n,
-        C=C,
-        m=m,
-        epsdot0=epsdot0,
-        T_room=spec.T_room,
-        T_melt=spec.T_melt
+        A=A, B=B, n=n, C=C, m=m, epsdot0=epsdot0, T_room=spec.T_room, T_melt=spec.T_melt
     )
 
     if verbose:
@@ -418,17 +414,17 @@ def calibrate_jc_from_spec(
         print(f"Standard: {spec.standard} {spec.grade}")
         if spec.ductility_class:
             print(f"Ductility class: {spec.ductility_class}")
-        print(f"\nInput properties:")
+        print("\nInput properties:")
         print(f"  fy = {spec.fy:.2f} MPa")
         print(f"  fu = {spec.fu:.2f} MPa")
         print(f"  fu/fy = {spec.fu_fy_ratio:.3f}")
         print(f"  Agt = {spec.Agt:.2f} %")
         print(f"  E = {spec.E:.0f} MPa")
-        print(f"\nCalculated ultimate point:")
+        print("\nCalculated ultimate point:")
         print(f"  Engineering: ε_u = {eps_u_eng:.6f}, σ_u = {sigma_u_eng:.2f} MPa")
         print(f"  True: ε_u = {eps_u_true:.6f}, σ_u = {sigma_u_true:.2f} MPa")
         print(f"  Plastic: ε_p_u = {eps_p_u:.6f}")
-        print(f"\nCalibrated Johnson-Cook parameters:")
+        print("\nCalibrated Johnson-Cook parameters:")
         print(f"  A = {params.A:.2f} MPa  (yield stress)")
         print(f"  B = {params.B:.2f} MPa  (hardening coefficient)")
         print(f"  n = {params.n:.4f}  (hardening exponent)")
@@ -441,11 +437,10 @@ def calibrate_jc_from_spec(
 
         # Verification
         from .johnson_cook import johnson_cook_flow_stress
-        sigma_check = johnson_cook_flow_stress(
-            eps_p_u, epsdot0, spec.T_room, params
-        )[0]
+
+        sigma_check = johnson_cook_flow_stress(eps_p_u, epsdot0, spec.T_room, params)[0]
         error_pct = 100.0 * abs(sigma_check - sigma_u_true) / sigma_u_true
-        print(f"\nVerification:")
+        print("\nVerification:")
         print(f"  Target σ(ε_p_u) = {sigma_u_true:.2f} MPa")
         print(f"  JC model σ(ε_p_u) = {sigma_check:.2f} MPa")
         print(f"  Error = {error_pct:.2f} %")
@@ -481,17 +476,17 @@ def print_standards_info():
         for grade, data in grades_dict.items():
             print(f"\n  {grade}:")
             print(f"    Description: {data.get('description', 'N/A')}")
-            if 'fy' in data:
+            if "fy" in data:
                 print(f"    fy = {data['fy']:.0f} MPa")
-            if 'fu' in data:
+            if "fu" in data:
                 print(f"    fu = {data['fu']:.0f} MPa")
-            if 'fu_fy_ratio' in data:
+            if "fu_fy_ratio" in data:
                 print(f"    fu/fy = {data['fu_fy_ratio']:.2f}")
-            if 'Agt' in data:
+            if "Agt" in data:
                 print(f"    Agt = {data['Agt']:.1f} %")
-            if 'ductility_class' in data:
+            if "ductility_class" in data:
                 print(f"    Ductility class: {data['ductility_class']}")
-            if 'note' in data:
+            if "note" in data:
                 print(f"    NOTE: {data['note']}")
 
     print("\n" + "=" * 70)

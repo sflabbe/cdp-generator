@@ -10,23 +10,23 @@ This CLI provides an interactive interface for:
 """
 
 import sys
-from typing import Optional, List
+from typing import List, Optional
 
+from .export import export_abaqus_material_card, export_steel_to_excel
 from .johnson_cook import generate_jc_curves_multicase
-from .standards import (
-    get_steel_spec,
-    calibrate_jc_from_spec,
-    print_standards_info,
-    list_available_standards,
-)
-from .export import export_steel_to_excel, print_steel_properties, export_abaqus_material_card
 from .plotting import plot_steel_results
+from .standards import (
+    calibrate_jc_from_spec,
+    get_steel_spec,
+    list_available_standards,
+    print_standards_info,
+)
 
 
 def parse_float_list(s: str) -> List[float]:
     """Parse comma-separated float list."""
     try:
-        return [float(x.strip()) for x in s.split(',')]
+        return [float(x.strip()) for x in s.split(",")]
     except ValueError as e:
         raise ValueError(f"Invalid number in list: {s}") from e
 
@@ -105,21 +105,21 @@ def main():
             grade = get_user_input("Grade name", default="CustomSteel")
 
             fy = get_user_input("Yield strength fy [MPa]", type_func=float)
-            overrides['fy'] = fy
+            overrides["fy"] = fy
 
             fu_choice = input("Enter (1) ultimate strength fu or (2) fu/fy ratio? [1]: ").strip()
             if fu_choice == "2":
                 fu_fy = get_user_input("fu/fy ratio", type_func=float)
-                overrides['fu_fy_ratio'] = fu_fy
+                overrides["fu_fy_ratio"] = fu_fy
             else:
                 fu = get_user_input("Ultimate strength fu [MPa]", type_func=float)
-                overrides['fu'] = fu
+                overrides["fu"] = fu
 
             Agt = get_user_input("Elongation at max force Agt [%]", type_func=float)
-            overrides['Agt'] = Agt
+            overrides["Agt"] = Agt
 
             E = get_user_input("Elastic modulus E [MPa]", default="200000", type_func=float)
-            overrides['E'] = E
+            overrides["E"] = E
 
         else:
             # Select grade from available
@@ -137,30 +137,28 @@ def main():
 
             # Ask if user wants to override any values
             override_choice = input("\nOverride standard values? (y/n) [n]: ").strip().lower()
-            if override_choice == 'y':
+            if override_choice == "y":
                 print("\nLeave blank to use standard value")
 
                 fy_input = input("  Override fy [MPa]: ").strip()
                 if fy_input:
-                    overrides['fy'] = float(fy_input)
+                    overrides["fy"] = float(fy_input)
 
                 fu_input = input("  Override fu [MPa]: ").strip()
                 if fu_input:
-                    overrides['fu'] = float(fu_input)
+                    overrides["fu"] = float(fu_input)
 
                 Agt_input = input("  Override Agt [%]: ").strip()
                 if Agt_input:
-                    overrides['Agt'] = float(Agt_input)
+                    overrides["Agt"] = float(Agt_input)
 
                 E_input = input("  Override E [MPa]: ").strip()
                 if E_input:
-                    overrides['E'] = float(E_input)
+                    overrides["E"] = float(E_input)
 
         # Get steel spec
         spec = get_steel_spec(
-            standard=standard,
-            grade=grade,
-            overrides=overrides if overrides else None
+            standard=standard, grade=grade, overrides=overrides if overrides else None
         )
 
         # ====================================================================
@@ -176,8 +174,10 @@ def main():
         print("    - Set to 0 (rate/temp neutral)")
         print("    - Set to custom values")
 
-        rate_temp_choice = input("\nAssume rate/temp neutral (C=0, m=0)? (y/n) [y]: ").strip().lower()
-        assume_neutral = rate_temp_choice != 'n'
+        rate_temp_choice = (
+            input("\nAssume rate/temp neutral (C=0, m=0)? (y/n) [y]: ").strip().lower()
+        )
+        assume_neutral = rate_temp_choice != "n"
 
         C_val = 0.0
         m_val = 0.0
@@ -199,7 +199,7 @@ def main():
             C_default=C_val,
             m_default=m_val,
             epsdot0=epsdot0,
-            verbose=True
+            verbose=True,
         )
 
         # ====================================================================
@@ -210,17 +210,11 @@ def main():
         print("-" * 70)
 
         print("\nStrain rates (comma-separated list):")
-        strain_rates_input = get_user_input(
-            "Strain rates [1/s]",
-            default="1e-4,1e-3,1e-2,1,10,100"
-        )
+        strain_rates_input = get_user_input("Strain rates [1/s]", default="1e-4,1e-3,1e-2,1,10,100")
         strain_rates = parse_float_list(strain_rates_input)
 
         print("\nTemperatures (comma-separated list):")
-        temperatures_input = get_user_input(
-            "Temperatures [°C]",
-            default="20,200,400,600,800"
-        )
+        temperatures_input = get_user_input("Temperatures [°C]", default="20,200,400,600,800")
         temperatures = parse_float_list(temperatures_input)
 
         eps_max = get_user_input("Maximum strain", default="0.20", type_func=float)
@@ -245,7 +239,7 @@ def main():
             n_points=n_points,
             strain_rates=strain_rates,
             temperatures=temperatures,
-            output_kind=output_kind
+            output_kind=output_kind,
         )
 
         print(f"✓ Generated {len(results['curves'])} curves")
@@ -257,26 +251,15 @@ def main():
         print("STEP 6: Export Results")
         print("-" * 70)
 
-        excel_filename = get_user_input(
-            "Excel filename",
-            default="Steel-JC-Results.xlsx"
-        )
+        excel_filename = get_user_input("Excel filename", default="Steel-JC-Results.xlsx")
 
         export_steel_to_excel(results, filename=excel_filename, verbose=True)
 
         # Optional ABAQUS export
         abaqus_choice = input("\nExport ABAQUS material card? (y/n) [n]: ").strip().lower()
-        if abaqus_choice == 'y':
-            abaqus_filename = get_user_input(
-                "ABAQUS filename",
-                default="steel_abaqus_material.inp"
-            )
-            export_abaqus_material_card(
-                params,
-                E=spec.E,
-                nu=spec.nu,
-                filename=abaqus_filename
-            )
+        if abaqus_choice == "y":
+            abaqus_filename = get_user_input("ABAQUS filename", default="steel_abaqus_material.inp")
+            export_abaqus_material_card(params, E=spec.E, nu=spec.nu, filename=abaqus_filename)
 
         # ====================================================================
         # STEP 7: Plotting
@@ -286,7 +269,7 @@ def main():
         print("-" * 70)
 
         plot_choice = input("\nShow plots? (y/n) [y]: ").strip().lower()
-        if plot_choice != 'n':
+        if plot_choice != "n":
             print("\nGenerating plots...")
             plot_steel_results(results, show=True)
 
@@ -306,6 +289,7 @@ def main():
     except Exception as e:
         print(f"\n❌ ERROR: {e}")
         import traceback
+
         traceback.print_exc()
         sys.exit(1)
 

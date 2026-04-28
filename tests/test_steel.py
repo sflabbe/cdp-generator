@@ -8,48 +8,44 @@ These tests verify:
 4. Basic sanity checks
 """
 
-import pytest
 import numpy as np
+import pytest
 
 from cdp_generator.steel import (
     JohnsonCookParams,
-    johnson_cook_flow_stress,
+    calibrate_jc_from_spec,
     eng_to_true,
-    true_to_eng,
-    true_plastic_strain,
     generate_jc_curve,
     generate_jc_curves_multicase,
     get_steel_spec,
-    calibrate_jc_from_spec,
-    SteelSpec,
+    johnson_cook_flow_stress,
+    true_plastic_strain,
+    true_to_eng,
 )
-
 
 # ============================================================================
 # Test JohnsonCookParams validation
 # ============================================================================
 
+
 def test_jc_params_validation():
     """Test that JohnsonCookParams validates inputs."""
     # Valid params should work
     params = JohnsonCookParams(
-        A=500, B=300, n=0.15, C=0.01, m=1.0,
-        epsdot0=1e-3, T_room=20, T_melt=1500
+        A=500, B=300, n=0.15, C=0.01, m=1.0, epsdot0=1e-3, T_room=20, T_melt=1500
     )
     assert params.A == 500
 
     # Negative A should fail
     with pytest.raises(ValueError):
         JohnsonCookParams(
-            A=-500, B=300, n=0.15, C=0.01, m=1.0,
-            epsdot0=1e-3, T_room=20, T_melt=1500
+            A=-500, B=300, n=0.15, C=0.01, m=1.0, epsdot0=1e-3, T_room=20, T_melt=1500
         )
 
     # T_melt <= T_room should fail
     with pytest.raises(ValueError):
         JohnsonCookParams(
-            A=500, B=300, n=0.15, C=0.01, m=1.0,
-            epsdot0=1e-3, T_room=1500, T_melt=1500
+            A=500, B=300, n=0.15, C=0.01, m=1.0, epsdot0=1e-3, T_room=1500, T_melt=1500
         )
 
 
@@ -57,11 +53,11 @@ def test_jc_params_validation():
 # Test JC flow stress - monotonic behavior
 # ============================================================================
 
+
 def test_jc_flow_stress_monotonic():
     """Test that flow stress increases monotonically with plastic strain."""
     params = JohnsonCookParams(
-        A=500, B=300, n=0.15, C=0.0, m=0.0,
-        epsdot0=1e-3, T_room=20, T_melt=1500
+        A=500, B=300, n=0.15, C=0.0, m=0.0, epsdot0=1e-3, T_room=20, T_melt=1500
     )
 
     # Test at room temperature and reference strain rate
@@ -83,11 +79,11 @@ def test_jc_flow_stress_monotonic():
 # Test strain rate effect
 # ============================================================================
 
+
 def test_strain_rate_effect():
     """Test that higher strain rate increases flow stress (when C > 0)."""
     params = JohnsonCookParams(
-        A=500, B=300, n=0.15, C=0.01, m=0.0,
-        epsdot0=1e-3, T_room=20, T_melt=1500
+        A=500, B=300, n=0.15, C=0.01, m=0.0, epsdot0=1e-3, T_room=20, T_melt=1500
     )
 
     eps_p = 0.10
@@ -105,11 +101,11 @@ def test_strain_rate_effect():
 # Test temperature effect
 # ============================================================================
 
+
 def test_temperature_effect():
     """Test that higher temperature decreases flow stress (when m > 0)."""
     params = JohnsonCookParams(
-        A=500, B=300, n=0.15, C=0.0, m=1.0,
-        epsdot0=1e-3, T_room=20, T_melt=1500
+        A=500, B=300, n=0.15, C=0.0, m=1.0, epsdot0=1e-3, T_room=20, T_melt=1500
     )
 
     eps_p = 0.10
@@ -127,11 +123,11 @@ def test_temperature_effect():
 # Test vectorization
 # ============================================================================
 
+
 def test_vectorization():
     """Test that inputs can be arrays and outputs are arrays."""
     params = JohnsonCookParams(
-        A=500, B=300, n=0.15, C=0.0, m=0.0,
-        epsdot0=1e-3, T_room=20, T_melt=1500
+        A=500, B=300, n=0.15, C=0.0, m=0.0, epsdot0=1e-3, T_room=20, T_melt=1500
     )
 
     # Array inputs
@@ -148,6 +144,7 @@ def test_vectorization():
 # ============================================================================
 # Test engineering-true conversions
 # ============================================================================
+
 
 def test_eng_true_conversions():
     """Test engineering to true strain/stress conversions."""
@@ -188,6 +185,7 @@ def test_true_plastic_strain():
 # ============================================================================
 # Test calibration from standard specs
 # ============================================================================
+
 
 def test_calibration_hits_fu():
     """Test that calibrated JC parameters reproduce the ultimate stress."""
@@ -241,10 +239,7 @@ def test_get_steel_spec():
     assert spec_override.fy == 550
 
     # Test custom
-    spec_custom = get_steel_spec(
-        "Custom", "MySteel",
-        overrides={"fy": 500, "fu": 600, "Agt": 10}
-    )
+    spec_custom = get_steel_spec("Custom", "MySteel", overrides={"fy": 500, "fu": 600, "Agt": 10})
     assert spec_custom.fy == 500
     assert spec_custom.fu == 600
 
@@ -253,50 +248,43 @@ def test_get_steel_spec():
 # Test curve generation
 # ============================================================================
 
+
 def test_generate_jc_curve():
     """Test generating a single JC curve."""
     params = JohnsonCookParams(
-        A=500, B=300, n=0.15, C=0.0, m=0.0,
-        epsdot0=1e-3, T_room=20, T_melt=1500
+        A=500, B=300, n=0.15, C=0.0, m=0.0, epsdot0=1e-3, T_room=20, T_melt=1500
     )
 
     curve = generate_jc_curve(
-        params=params,
-        E=200000,
-        eps_max=0.20,
-        n_points=100,
-        epsdot=1e-3,
-        T=20,
-        output_kind="true"
+        params=params, E=200000, eps_max=0.20, n_points=100, epsdot=1e-3, T=20, output_kind="true"
     )
 
     # Check structure
-    assert 'strain' in curve
-    assert 'stress' in curve
-    assert 'plastic_strain' in curve
-    assert 'elastic_strain' in curve
-    assert curve['output_kind'] == 'true'
+    assert "strain" in curve
+    assert "stress" in curve
+    assert "plastic_strain" in curve
+    assert "elastic_strain" in curve
+    assert curve["output_kind"] == "true"
 
     # Check arrays have correct length
-    assert len(curve['strain']) == 100
-    assert len(curve['stress']) == 100
+    assert len(curve["strain"]) == 100
+    assert len(curve["stress"]) == 100
 
     # Check monotonicity
-    assert np.all(np.diff(curve['stress']) >= 0)
+    assert np.all(np.diff(curve["stress"]) >= 0)
 
     # Check initial elastic behavior (stress = E * strain)
     # Exclude strain=0 to avoid division by zero
-    idx_elastic = np.where((curve['plastic_strain'] < 1e-6) & (curve['strain'] > 1e-8))[0]
+    idx_elastic = np.where((curve["plastic_strain"] < 1e-6) & (curve["strain"] > 1e-8))[0]
     if len(idx_elastic) > 1:
-        elastic_modulus = curve['stress'][idx_elastic] / curve['strain'][idx_elastic]
+        elastic_modulus = curve["stress"][idx_elastic] / curve["strain"][idx_elastic]
         assert np.allclose(elastic_modulus, 200000, rtol=0.01)
 
 
 def test_generate_jc_curves_multicase():
     """Test generating multiple JC curves."""
     params = JohnsonCookParams(
-        A=500, B=300, n=0.15, C=0.01, m=1.0,
-        epsdot0=1e-3, T_room=20, T_melt=1500
+        A=500, B=300, n=0.15, C=0.01, m=1.0, epsdot0=1e-3, T_room=20, T_melt=1500
     )
 
     results = generate_jc_curves_multicase(
@@ -304,28 +292,28 @@ def test_generate_jc_curves_multicase():
         E=200000,
         strain_rates=[1e-3, 1, 100],
         temperatures=[20, 400, 800],
-        n_points=50
+        n_points=50,
     )
 
     # Should have 3 x 3 = 9 curves
-    assert len(results['curves']) == 9
+    assert len(results["curves"]) == 9
 
     # Check structure
-    assert 'strain_rates' in results
-    assert 'temperatures' in results
-    assert len(results['strain_rates']) == 3
-    assert len(results['temperatures']) == 3
+    assert "strain_rates" in results
+    assert "temperatures" in results
+    assert len(results["strain_rates"]) == 3
+    assert len(results["temperatures"]) == 3
 
 
 # ============================================================================
 # Test edge cases
 # ============================================================================
 
+
 def test_zero_plastic_strain():
     """Test that zero plastic strain gives yield stress."""
     params = JohnsonCookParams(
-        A=500, B=300, n=0.15, C=0.0, m=0.0,
-        epsdot0=1e-3, T_room=20, T_melt=1500
+        A=500, B=300, n=0.15, C=0.0, m=0.0, epsdot0=1e-3, T_room=20, T_melt=1500
     )
 
     sigma = johnson_cook_flow_stress(0.0, 1e-3, 20, params)[0]
@@ -335,8 +323,7 @@ def test_zero_plastic_strain():
 def test_high_temperature_clipping():
     """Test that stress doesn't go negative at very high temperature."""
     params = JohnsonCookParams(
-        A=500, B=300, n=0.15, C=0.0, m=1.0,
-        epsdot0=1e-3, T_room=20, T_melt=1500
+        A=500, B=300, n=0.15, C=0.0, m=1.0, epsdot0=1e-3, T_room=20, T_melt=1500
     )
 
     # At melting temperature, stress should be clipped to 0
@@ -347,8 +334,7 @@ def test_high_temperature_clipping():
 def test_negative_strain_rate_handling():
     """Test that negative strain rates are handled safely."""
     params = JohnsonCookParams(
-        A=500, B=300, n=0.15, C=0.01, m=0.0,
-        epsdot0=1e-3, T_room=20, T_melt=1500
+        A=500, B=300, n=0.15, C=0.01, m=0.0, epsdot0=1e-3, T_room=20, T_melt=1500
     )
 
     # Should not crash, should use epsdot0 instead
@@ -361,6 +347,7 @@ def test_negative_strain_rate_handling():
 # Integration test - full workflow
 # ============================================================================
 
+
 def test_full_workflow():
     """Test complete workflow from standard to export (without actual file writing)."""
     # 1. Get spec
@@ -371,22 +358,18 @@ def test_full_workflow():
 
     # 3. Generate curves
     results = generate_jc_curves_multicase(
-        params=params,
-        E=spec.E,
-        strain_rates=[1e-3, 1],
-        temperatures=[20, 400],
-        n_points=50
+        params=params, E=spec.E, strain_rates=[1e-3, 1], temperatures=[20, 400], n_points=50
     )
 
     # 4. Verify results structure
-    assert len(results['curves']) == 4
-    assert all('strain' in c for c in results['curves'])
-    assert all('stress' in c for c in results['curves'])
+    assert len(results["curves"]) == 4
+    assert all("strain" in c for c in results["curves"])
+    assert all("stress" in c for c in results["curves"])
 
     # 5. Check that stresses are reasonable
-    for curve in results['curves']:
-        assert np.all(curve['stress'] >= 0)
-        assert np.all(curve['stress'] <= 2000)  # Reasonable max for steel
+    for curve in results["curves"]:
+        assert np.all(curve["stress"] >= 0)
+        assert np.all(curve["stress"] <= 2000)  # Reasonable max for steel
 
     print("✓ Full workflow test passed")
 

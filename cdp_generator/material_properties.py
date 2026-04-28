@@ -23,12 +23,9 @@ def calculate_concrete_strength_properties(f_cm):
     if f_ck > 50:
         f_ctm = 2.12 * np.log(1 + 0.1 * f_cm)
     else:
-        f_ctm = 0.3 * (f_ck) ** (2/3)
+        f_ctm = 0.3 * (f_ck) ** (2 / 3)
 
-    return {
-        'f_ck': f_ck,
-        'f_ctm': f_ctm
-    }
+    return {"f_ck": f_ck, "f_ctm": f_ctm}
 
 
 def calculate_elastic_modulus(f_cm, alpha_E=1.0):
@@ -43,14 +40,11 @@ def calculate_elastic_modulus(f_cm, alpha_E=1.0):
     Returns:
         dict: Contains E_ci (tangent modulus) and E_c (secant modulus)
     """
-    E_ci = 21500 * alpha_E * (f_cm / 10) ** (1/3)
+    E_ci = 21500 * alpha_E * (f_cm / 10) ** (1 / 3)
     alpha = min(0.8 + 0.2 * f_cm / 88, 1.0)
     E_c = alpha * E_ci
 
-    return {
-        'E_ci': E_ci,
-        'E_c': E_c
-    }
+    return {"E_ci": E_ci, "E_c": E_c}
 
 
 def calculate_poisson_ratios(f_cm, E_c, e_c1):
@@ -68,10 +62,7 @@ def calculate_poisson_ratios(f_cm, E_c, e_c1):
     v_c0 = 0.5  # Poisson's ratio at peak engineering stress
     v_ce = 8e-6 * f_cm**2 + 0.0002 * f_cm + 0.138  # Elastic Poisson's ratio
 
-    return {
-        'v_c0': v_c0,
-        'v_ce': v_ce
-    }
+    return {"v_c0": v_c0, "v_ce": v_ce}
 
 
 def calculate_cdp_parameters(f_cm, E_c, e_c1, v_c0, v_ce):
@@ -89,9 +80,9 @@ def calculate_cdp_parameters(f_cm, E_c, e_c1, v_c0, v_ce):
         dict: Contains dilation angle, fbfc, and Kc
     """
     # Dilation angle [degrees]
-    dilation_angle = np.arctan(
-        6 * (v_c0 - v_ce) / (3 * E_c * e_c1 / f_cm + 2 * (v_c0 - v_ce) - 3)
-    ) * 180 / np.pi
+    dilation_angle = (
+        np.arctan(6 * (v_c0 - v_ce) / (3 * E_c * e_c1 / f_cm + 2 * (v_c0 - v_ce) - 3)) * 180 / np.pi
+    )
 
     # Ratio of biaxial to uniaxial compressive strength
     fbfc = 1.57 * f_cm ** (-0.09)
@@ -99,11 +90,7 @@ def calculate_cdp_parameters(f_cm, E_c, e_c1, v_c0, v_ce):
     # Ratio of second stress invariant on tensile meridian to that on compressive meridian
     K_c = 0.71 * f_cm ** (-0.025)
 
-    return {
-        'dilation_angle': dilation_angle,
-        'fbfc': fbfc,
-        'K_c': K_c
-    }
+    return {"dilation_angle": dilation_angle, "fbfc": fbfc, "K_c": K_c}
 
 
 def calculate_fracture_energy(f_cm):
@@ -116,7 +103,7 @@ def calculate_fracture_energy(f_cm):
     Returns:
         float: Fracture energy [N/mm]
     """
-    return 73 * f_cm ** 0.18 / 1000
+    return 73 * f_cm**0.18 / 1000
 
 
 def calculate_characteristic_length(E_c, G_f, f_ctm):

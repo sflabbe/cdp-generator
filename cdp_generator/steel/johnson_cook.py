@@ -24,7 +24,8 @@ Units:
 """
 
 from dataclasses import dataclass
-from typing import Union, Tuple, Optional
+from typing import Optional, Tuple, Union
+
 import numpy as np
 
 
@@ -48,6 +49,7 @@ class JohnsonCookParams:
 
     where T* = (T - T_room)/(T_melt - T_room), clamped to [0, 1]
     """
+
     A: float  # MPa
     B: float  # MPa
     n: float  # dimensionless
@@ -68,16 +70,14 @@ class JohnsonCookParams:
         if self.epsdot0 <= 0:
             raise ValueError(f"epsdot0 must be positive, got {self.epsdot0}")
         if self.T_melt <= self.T_room:
-            raise ValueError(
-                f"T_melt ({self.T_melt}) must be greater than T_room ({self.T_room})"
-            )
+            raise ValueError(f"T_melt ({self.T_melt}) must be greater than T_room ({self.T_room})")
 
 
 def johnson_cook_flow_stress(
     eps_p: Union[float, np.ndarray],
     epsdot: Union[float, np.ndarray],
     T: Union[float, np.ndarray],
-    params: JohnsonCookParams
+    params: JohnsonCookParams,
 ) -> np.ndarray:
     """
     Calculate flow stress using the Johnson-Cook model.
@@ -137,8 +137,7 @@ def johnson_cook_flow_stress(
 
 
 def eng_to_true(
-    eps_eng: Union[float, np.ndarray],
-    sigma_eng: Union[float, np.ndarray]
+    eps_eng: Union[float, np.ndarray], sigma_eng: Union[float, np.ndarray]
 ) -> Tuple[np.ndarray, np.ndarray]:
     """
     Convert engineering strain and stress to true (logarithmic) values.
@@ -168,8 +167,7 @@ def eng_to_true(
 
 
 def true_to_eng(
-    eps_true: Union[float, np.ndarray],
-    sigma_true: Union[float, np.ndarray]
+    eps_true: Union[float, np.ndarray], sigma_true: Union[float, np.ndarray]
 ) -> Tuple[np.ndarray, np.ndarray]:
     """
     Convert true (logarithmic) strain and stress to engineering values.
@@ -195,9 +193,7 @@ def true_to_eng(
 
 
 def true_plastic_strain(
-    eps_true: Union[float, np.ndarray],
-    sigma_true: Union[float, np.ndarray],
-    E: float
+    eps_true: Union[float, np.ndarray], sigma_true: Union[float, np.ndarray], E: float
 ) -> np.ndarray:
     """
     Calculate plastic component of true strain.
@@ -236,7 +232,7 @@ def generate_jc_curve(
     n_points: int = 100,
     epsdot: float = 1e-3,
     T: float = 20.0,
-    output_kind: str = "true"
+    output_kind: str = "true",
 ) -> dict:
     """
     Generate a complete Johnson-Cook stress-strain curve.
@@ -314,23 +310,23 @@ def generate_jc_curve(
         _, sigma_eng_check = true_to_eng(eps_true, sigma_true)
 
         return {
-            'strain': eps_eng,
-            'stress': sigma_eng,
-            'plastic_strain': eps_p,  # Keep plastic in true strain (more meaningful)
-            'elastic_strain': eps_elastic,
-            'output_kind': 'engineering',
-            'epsdot': epsdot,
-            'T': T
+            "strain": eps_eng,
+            "stress": sigma_eng,
+            "plastic_strain": eps_p,  # Keep plastic in true strain (more meaningful)
+            "elastic_strain": eps_elastic,
+            "output_kind": "engineering",
+            "epsdot": epsdot,
+            "T": T,
         }
     else:
         return {
-            'strain': eps_true,
-            'stress': sigma_true,
-            'plastic_strain': eps_p,
-            'elastic_strain': eps_elastic,
-            'output_kind': 'true',
-            'epsdot': epsdot,
-            'T': T
+            "strain": eps_true,
+            "stress": sigma_true,
+            "plastic_strain": eps_p,
+            "elastic_strain": eps_elastic,
+            "output_kind": "true",
+            "epsdot": epsdot,
+            "T": T,
         }
 
 
@@ -341,7 +337,7 @@ def generate_jc_curves_multicase(
     n_points: int = 100,
     strain_rates: Optional[list] = None,
     temperatures: Optional[list] = None,
-    output_kind: str = "true"
+    output_kind: str = "true",
 ) -> dict:
     """
     Generate Johnson-Cook curves for multiple strain rates and/or temperatures.
@@ -379,15 +375,15 @@ def generate_jc_curves_multicase(
                 n_points=n_points,
                 epsdot=epsdot,
                 T=T,
-                output_kind=output_kind
+                output_kind=output_kind,
             )
-            curve['case_id'] = f"rate={epsdot:.2e}_T={T:.1f}"
+            curve["case_id"] = f"rate={epsdot:.2e}_T={T:.1f}"
             curves.append(curve)
 
     return {
-        'curves': curves,
-        'strain_rates': np.array(strain_rates),
-        'temperatures': np.array(temperatures),
-        'params': params,
-        'E': E
+        "curves": curves,
+        "strain_rates": np.array(strain_rates),
+        "temperatures": np.array(temperatures),
+        "params": params,
+        "E": E,
     }
