@@ -28,37 +28,103 @@ Both models support strain-rate and temperature-dependent properties.
 - **Excel Export**: Automatically exports results to Excel for use in ABAQUS
 - **Visualization**: Built-in plotting functions for all results
 
-## Installation
+## Development setup
 
-### From Source (Development)
+This repository uses **uv** as the maintained dependency, environment and command runner. The source of truth is:
 
-```bash
-# Clone the repository
-git clone https://github.com/sflabbe/cdp-generator.git
-cd cdp-generator
+- `pyproject.toml` for package metadata and dependency groups
+- `uv.lock` for the resolved environment, when available
+- `Makefile` for repeatable development commands
 
-# Install in development mode
-pip install -e .
+### Install uv
 
-# Or install with development dependencies
-pip install -e ".[dev]"
-```
-
-### From PyPI (when published)
+Install uv using the official Astral instructions for your platform. A common Unix installer is:
 
 ```bash
-pip install cdp-generator
+curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
-### For Use in Other Projects
+### Create or synchronize the environment
 
 ```bash
-# Install from GitHub
-pip install git+https://github.com/sflabbe/cdp-generator.git
-
-# Or add to requirements.txt
-# git+https://github.com/sflabbe/cdp-generator.git
+uv sync --all-extras --dev
 ```
+
+Equivalent make target:
+
+```bash
+make sync
+```
+
+### Run tests
+
+```bash
+uv run pytest
+# or
+make test
+```
+
+### Run lint and formatting tools
+
+This repo keeps the existing formatter/linter stack: Black, isort and flake8. Ruff was not added during the uv migration to avoid turning an infrastructure cleanup into a style refactor.
+
+```bash
+make lint
+make format-check
+make format
+```
+
+### Run the interactive CLIs
+
+```bash
+uv run cdp-generator
+uv run cdp-steel
+```
+
+Equivalent make targets:
+
+```bash
+make run-cdp
+make run-steel
+```
+
+### Update the lockfile
+
+```bash
+uv lock
+make lock
+```
+
+Check whether the lockfile is current:
+
+```bash
+uv lock --check
+make lock-check
+```
+
+### Add dependencies
+
+Runtime dependency:
+
+```bash
+uv add <package>
+```
+
+Development dependency:
+
+```bash
+uv add --dev <package>
+```
+
+### Legacy packaging policy
+
+`setup.py` is retained only as a minimal compatibility shim for legacy build frontends. Do not add dependencies or project metadata there.
+
+No `requirements.txt` files are present in this repository after the migration. If a compatibility export is needed for an external deployment target, generate it from uv and treat it as an artifact, not as the source of truth.
+
+### User installation outside development
+
+For normal package use from another uv-based project, prefer adding the package as a dependency from the published package or Git source once available. Development of this repository itself should use the commands above.
 
 ## Usage
 
