@@ -1,0 +1,2089 @@
+{
+  "schema_version": "standards_authority_matrix.v1",
+  "program_gate": "G1-A",
+  "status_semantics": {
+    "direct": "The standard explicitly names/defines the quantity (by rule, equation or table).",
+    "derived": "The repository field is not directly identical to a named standard quantity, but the derivation/mapping is authorized and dependencies are explicit.",
+    "unresolved": "Evidence or semantics are insufficient for production use; do not populate automatically.",
+    "composed-required": "The profile does not supply the requested property; an explicit second authority/source is required."
+  },
+  "canonical_repository_conventions": {
+    "stress_and_modulus": "MPa",
+    "fracture_energy": "N/mm",
+    "strain": "dimensionless",
+    "compression_strain": "positive magnitude in the physical schema; source signs are normalized with provenance",
+    "shear_modulus_semantics": "G0/v1 field shear_modulus is a derived isotropic secant-equivalent quantity: G = E_secant / (2 * (1 + poisson_elastic)). ConcretePhysicalProperties.v2 should rename it to shear_modulus_secant_equivalent to make the modulus basis explicit.",
+    "class_identity": "profile-specific canonical strings; never synthesize an EN Cxx/yy identity from f_ck alone"
+  },
+  "source_registry": {
+    "fib_mc2010_b65": {
+      "role": "NORMATIVE_AUTHORITY",
+      "title": "fib Model Code for Concrete Structures 2010 — Final draft, Volume 1",
+      "publisher": "fib",
+      "edition_year": 2012,
+      "identifier": "fib Bulletin 65",
+      "isbn": "978-2-88394-105-2",
+      "doi": "10.35789/fib.BULL.0065",
+      "notes": "fib identifies Bulletins 65 and 66 as the final approved version of MC2010. The definitive 2013 hardcover/e-book contains the revised volumes; equation and table locators in this matrix are cross-checked against the final-edition StructuralCodes oracle.",
+      "url": "https://www.fib-international.org/publications/fib-bulletins/model-code-2010-final-draft%2C-volume-1-detail.html"
+    },
+    "fib_mc2010_2013": {
+      "role": "NORMATIVE_AUTHORITY",
+      "title": "fib Model Code for Concrete Structures 2010",
+      "publisher": "Ernst & Sohn / fib",
+      "edition_year": 2013,
+      "identifier": "Definitive hardcover/e-book edition",
+      "doi": "10.1002/9783433604090",
+      "notes": "Definitive publication; use it to adjudicate any discrepancy with Bulletin 65 locators.",
+      "url": "https://doi.org/10.1002/9783433604090"
+    },
+    "en_1992_1_1_2004": {
+      "role": "NORMATIVE_AUTHORITY",
+      "title": "EN 1992-1-1:2004 Eurocode 2 — Design of concrete structures — Part 1-1",
+      "publisher": "CEN",
+      "edition_year": 2004,
+      "identifier": "EN 1992-1-1:2004",
+      "amendment_context": [
+        {
+          "id": "AC:2010",
+          "targeted_effect": "Table 3.1 epsilon_c1 cap relation changes < 2.8 to <= 2.8; no numerical formula change to min(..., 2.8)."
+        },
+        {
+          "id": "A1:2014",
+          "targeted_effect": "No modification to the scoped 3.1 concrete physical-property clauses; amendment targets 3.3.2, 3.3.4, 6.4.5, 11.6.4.2 and 12.6.5.2."
+        }
+      ],
+      "notes": "G1-A profile identity is the 2004 generation with AC:2010 and A1:2014 adjudicated for the scoped physical-property clauses. AC:2010 corrects the epsilon_c1 cap inequality in Table 3.1 without changing the numerical min-form; A1:2014 does not modify scoped 3.1 material-property clauses.",
+      "url": "https://standards.cencenelec.eu/"
+    },
+    "en_1992_1_1_2023": {
+      "role": "NORMATIVE_AUTHORITY",
+      "title": "EN 1992-1-1:2023 Eurocode 2 — Design of concrete structures — Part 1-1",
+      "publisher": "CEN",
+      "edition_year": 2023,
+      "identifier": "EN 1992-1-1:2023",
+      "notes": "Second-generation Eurocode 2 Part 1-1.",
+      "url": "https://standards.cencenelec.eu/"
+    },
+    "jrc_2g_ec2_2025": {
+      "role": "SUPPORTING_AUTHORITY",
+      "title": "The second generation Eurocodes: key changes and benefits through design examples — EN 1992",
+      "publisher": "European Commission JRC / Eurocodes",
+      "edition_year": 2025,
+      "identifier": "JRC online workshop, 3–5 June 2025",
+      "notes": "BSI-authorized extracts reproduce the EN 1992-1-1:2023 reference-age rule and Table 5.1 class family through C100/115.",
+      "url": "https://eurocodes.jrc.ec.europa.eu/sites/default/files/2025-08/2025_2G-Eurocodes-Workshop_EN1992_Final_website.pdf"
+    },
+    "structuralcodes_mc2010": {
+      "role": "DEVELOPMENT_ORACLE",
+      "title": "StructuralCodes — fib Model Code 2010 material properties",
+      "publisher": "fib International open-source project",
+      "edition_year": 2026,
+      "identifier": "structuralcodes.codes.mc2010",
+      "runtime_dependency": false,
+      "notes": "Independent implementation oracle only; never normative authority.",
+      "url": "https://github.com/fib-international/structuralcodes/tree/main/structuralcodes/codes/mc2010"
+    },
+    "structuralcodes_ec2_2004": {
+      "role": "DEVELOPMENT_ORACLE",
+      "title": "StructuralCodes — Eurocode 2 (2004) material properties",
+      "publisher": "fib International open-source project",
+      "edition_year": 2026,
+      "identifier": "structuralcodes.codes.ec2_2004",
+      "runtime_dependency": false,
+      "notes": "Independent implementation oracle only; never normative authority.",
+      "url": "https://github.com/fib-international/structuralcodes/tree/main/structuralcodes/codes/ec2_2004"
+    },
+    "structuralcodes_ec2_2023": {
+      "role": "DEVELOPMENT_ORACLE",
+      "title": "StructuralCodes — Eurocode 2 (2023) material properties",
+      "publisher": "fib International open-source project",
+      "edition_year": 2026,
+      "identifier": "structuralcodes.codes.ec2_2023",
+      "runtime_dependency": false,
+      "notes": "Independent implementation oracle only; never normative authority.",
+      "url": "https://github.com/fib-international/structuralcodes/tree/main/structuralcodes/codes/ec2_2023"
+    }
+  },
+  "field_authority_matrix": [
+    {
+      "profile": "fib_mc2010",
+      "physical_field": "f_ck",
+      "standard_semantic_name_or_symbol": "f_ck",
+      "authority_publication": [
+        "fib_mc2010_b65",
+        "fib_mc2010_2013"
+      ],
+      "edition_year": 2013,
+      "equation_table_or_section": "§5.1.2; Table 5.1-3",
+      "authority_status": "direct",
+      "statistical_basis": "CHARACTERISTIC",
+      "source_units": "MPa",
+      "canonical_repository_units": "MPa",
+      "input_dependencies": [],
+      "validity_and_range_constraints": [
+        "ordinary normal-weight concrete unless entry states otherwise",
+        "named-grade baseline C12 through C120"
+      ],
+      "formula_branch_thresholds": [],
+      "configurable_standard_parameters": [],
+      "reference_age_semantics": "28 days unless explicitly specified otherwise by the concrete definition/time-development context",
+      "source_sign_convention": null,
+      "canonical_sign_convention": null,
+      "notes": "Characteristic cylinder compressive strength; class/grade number denotes f_ck in MPa.",
+      "independent_oracle": null
+    },
+    {
+      "profile": "fib_mc2010",
+      "physical_field": "f_cm",
+      "standard_semantic_name_or_symbol": "f_cm",
+      "authority_publication": [
+        "fib_mc2010_b65",
+        "fib_mc2010_2013"
+      ],
+      "edition_year": 2013,
+      "equation_table_or_section": "§5.1.4, Eq. (5.1-1)",
+      "authority_status": "direct",
+      "statistical_basis": "MEAN",
+      "source_units": "MPa",
+      "canonical_repository_units": "MPa",
+      "input_dependencies": [
+        "f_ck"
+      ],
+      "validity_and_range_constraints": [
+        "ordinary normal-weight concrete unless entry states otherwise",
+        "named-grade baseline C12 through C120"
+      ],
+      "formula_branch_thresholds": [],
+      "configurable_standard_parameters": [
+        {
+          "name": "delta_f",
+          "authority_value": 8.0,
+          "units": "MPa"
+        }
+      ],
+      "reference_age_semantics": "28 days unless explicitly specified otherwise by the concrete definition/time-development context",
+      "source_sign_convention": null,
+      "canonical_sign_convention": null,
+      "notes": "Mean compressive strength associated with f_ck.",
+      "independent_oracle": "structuralcodes.codes.mc2010.fcm"
+    },
+    {
+      "profile": "fib_mc2010",
+      "physical_field": "f_ctm",
+      "standard_semantic_name_or_symbol": "f_ctm",
+      "authority_publication": [
+        "fib_mc2010_b65",
+        "fib_mc2010_2013"
+      ],
+      "edition_year": 2013,
+      "equation_table_or_section": "§5.1.5.1, Eqs. (5.1-3a), (5.1-3b)",
+      "authority_status": "direct",
+      "statistical_basis": "MEAN",
+      "source_units": "MPa",
+      "canonical_repository_units": "MPa",
+      "input_dependencies": [
+        "f_ck",
+        "f_cm"
+      ],
+      "validity_and_range_constraints": [
+        "ordinary normal-weight concrete unless entry states otherwise",
+        "named-grade baseline C12 through C120"
+      ],
+      "formula_branch_thresholds": [
+        {
+          "condition": "f_ck <= 50 MPa",
+          "branch": "normal-strength power law"
+        },
+        {
+          "condition": "f_ck > 50 MPa",
+          "branch": "high-strength logarithmic law using f_cm"
+        }
+      ],
+      "configurable_standard_parameters": [],
+      "reference_age_semantics": "28 days unless explicitly specified otherwise by the concrete definition/time-development context",
+      "source_sign_convention": null,
+      "canonical_sign_convention": null,
+      "notes": "Mean uniaxial tensile strength; do not infer from EC2:2023 high-strength branch.",
+      "independent_oracle": "structuralcodes.codes.mc2010.fctm"
+    },
+    {
+      "profile": "fib_mc2010",
+      "physical_field": "f_ctk_lower",
+      "standard_semantic_name_or_symbol": "f_ctk,min",
+      "authority_publication": [
+        "fib_mc2010_b65",
+        "fib_mc2010_2013"
+      ],
+      "edition_year": 2013,
+      "equation_table_or_section": "§5.1.5.1, Eq. (5.1-4)",
+      "authority_status": "direct",
+      "statistical_basis": "CHARACTERISTIC",
+      "source_units": "MPa",
+      "canonical_repository_units": "MPa",
+      "input_dependencies": [
+        "f_ctm"
+      ],
+      "validity_and_range_constraints": [
+        "ordinary normal-weight concrete unless entry states otherwise",
+        "named-grade baseline C12 through C120"
+      ],
+      "formula_branch_thresholds": [],
+      "configurable_standard_parameters": [],
+      "reference_age_semantics": "28 days unless explicitly specified otherwise by the concrete definition/time-development context",
+      "source_sign_convention": null,
+      "canonical_sign_convention": null,
+      "notes": "MC2010 calls this the lower bound characteristic tensile strength. Do not rename it 5%-fractile in cross-profile schema unless that semantic is separately verified.",
+      "independent_oracle": "structuralcodes.codes.mc2010.fctkmin"
+    },
+    {
+      "profile": "fib_mc2010",
+      "physical_field": "f_ctk_upper",
+      "standard_semantic_name_or_symbol": "f_ctk,max",
+      "authority_publication": [
+        "fib_mc2010_b65",
+        "fib_mc2010_2013"
+      ],
+      "edition_year": 2013,
+      "equation_table_or_section": "§5.1.5.1, Eq. (5.1-5)",
+      "authority_status": "direct",
+      "statistical_basis": "CHARACTERISTIC",
+      "source_units": "MPa",
+      "canonical_repository_units": "MPa",
+      "input_dependencies": [
+        "f_ctm"
+      ],
+      "validity_and_range_constraints": [
+        "ordinary normal-weight concrete unless entry states otherwise",
+        "named-grade baseline C12 through C120"
+      ],
+      "formula_branch_thresholds": [],
+      "configurable_standard_parameters": [],
+      "reference_age_semantics": "28 days unless explicitly specified otherwise by the concrete definition/time-development context",
+      "source_sign_convention": null,
+      "canonical_sign_convention": null,
+      "notes": "MC2010 calls this the upper bound characteristic tensile strength. Do not rename it 95%-fractile in cross-profile schema unless that semantic is separately verified.",
+      "independent_oracle": "structuralcodes.codes.mc2010.fctkmax"
+    },
+    {
+      "profile": "fib_mc2010",
+      "physical_field": "E_initial",
+      "standard_semantic_name_or_symbol": "E_ci",
+      "authority_publication": [
+        "fib_mc2010_b65",
+        "fib_mc2010_2013"
+      ],
+      "edition_year": 2013,
+      "equation_table_or_section": "§5.1.7.2, Eqs. (5.1-20)/(5.1-21); Table 5.1-6",
+      "authority_status": "direct",
+      "statistical_basis": "MEAN",
+      "source_units": "MPa",
+      "canonical_repository_units": "MPa",
+      "input_dependencies": [
+        "f_cm",
+        "aggregate_type_or_alpha_E"
+      ],
+      "validity_and_range_constraints": [
+        "ordinary normal-weight concrete unless entry states otherwise",
+        "named-grade baseline C12 through C120"
+      ],
+      "formula_branch_thresholds": [],
+      "configurable_standard_parameters": [
+        {
+          "name": "alpha_E",
+          "authority": "Table 5.1-6 aggregate coefficient",
+          "values": {
+            "basalt": 1.2,
+            "quartzite": 1.0,
+            "limestone": 0.9,
+            "sandstone": 0.7
+          }
+        },
+        {
+          "name": "E_c0",
+          "authority_value": 21500.0,
+          "units": "MPa",
+          "context": "Eq. (5.1-21)"
+        }
+      ],
+      "reference_age_semantics": "28 days for the tabulated/reference modulus; time development is a separate MC2010 model",
+      "source_sign_convention": null,
+      "canonical_sign_convention": null,
+      "notes": "E_ci is the mean tangent modulus. Quartzite alpha_E=1.0 is a reference case, not a universal material default; G1-B must make the aggregate assumption explicit.",
+      "independent_oracle": "structuralcodes.codes.mc2010.Eci"
+    },
+    {
+      "profile": "fib_mc2010",
+      "physical_field": "E_secant",
+      "standard_semantic_name_or_symbol": "E_c (reduced/secant modulus)",
+      "authority_publication": [
+        "fib_mc2010_b65",
+        "fib_mc2010_2013"
+      ],
+      "edition_year": 2013,
+      "equation_table_or_section": "§5.1.7.2, Eq. (5.1-23); Table 5.1-7",
+      "authority_status": "direct",
+      "statistical_basis": "MEAN",
+      "source_units": "MPa",
+      "canonical_repository_units": "MPa",
+      "input_dependencies": [
+        "E_initial",
+        "f_cm"
+      ],
+      "validity_and_range_constraints": [
+        "ordinary normal-weight concrete unless entry states otherwise",
+        "named-grade baseline C12 through C120"
+      ],
+      "formula_branch_thresholds": [
+        {
+          "condition": "alpha_i reaches 1.0 (f_cm >= 88 MPa)",
+          "branch": "E_c = E_ci"
+        }
+      ],
+      "configurable_standard_parameters": [
+        {
+          "name": "alpha_i",
+          "relation": "min(0.8 + 0.2*f_cm/88, 1.0)"
+        }
+      ],
+      "reference_age_semantics": "same reference state as E_ci",
+      "source_sign_convention": null,
+      "canonical_sign_convention": null,
+      "notes": "Map repository E_secant to MC2010 E_c, the reduced/secant modulus intended for elastic analysis. Do not confuse it with E_c1, the secant modulus from origin to peak used in the Sargin law.",
+      "independent_oracle": null
+    },
+    {
+      "profile": "fib_mc2010",
+      "physical_field": "poisson_elastic",
+      "standard_semantic_name_or_symbol": "nu_c",
+      "authority_publication": [
+        "fib_mc2010_b65",
+        "fib_mc2010_2013"
+      ],
+      "edition_year": 2013,
+      "equation_table_or_section": "§5.1.7.3",
+      "authority_status": "direct",
+      "statistical_basis": "NOT_APPLICABLE",
+      "source_units": "dimensionless",
+      "canonical_repository_units": "dimensionless",
+      "input_dependencies": [],
+      "validity_and_range_constraints": [
+        "ordinary normal-weight concrete unless entry states otherwise",
+        "named-grade baseline C12 through C120",
+        "MC2010 quoted range applies for -0.6 f_ck < sigma_c < 0.8 f_ctk"
+      ],
+      "formula_branch_thresholds": [],
+      "configurable_standard_parameters": [
+        {
+          "name": "nu_c",
+          "recommended_estimate": 0.2,
+          "observed_range": [
+            0.14,
+            0.26
+          ]
+        }
+      ],
+      "reference_age_semantics": null,
+      "source_sign_convention": null,
+      "canonical_sign_convention": null,
+      "notes": "Use 0.20 as the MC2010 engineering estimate; provenance must retain the stress-range qualification.",
+      "independent_oracle": null
+    },
+    {
+      "profile": "fib_mc2010",
+      "physical_field": "shear_modulus",
+      "standard_semantic_name_or_symbol": "G (repository-derived secant-equivalent isotropic shear modulus)",
+      "authority_publication": [
+        "fib_mc2010_b65",
+        "fib_mc2010_2013"
+      ],
+      "edition_year": 2013,
+      "equation_table_or_section": null,
+      "authority_status": "derived",
+      "statistical_basis": "NOT_APPLICABLE",
+      "source_units": "MPa",
+      "canonical_repository_units": "MPa",
+      "input_dependencies": [
+        "E_secant",
+        "poisson_elastic"
+      ],
+      "validity_and_range_constraints": [
+        "ordinary normal-weight concrete unless entry states otherwise",
+        "named-grade baseline C12 through C120"
+      ],
+      "formula_branch_thresholds": [],
+      "configurable_standard_parameters": [],
+      "reference_age_semantics": null,
+      "source_sign_convention": null,
+      "canonical_sign_convention": null,
+      "notes": "G0/v1 field under adjudication. In ConcretePhysicalProperties.v2 rename to shear_modulus_secant_equivalent. This is repository-derived from E_secant and poisson_elastic; it is not claimed as a directly standard-specified shear modulus.",
+      "independent_oracle": null,
+      "future_v2_field_name": "shear_modulus_secant_equivalent",
+      "future_provenance_derived_from": [
+        "E_secant",
+        "poisson_elastic"
+      ]
+    },
+    {
+      "profile": "fib_mc2010",
+      "physical_field": "fracture_energy",
+      "standard_semantic_name_or_symbol": "G_F",
+      "authority_publication": [
+        "fib_mc2010_b65",
+        "fib_mc2010_2013"
+      ],
+      "edition_year": 2013,
+      "equation_table_or_section": "§5.1.5.2, Eq. (5.1-9)",
+      "authority_status": "direct",
+      "statistical_basis": "NOT_APPLICABLE",
+      "source_units": "N/m",
+      "canonical_repository_units": "N/mm",
+      "input_dependencies": [
+        "f_cm"
+      ],
+      "validity_and_range_constraints": [
+        "ordinary normal-weight concrete",
+        "test determination preferred when experimental data are available"
+      ],
+      "formula_branch_thresholds": [],
+      "configurable_standard_parameters": [],
+      "reference_age_semantics": "28 days unless explicitly specified otherwise by the concrete definition/time-development context",
+      "source_sign_convention": null,
+      "canonical_sign_convention": null,
+      "notes": "Canonical conversion N/m -> N/mm is division by 1000.",
+      "independent_oracle": "structuralcodes.codes.mc2010.Gf"
+    },
+    {
+      "profile": "fib_mc2010",
+      "physical_field": "strain_peak_compression",
+      "standard_semantic_name_or_symbol": "epsilon_c1",
+      "authority_publication": [
+        "fib_mc2010_b65",
+        "fib_mc2010_2013"
+      ],
+      "edition_year": 2013,
+      "equation_table_or_section": "§5.1.8.1, Eq. (5.1-26); Table 5.1-8",
+      "authority_status": "direct",
+      "statistical_basis": "NOT_APPLICABLE",
+      "source_units": "per_mille",
+      "canonical_repository_units": "dimensionless",
+      "input_dependencies": [
+        "concrete_grade"
+      ],
+      "validity_and_range_constraints": [
+        "ordinary normal-weight concrete unless entry states otherwise",
+        "named-grade baseline C12 through C120",
+        "short-term uniaxial Sargin relation"
+      ],
+      "formula_branch_thresholds": [],
+      "configurable_standard_parameters": [],
+      "reference_age_semantics": "28 days unless explicitly specified otherwise by the concrete definition/time-development context",
+      "source_sign_convention": "compression is negative in MC2010 Table 5.1-8",
+      "canonical_sign_convention": "positive magnitude; normalize as abs(epsilon_c1)/1000",
+      "notes": "Use Sargin/general nonlinear landmark. Do not substitute simplified design-law epsilon_c2. Table values are authoritative for named grades; arbitrary interpolation is an implementation policy.",
+      "independent_oracle": "structuralcodes.codes.mc2010.eps_c1"
+    },
+    {
+      "profile": "fib_mc2010",
+      "physical_field": "strain_limit_compression",
+      "standard_semantic_name_or_symbol": "epsilon_c,lim",
+      "authority_publication": [
+        "fib_mc2010_b65",
+        "fib_mc2010_2013"
+      ],
+      "edition_year": 2013,
+      "equation_table_or_section": "§5.1.8.1, Eq. (5.1-26); Table 5.1-8",
+      "authority_status": "direct",
+      "statistical_basis": "NOT_APPLICABLE",
+      "source_units": "per_mille",
+      "canonical_repository_units": "dimensionless",
+      "input_dependencies": [
+        "concrete_grade"
+      ],
+      "validity_and_range_constraints": [
+        "ordinary normal-weight concrete unless entry states otherwise",
+        "named-grade baseline C12 through C120",
+        "short-term uniaxial Sargin relation",
+        "post-peak limit is size/boundary-condition sensitive"
+      ],
+      "formula_branch_thresholds": [],
+      "configurable_standard_parameters": [],
+      "reference_age_semantics": "28 days unless explicitly specified otherwise by the concrete definition/time-development context",
+      "source_sign_convention": "compression is negative in MC2010 Table 5.1-8",
+      "canonical_sign_convention": "positive magnitude; normalize as abs(epsilon_c,lim)/1000",
+      "notes": "Use the Sargin/general nonlinear limit, not the simplified design-law ultimate strain. MC2010 explicitly cautions that the descending branch and epsilon_c,lim are not purely intrinsic material behavior.",
+      "independent_oracle": "structuralcodes.codes.mc2010.eps_clim"
+    },
+    {
+      "profile": "ec2_2004",
+      "physical_field": "f_ck",
+      "standard_semantic_name_or_symbol": "f_ck",
+      "authority_publication": [
+        "en_1992_1_1_2004"
+      ],
+      "edition_year": 2004,
+      "equation_table_or_section": "§3.1.2(1)-(3); Table 3.1",
+      "authority_status": "direct",
+      "statistical_basis": "CHARACTERISTIC",
+      "source_units": "MPa",
+      "canonical_repository_units": "MPa",
+      "input_dependencies": [],
+      "validity_and_range_constraints": [
+        "normal/high-strength concrete governed by Section 3",
+        "named-class baseline C12/15 through C90/105"
+      ],
+      "formula_branch_thresholds": [],
+      "configurable_standard_parameters": [],
+      "reference_age_semantics": "28 days for the named strength classes and Table 3.1 reference properties",
+      "source_sign_convention": null,
+      "canonical_sign_convention": null,
+      "notes": "Characteristic 5% cylinder strength; class identity is tied to EN 206-1 cylinder/cube pair.",
+      "independent_oracle": null
+    },
+    {
+      "profile": "ec2_2004",
+      "physical_field": "f_cm",
+      "standard_semantic_name_or_symbol": "f_cm",
+      "authority_publication": [
+        "en_1992_1_1_2004"
+      ],
+      "edition_year": 2004,
+      "equation_table_or_section": "Table 3.1",
+      "authority_status": "direct",
+      "statistical_basis": "MEAN",
+      "source_units": "MPa",
+      "canonical_repository_units": "MPa",
+      "input_dependencies": [
+        "f_ck"
+      ],
+      "validity_and_range_constraints": [
+        "normal/high-strength concrete governed by Section 3",
+        "named-class baseline C12/15 through C90/105"
+      ],
+      "formula_branch_thresholds": [],
+      "configurable_standard_parameters": [
+        {
+          "name": "delta_f",
+          "authority_value": 8.0,
+          "units": "MPa"
+        }
+      ],
+      "reference_age_semantics": "28 days for the named strength classes and Table 3.1 reference properties",
+      "source_sign_convention": null,
+      "canonical_sign_convention": null,
+      "notes": "Mean cylinder compressive strength.",
+      "independent_oracle": "structuralcodes.codes.ec2_2004.fcm"
+    },
+    {
+      "profile": "ec2_2004",
+      "physical_field": "f_ctm",
+      "standard_semantic_name_or_symbol": "f_ctm",
+      "authority_publication": [
+        "en_1992_1_1_2004"
+      ],
+      "edition_year": 2004,
+      "equation_table_or_section": "Table 3.1",
+      "authority_status": "direct",
+      "statistical_basis": "MEAN",
+      "source_units": "MPa",
+      "canonical_repository_units": "MPa",
+      "input_dependencies": [
+        "f_ck",
+        "f_cm"
+      ],
+      "validity_and_range_constraints": [
+        "normal/high-strength concrete governed by Section 3",
+        "named-class baseline C12/15 through C90/105"
+      ],
+      "formula_branch_thresholds": [
+        {
+          "condition": "f_ck <= 50 MPa (through C50/60)",
+          "branch": "power law"
+        },
+        {
+          "condition": "f_ck > 50 MPa",
+          "branch": "logarithmic law using f_cm"
+        }
+      ],
+      "configurable_standard_parameters": [],
+      "reference_age_semantics": "28 days for the named strength classes and Table 3.1 reference properties",
+      "source_sign_convention": null,
+      "canonical_sign_convention": null,
+      "notes": "Mean axial tensile strength.",
+      "independent_oracle": "structuralcodes.codes.ec2_2004.fctm"
+    },
+    {
+      "profile": "ec2_2004",
+      "physical_field": "f_ctk_lower",
+      "standard_semantic_name_or_symbol": "f_ctk,0.05",
+      "authority_publication": [
+        "en_1992_1_1_2004"
+      ],
+      "edition_year": 2004,
+      "equation_table_or_section": "Table 3.1",
+      "authority_status": "direct",
+      "statistical_basis": "CHARACTERISTIC",
+      "source_units": "MPa",
+      "canonical_repository_units": "MPa",
+      "input_dependencies": [
+        "f_ctm"
+      ],
+      "validity_and_range_constraints": [
+        "normal/high-strength concrete governed by Section 3",
+        "named-class baseline C12/15 through C90/105"
+      ],
+      "formula_branch_thresholds": [],
+      "configurable_standard_parameters": [],
+      "reference_age_semantics": "28 days for the named strength classes and Table 3.1 reference properties",
+      "source_sign_convention": null,
+      "canonical_sign_convention": null,
+      "notes": "Explicit 5% fractile; candidate profile-specific API alias f_ctk_005.",
+      "independent_oracle": "structuralcodes.codes.ec2_2004.fctk_5"
+    },
+    {
+      "profile": "ec2_2004",
+      "physical_field": "f_ctk_upper",
+      "standard_semantic_name_or_symbol": "f_ctk,0.95",
+      "authority_publication": [
+        "en_1992_1_1_2004"
+      ],
+      "edition_year": 2004,
+      "equation_table_or_section": "Table 3.1",
+      "authority_status": "direct",
+      "statistical_basis": "CHARACTERISTIC",
+      "source_units": "MPa",
+      "canonical_repository_units": "MPa",
+      "input_dependencies": [
+        "f_ctm"
+      ],
+      "validity_and_range_constraints": [
+        "normal/high-strength concrete governed by Section 3",
+        "named-class baseline C12/15 through C90/105"
+      ],
+      "formula_branch_thresholds": [],
+      "configurable_standard_parameters": [],
+      "reference_age_semantics": "28 days for the named strength classes and Table 3.1 reference properties",
+      "source_sign_convention": null,
+      "canonical_sign_convention": null,
+      "notes": "Explicit 95% fractile; candidate profile-specific API alias f_ctk_095.",
+      "independent_oracle": "structuralcodes.codes.ec2_2004.fctk_95"
+    },
+    {
+      "profile": "ec2_2004",
+      "physical_field": "E_initial",
+      "standard_semantic_name_or_symbol": "E_c (tangent modulus; creep context)",
+      "authority_publication": [
+        "en_1992_1_1_2004"
+      ],
+      "edition_year": 2004,
+      "equation_table_or_section": "§3.1.4(2)",
+      "authority_status": "derived",
+      "statistical_basis": "MEAN",
+      "source_units": "MPa",
+      "canonical_repository_units": "MPa",
+      "input_dependencies": [
+        "E_secant"
+      ],
+      "validity_and_range_constraints": [
+        "normal/high-strength concrete governed by Section 3",
+        "named-class baseline C12/15 through C90/105"
+      ],
+      "formula_branch_thresholds": [],
+      "configurable_standard_parameters": [
+        {
+          "name": "tangent_approximation_factor",
+          "authority_value": 1.05,
+          "relation": "E_c may be taken as 1.05 E_cm"
+        }
+      ],
+      "reference_age_semantics": "28 days for the named strength classes and Table 3.1 reference properties",
+      "source_sign_convention": null,
+      "canonical_sign_convention": null,
+      "notes": "EN 1992-1-1:2004 does not define E_initial as an alias of E_cm. The standard introduces a tangent modulus E_c in the creep context and permits 1.05*E_cm. Mapping that tangent quantity to repository E_initial is therefore an explicit derived semantic mapping.",
+      "independent_oracle": null
+    },
+    {
+      "profile": "ec2_2004",
+      "physical_field": "E_secant",
+      "standard_semantic_name_or_symbol": "E_cm",
+      "authority_publication": [
+        "en_1992_1_1_2004"
+      ],
+      "edition_year": 2004,
+      "equation_table_or_section": "§3.1.3(2); Table 3.1",
+      "authority_status": "direct",
+      "statistical_basis": "MEAN",
+      "source_units": "MPa",
+      "canonical_repository_units": "MPa",
+      "input_dependencies": [
+        "f_cm",
+        "aggregate_type"
+      ],
+      "validity_and_range_constraints": [
+        "normal/high-strength concrete governed by Section 3",
+        "named-class baseline C12/15 through C90/105"
+      ],
+      "formula_branch_thresholds": [],
+      "configurable_standard_parameters": [
+        {
+          "name": "aggregate_policy",
+          "authority": "Table 3.1 basis is quartzite",
+          "values": {
+            "quartzite_factor": 1.0,
+            "limestone_factor": 0.9,
+            "sandstone_factor": 0.7,
+            "basalt_factor": 1.2
+          }
+        }
+      ],
+      "reference_age_semantics": "28 days for the named strength classes and Table 3.1 reference properties",
+      "source_sign_convention": null,
+      "canonical_sign_convention": null,
+      "notes": "E_cm is explicitly the secant modulus between sigma_c=0 and 0.4 f_cm. Quartzite is the Table 3.1 basis, not a material-independent default.",
+      "independent_oracle": "structuralcodes.codes.ec2_2004.Ecm"
+    },
+    {
+      "profile": "ec2_2004",
+      "physical_field": "poisson_elastic",
+      "standard_semantic_name_or_symbol": "nu",
+      "authority_publication": [
+        "en_1992_1_1_2004"
+      ],
+      "edition_year": 2004,
+      "equation_table_or_section": "§3.1.3(4)",
+      "authority_status": "direct",
+      "statistical_basis": "NOT_APPLICABLE",
+      "source_units": "dimensionless",
+      "canonical_repository_units": "dimensionless",
+      "input_dependencies": [],
+      "validity_and_range_constraints": [
+        "normal/high-strength concrete governed by Section 3",
+        "named-class baseline C12/15 through C90/105"
+      ],
+      "formula_branch_thresholds": [],
+      "configurable_standard_parameters": [
+        {
+          "state": "uncracked",
+          "value": 0.2
+        },
+        {
+          "state": "cracked",
+          "value": 0.0
+        }
+      ],
+      "reference_age_semantics": null,
+      "source_sign_convention": null,
+      "canonical_sign_convention": null,
+      "notes": "Repository poisson_elastic means the uncracked elastic value: 0.20.",
+      "independent_oracle": null
+    },
+    {
+      "profile": "ec2_2004",
+      "physical_field": "shear_modulus",
+      "standard_semantic_name_or_symbol": "G (repository-derived secant-equivalent isotropic shear modulus)",
+      "authority_publication": [
+        "en_1992_1_1_2004"
+      ],
+      "edition_year": 2004,
+      "equation_table_or_section": null,
+      "authority_status": "derived",
+      "statistical_basis": "NOT_APPLICABLE",
+      "source_units": "MPa",
+      "canonical_repository_units": "MPa",
+      "input_dependencies": [
+        "E_secant",
+        "poisson_elastic"
+      ],
+      "validity_and_range_constraints": [
+        "normal/high-strength concrete governed by Section 3",
+        "named-class baseline C12/15 through C90/105"
+      ],
+      "formula_branch_thresholds": [],
+      "configurable_standard_parameters": [],
+      "reference_age_semantics": null,
+      "source_sign_convention": null,
+      "canonical_sign_convention": null,
+      "notes": "G0/v1 field under adjudication. In ConcretePhysicalProperties.v2 rename to shear_modulus_secant_equivalent. This is repository-derived from E_secant and poisson_elastic; it is not claimed as a directly standard-specified shear modulus.",
+      "independent_oracle": null,
+      "future_v2_field_name": "shear_modulus_secant_equivalent",
+      "future_provenance_derived_from": [
+        "E_secant",
+        "poisson_elastic"
+      ]
+    },
+    {
+      "profile": "ec2_2004",
+      "physical_field": "fracture_energy",
+      "standard_semantic_name_or_symbol": null,
+      "authority_publication": [
+        "en_1992_1_1_2004"
+      ],
+      "edition_year": 2004,
+      "equation_table_or_section": null,
+      "authority_status": "composed-required",
+      "statistical_basis": "UNSPECIFIED",
+      "source_units": null,
+      "canonical_repository_units": "N/mm",
+      "input_dependencies": [],
+      "validity_and_range_constraints": [
+        "normal/high-strength concrete governed by Section 3",
+        "named-class baseline C12/15 through C90/105"
+      ],
+      "formula_branch_thresholds": [],
+      "configurable_standard_parameters": [],
+      "reference_age_semantics": null,
+      "source_sign_convention": null,
+      "canonical_sign_convention": null,
+      "notes": "No plain-concrete fracture-energy property/formula is supplied by the inspected EN 1992-1-1:2004 Section 3 material-property authority. Do not invent 'EC2 fracture energy'; an explicit external composition is required.",
+      "independent_oracle": null
+    },
+    {
+      "profile": "ec2_2004",
+      "physical_field": "strain_peak_compression",
+      "standard_semantic_name_or_symbol": "epsilon_c1",
+      "authority_publication": [
+        "en_1992_1_1_2004"
+      ],
+      "edition_year": 2004,
+      "equation_table_or_section": "§3.1.5; Table 3.1; Eq. (3.14) context",
+      "authority_status": "direct",
+      "statistical_basis": "NOT_APPLICABLE",
+      "source_units": "per_mille",
+      "canonical_repository_units": "dimensionless",
+      "input_dependencies": [
+        "f_cm"
+      ],
+      "validity_and_range_constraints": [
+        "normal/high-strength concrete governed by Section 3",
+        "named-class baseline C12/15 through C90/105",
+        "general nonlinear/Sargin short-term compression relation"
+      ],
+      "formula_branch_thresholds": [
+        {
+          "condition": "epsilon_c1 relation",
+          "branch": "0.7*f_cm^0.31 capped at 2.8 per mille"
+        }
+      ],
+      "configurable_standard_parameters": [],
+      "reference_age_semantics": "28 days for the named strength classes and Table 3.1 reference properties",
+      "source_sign_convention": "Table/property given as positive compression-strain magnitude",
+      "canonical_sign_convention": "positive magnitude /1000",
+      "notes": "Use epsilon_c1 from the nonlinear structural-analysis relation, not epsilon_c2 from the simplified design law. AC:2010 changes the printed cap inequality from < 2.8 to <= 2.8; the min(..., 2.8) numerical relation is unchanged.",
+      "independent_oracle": "structuralcodes.codes.ec2_2004.eps_c1"
+    },
+    {
+      "profile": "ec2_2004",
+      "physical_field": "strain_limit_compression",
+      "standard_semantic_name_or_symbol": "epsilon_cu1",
+      "authority_publication": [
+        "en_1992_1_1_2004"
+      ],
+      "edition_year": 2004,
+      "equation_table_or_section": "§3.1.5; Table 3.1; Eq. (3.14) context",
+      "authority_status": "direct",
+      "statistical_basis": "NOT_APPLICABLE",
+      "source_units": "per_mille",
+      "canonical_repository_units": "dimensionless",
+      "input_dependencies": [
+        "f_ck",
+        "f_cm"
+      ],
+      "validity_and_range_constraints": [
+        "normal/high-strength concrete governed by Section 3",
+        "named-class baseline C12/15 through C90/105",
+        "general nonlinear/Sargin short-term compression relation"
+      ],
+      "formula_branch_thresholds": [
+        {
+          "condition": "f_ck < 50 MPa",
+          "branch": "3.5 per mille"
+        },
+        {
+          "condition": "f_ck >= 50 MPa",
+          "branch": "high-strength expression based on f_cm"
+        }
+      ],
+      "configurable_standard_parameters": [],
+      "reference_age_semantics": "28 days for the named strength classes and Table 3.1 reference properties",
+      "source_sign_convention": "positive compression-strain magnitude",
+      "canonical_sign_convention": "positive magnitude /1000",
+      "notes": "Use epsilon_cu1 for the general nonlinear law; do not substitute epsilon_cu2/epsilon_cu3 design-law values.",
+      "independent_oracle": "structuralcodes.codes.ec2_2004.eps_cu1"
+    },
+    {
+      "profile": "ec2_2023",
+      "physical_field": "f_ck",
+      "standard_semantic_name_or_symbol": "f_ck",
+      "authority_publication": [
+        "en_1992_1_1_2023"
+      ],
+      "edition_year": 2023,
+      "equation_table_or_section": "Table 5.1; concrete strength-class/reference-age clause",
+      "authority_status": "direct",
+      "statistical_basis": "CHARACTERISTIC",
+      "source_units": "MPa",
+      "canonical_repository_units": "MPa",
+      "input_dependencies": [],
+      "validity_and_range_constraints": [
+        "normal concrete material rules in Section 5",
+        "named-class baseline C12/15 through C100/115"
+      ],
+      "formula_branch_thresholds": [],
+      "configurable_standard_parameters": [],
+      "reference_age_semantics": "t_ref = 28 days in general; project may specify t_ref from 28 to 91 days",
+      "source_sign_convention": null,
+      "canonical_sign_convention": null,
+      "notes": "Characteristic 5% cylinder strength in accordance with EN 206; class strength is defined at t_ref.",
+      "independent_oracle": null
+    },
+    {
+      "profile": "ec2_2023",
+      "physical_field": "f_cm",
+      "standard_semantic_name_or_symbol": "f_cm",
+      "authority_publication": [
+        "en_1992_1_1_2023"
+      ],
+      "edition_year": 2023,
+      "equation_table_or_section": "Table 5.1",
+      "authority_status": "direct",
+      "statistical_basis": "MEAN",
+      "source_units": "MPa",
+      "canonical_repository_units": "MPa",
+      "input_dependencies": [
+        "f_ck"
+      ],
+      "validity_and_range_constraints": [
+        "normal concrete material rules in Section 5",
+        "named-class baseline C12/15 through C100/115"
+      ],
+      "formula_branch_thresholds": [],
+      "configurable_standard_parameters": [
+        {
+          "name": "delta_f",
+          "authority_value": 8.0,
+          "units": "MPa"
+        }
+      ],
+      "reference_age_semantics": "t_ref = 28 days in general; project may specify t_ref from 28 to 91 days",
+      "source_sign_convention": null,
+      "canonical_sign_convention": null,
+      "notes": "Mean compressive strength associated with the class reference strength.",
+      "independent_oracle": "structuralcodes.codes.ec2_2023.fcm"
+    },
+    {
+      "profile": "ec2_2023",
+      "physical_field": "f_ctm",
+      "standard_semantic_name_or_symbol": "f_ctm",
+      "authority_publication": [
+        "en_1992_1_1_2023"
+      ],
+      "edition_year": 2023,
+      "equation_table_or_section": "Table 5.1",
+      "authority_status": "direct",
+      "statistical_basis": "MEAN",
+      "source_units": "MPa",
+      "canonical_repository_units": "MPa",
+      "input_dependencies": [
+        "f_ck"
+      ],
+      "validity_and_range_constraints": [
+        "normal concrete material rules in Section 5",
+        "named-class baseline C12/15 through C100/115"
+      ],
+      "formula_branch_thresholds": [
+        {
+          "condition": "f_ck <= 50 MPa",
+          "branch": "0.3*f_ck^(2/3); equality belongs to lower branch"
+        },
+        {
+          "condition": "f_ck > 50 MPa",
+          "branch": "1.1*f_ck^(1/3)"
+        }
+      ],
+      "configurable_standard_parameters": [],
+      "reference_age_semantics": "t_ref = 28 days in general; project may specify t_ref from 28 to 91 days",
+      "source_sign_convention": null,
+      "canonical_sign_convention": null,
+      "notes": "The high-strength branch differs from EN 1992-1-1:2004/MC2010. At exactly f_ck=50 MPa use the <=50 branch.",
+      "independent_oracle": "structuralcodes.codes.ec2_2023.fctm"
+    },
+    {
+      "profile": "ec2_2023",
+      "physical_field": "f_ctk_lower",
+      "standard_semantic_name_or_symbol": "f_ctk,0.05",
+      "authority_publication": [
+        "en_1992_1_1_2023"
+      ],
+      "edition_year": 2023,
+      "equation_table_or_section": "Table 5.1",
+      "authority_status": "direct",
+      "statistical_basis": "CHARACTERISTIC",
+      "source_units": "MPa",
+      "canonical_repository_units": "MPa",
+      "input_dependencies": [
+        "f_ctm"
+      ],
+      "validity_and_range_constraints": [
+        "normal concrete material rules in Section 5",
+        "named-class baseline C12/15 through C100/115"
+      ],
+      "formula_branch_thresholds": [],
+      "configurable_standard_parameters": [],
+      "reference_age_semantics": "t_ref = 28 days in general; project may specify t_ref from 28 to 91 days",
+      "source_sign_convention": null,
+      "canonical_sign_convention": null,
+      "notes": "Explicit 5% fractile; profile-specific API alias f_ctk_005 is semantically valid.",
+      "independent_oracle": "structuralcodes.codes.ec2_2023.fctk_5"
+    },
+    {
+      "profile": "ec2_2023",
+      "physical_field": "f_ctk_upper",
+      "standard_semantic_name_or_symbol": "f_ctk,0.95",
+      "authority_publication": [
+        "en_1992_1_1_2023"
+      ],
+      "edition_year": 2023,
+      "equation_table_or_section": "Table 5.1",
+      "authority_status": "direct",
+      "statistical_basis": "CHARACTERISTIC",
+      "source_units": "MPa",
+      "canonical_repository_units": "MPa",
+      "input_dependencies": [
+        "f_ctm"
+      ],
+      "validity_and_range_constraints": [
+        "normal concrete material rules in Section 5",
+        "named-class baseline C12/15 through C100/115"
+      ],
+      "formula_branch_thresholds": [],
+      "configurable_standard_parameters": [],
+      "reference_age_semantics": "t_ref = 28 days in general; project may specify t_ref from 28 to 91 days",
+      "source_sign_convention": null,
+      "canonical_sign_convention": null,
+      "notes": "Explicit 95% fractile; profile-specific API alias f_ctk_095 is semantically valid.",
+      "independent_oracle": "structuralcodes.codes.ec2_2023.fctk_95"
+    },
+    {
+      "profile": "ec2_2023",
+      "physical_field": "E_initial",
+      "standard_semantic_name_or_symbol": "E_c,28 (tangent modulus; creep context)",
+      "authority_publication": [
+        "en_1992_1_1_2023"
+      ],
+      "edition_year": 2023,
+      "equation_table_or_section": "§5.1.5(1), Eq. (5.2) context; Annex B Eq. (B.21)",
+      "authority_status": "derived",
+      "statistical_basis": "MEAN",
+      "source_units": "MPa",
+      "canonical_repository_units": "MPa",
+      "input_dependencies": [
+        "E_secant",
+        "reference_age_days"
+      ],
+      "validity_and_range_constraints": [
+        "normal concrete material rules in Section 5",
+        "named-class baseline C12/15 through C100/115"
+      ],
+      "formula_branch_thresholds": [],
+      "configurable_standard_parameters": [
+        {
+          "name": "tangent_approximation_factor",
+          "authority_value": 1.05,
+          "relation": "E_c,28 may be taken as 1.05 E_cm"
+        },
+        {
+          "name": "more_accurate_option",
+          "authority": "Annex B Eq. (B.21) or testing"
+        }
+      ],
+      "reference_age_semantics": "The named tangent quantity is E_c,28. Mapping to generic E_initial is straightforward only when the repository reference state is 28 days; t_ref may instead be 28–91 days.",
+      "source_sign_convention": null,
+      "canonical_sign_convention": null,
+      "notes": "Never alias E_cm to E_initial. For t_ref=28, E_c,28 is the standard-authorized tangent quantity. For t_ref != 28, G1-B needs an age-aware modulus semantic before populating a generic reference-state E_initial.",
+      "independent_oracle": null
+    },
+    {
+      "profile": "ec2_2023",
+      "physical_field": "E_secant",
+      "standard_semantic_name_or_symbol": "E_cm",
+      "authority_publication": [
+        "en_1992_1_1_2023"
+      ],
+      "edition_year": 2023,
+      "equation_table_or_section": "§5.1.4(2), Eq. (5.1)",
+      "authority_status": "direct",
+      "statistical_basis": "MEAN",
+      "source_units": "MPa",
+      "canonical_repository_units": "MPa",
+      "input_dependencies": [
+        "f_cm",
+        "k_E"
+      ],
+      "validity_and_range_constraints": [
+        "normal concrete material rules in Section 5",
+        "named-class baseline C12/15 through C100/115"
+      ],
+      "formula_branch_thresholds": [],
+      "configurable_standard_parameters": [
+        {
+          "name": "k_E",
+          "range": [
+            5000.0,
+            13000.0
+          ],
+          "units": "compatible with E_cm=k_E*f_cm^(1/3)",
+          "quartzite_assumption": 9500.0,
+          "national_annex": "may specify country values"
+        }
+      ],
+      "reference_age_semantics": "t_ref = 28 days in general; project may specify t_ref from 28 to 91 days",
+      "source_sign_convention": null,
+      "canonical_sign_convention": null,
+      "notes": "E_cm is explicitly the secant modulus between sigma_c=0 and 0.4 f_cm. k_E=9500 is an authorized quartzite assumption, not a neutral all-aggregate constant.",
+      "independent_oracle": "structuralcodes.codes.ec2_2023.Ecm"
+    },
+    {
+      "profile": "ec2_2023",
+      "physical_field": "poisson_elastic",
+      "standard_semantic_name_or_symbol": "nu",
+      "authority_publication": [
+        "en_1992_1_1_2023"
+      ],
+      "edition_year": 2023,
+      "equation_table_or_section": "§5.1.4(3)",
+      "authority_status": "direct",
+      "statistical_basis": "NOT_APPLICABLE",
+      "source_units": "dimensionless",
+      "canonical_repository_units": "dimensionless",
+      "input_dependencies": [],
+      "validity_and_range_constraints": [
+        "normal concrete material rules in Section 5",
+        "named-class baseline C12/15 through C100/115"
+      ],
+      "formula_branch_thresholds": [],
+      "configurable_standard_parameters": [
+        {
+          "state": "uncracked",
+          "value": 0.2
+        },
+        {
+          "state": "cracked_in_tension",
+          "value": 0.0
+        }
+      ],
+      "reference_age_semantics": null,
+      "source_sign_convention": null,
+      "canonical_sign_convention": null,
+      "notes": "Repository poisson_elastic means the uncracked elastic value: 0.20.",
+      "independent_oracle": null
+    },
+    {
+      "profile": "ec2_2023",
+      "physical_field": "shear_modulus",
+      "standard_semantic_name_or_symbol": "G (repository-derived secant-equivalent isotropic shear modulus)",
+      "authority_publication": [
+        "en_1992_1_1_2023"
+      ],
+      "edition_year": 2023,
+      "equation_table_or_section": null,
+      "authority_status": "derived",
+      "statistical_basis": "NOT_APPLICABLE",
+      "source_units": "MPa",
+      "canonical_repository_units": "MPa",
+      "input_dependencies": [
+        "E_secant",
+        "poisson_elastic"
+      ],
+      "validity_and_range_constraints": [
+        "normal concrete material rules in Section 5",
+        "named-class baseline C12/15 through C100/115"
+      ],
+      "formula_branch_thresholds": [],
+      "configurable_standard_parameters": [],
+      "reference_age_semantics": null,
+      "source_sign_convention": null,
+      "canonical_sign_convention": null,
+      "notes": "G0/v1 field under adjudication. In ConcretePhysicalProperties.v2 rename to shear_modulus_secant_equivalent. This is repository-derived from E_secant and poisson_elastic; it is not claimed as a directly standard-specified shear modulus.",
+      "independent_oracle": null,
+      "future_v2_field_name": "shear_modulus_secant_equivalent",
+      "future_provenance_derived_from": [
+        "E_secant",
+        "poisson_elastic"
+      ]
+    },
+    {
+      "profile": "ec2_2023",
+      "physical_field": "fracture_energy",
+      "standard_semantic_name_or_symbol": null,
+      "authority_publication": [
+        "en_1992_1_1_2023"
+      ],
+      "edition_year": 2023,
+      "equation_table_or_section": null,
+      "authority_status": "composed-required",
+      "statistical_basis": "UNSPECIFIED",
+      "source_units": null,
+      "canonical_repository_units": "N/mm",
+      "input_dependencies": [],
+      "validity_and_range_constraints": [
+        "normal concrete material rules in Section 5",
+        "named-class baseline C12/15 through C100/115"
+      ],
+      "formula_branch_thresholds": [],
+      "configurable_standard_parameters": [],
+      "reference_age_semantics": null,
+      "source_sign_convention": null,
+      "canonical_sign_convention": null,
+      "notes": "No plain-concrete fracture-energy property/formula is supplied by the inspected EN 1992-1-1:2023 Section 5 material-property authority. Do not invent 'EC2:2023 fracture energy'; explicit cross-standard/literature composition is required if a complete material object needs G_F.",
+      "independent_oracle": null
+    },
+    {
+      "profile": "ec2_2023",
+      "physical_field": "strain_peak_compression",
+      "standard_semantic_name_or_symbol": "epsilon_c1",
+      "authority_publication": [
+        "en_1992_1_1_2023"
+      ],
+      "edition_year": 2023,
+      "equation_table_or_section": "Eq. (5.9), general nonlinear/Sargin compression relation",
+      "authority_status": "direct",
+      "statistical_basis": "NOT_APPLICABLE",
+      "source_units": "per_mille",
+      "canonical_repository_units": "dimensionless",
+      "input_dependencies": [
+        "f_cm"
+      ],
+      "validity_and_range_constraints": [
+        "normal concrete material rules in Section 5",
+        "named-class baseline C12/15 through C100/115",
+        "Sargin/general nonlinear short-term compression relation"
+      ],
+      "formula_branch_thresholds": [
+        {
+          "condition": "formula cap",
+          "branch": "min(0.7*f_cm^(1/3), 2.8) per mille"
+        }
+      ],
+      "configurable_standard_parameters": [],
+      "reference_age_semantics": "t_ref = 28 days in general; project may specify t_ref from 28 to 91 days",
+      "source_sign_convention": "standard/oracle property expressed as positive compression-strain magnitude",
+      "canonical_sign_convention": "positive magnitude /1000",
+      "notes": "Use epsilon_c1 Eq. (5.9) as the physical/general nonlinear peak landmark. Do not substitute the simplified design-law epsilon_c0=0.20%.",
+      "independent_oracle": "structuralcodes.codes.ec2_2023.eps_c1"
+    },
+    {
+      "profile": "ec2_2023",
+      "physical_field": "strain_limit_compression",
+      "standard_semantic_name_or_symbol": "epsilon_cu1",
+      "authority_publication": [
+        "en_1992_1_1_2023"
+      ],
+      "edition_year": 2023,
+      "equation_table_or_section": "Eq. (5.10), general nonlinear/Sargin compression relation",
+      "authority_status": "direct",
+      "statistical_basis": "NOT_APPLICABLE",
+      "source_units": "per_mille",
+      "canonical_repository_units": "dimensionless",
+      "input_dependencies": [
+        "f_cm"
+      ],
+      "validity_and_range_constraints": [
+        "normal concrete material rules in Section 5",
+        "named-class baseline C12/15 through C100/115",
+        "Sargin/general nonlinear short-term compression relation"
+      ],
+      "formula_branch_thresholds": [
+        {
+          "condition": "formula cap",
+          "branch": "min(2.8 + 14*(1-f_cm/108)^4, 3.5) per mille"
+        }
+      ],
+      "configurable_standard_parameters": [],
+      "reference_age_semantics": "t_ref = 28 days in general; project may specify t_ref from 28 to 91 days",
+      "source_sign_convention": "standard/oracle property expressed as positive compression-strain magnitude",
+      "canonical_sign_convention": "positive magnitude /1000",
+      "notes": "Use epsilon_cu1 Eq. (5.10) for the physical/general nonlinear limit. Do not substitute the simplified design-law epsilon_cu=0.35%.",
+      "independent_oracle": "structuralcodes.codes.ec2_2023.eps_cu1"
+    }
+  ],
+  "class_authority_matrix": [
+    {
+      "profile": "fib_mc2010",
+      "canonical_class_string": "C12",
+      "f_ck_cylinder_mpa": 12,
+      "f_ck_cube_mpa": 15,
+      "authority_publication": [
+        "fib_mc2010_b65",
+        "fib_mc2010_2013"
+      ],
+      "equation_table_or_section": "§5.1.2; Table 5.1-3",
+      "reference_age_semantics": "28 days unless explicitly specified otherwise by the concrete definition/time-development context",
+      "profile_range_endpoint": true,
+      "notes": "MC2010 canonical grade syntax is C<number>, not EN C<number>/<cube>. Table 5.1-3 supplies both cylinder and cube strengths."
+    },
+    {
+      "profile": "fib_mc2010",
+      "canonical_class_string": "C16",
+      "f_ck_cylinder_mpa": 16,
+      "f_ck_cube_mpa": 20,
+      "authority_publication": [
+        "fib_mc2010_b65",
+        "fib_mc2010_2013"
+      ],
+      "equation_table_or_section": "§5.1.2; Table 5.1-3",
+      "reference_age_semantics": "28 days unless explicitly specified otherwise by the concrete definition/time-development context",
+      "profile_range_endpoint": false,
+      "notes": "MC2010 canonical grade syntax is C<number>, not EN C<number>/<cube>. Table 5.1-3 supplies both cylinder and cube strengths."
+    },
+    {
+      "profile": "fib_mc2010",
+      "canonical_class_string": "C20",
+      "f_ck_cylinder_mpa": 20,
+      "f_ck_cube_mpa": 25,
+      "authority_publication": [
+        "fib_mc2010_b65",
+        "fib_mc2010_2013"
+      ],
+      "equation_table_or_section": "§5.1.2; Table 5.1-3",
+      "reference_age_semantics": "28 days unless explicitly specified otherwise by the concrete definition/time-development context",
+      "profile_range_endpoint": false,
+      "notes": "MC2010 canonical grade syntax is C<number>, not EN C<number>/<cube>. Table 5.1-3 supplies both cylinder and cube strengths."
+    },
+    {
+      "profile": "fib_mc2010",
+      "canonical_class_string": "C25",
+      "f_ck_cylinder_mpa": 25,
+      "f_ck_cube_mpa": 30,
+      "authority_publication": [
+        "fib_mc2010_b65",
+        "fib_mc2010_2013"
+      ],
+      "equation_table_or_section": "§5.1.2; Table 5.1-3",
+      "reference_age_semantics": "28 days unless explicitly specified otherwise by the concrete definition/time-development context",
+      "profile_range_endpoint": false,
+      "notes": "MC2010 canonical grade syntax is C<number>, not EN C<number>/<cube>. Table 5.1-3 supplies both cylinder and cube strengths."
+    },
+    {
+      "profile": "fib_mc2010",
+      "canonical_class_string": "C30",
+      "f_ck_cylinder_mpa": 30,
+      "f_ck_cube_mpa": 37,
+      "authority_publication": [
+        "fib_mc2010_b65",
+        "fib_mc2010_2013"
+      ],
+      "equation_table_or_section": "§5.1.2; Table 5.1-3",
+      "reference_age_semantics": "28 days unless explicitly specified otherwise by the concrete definition/time-development context",
+      "profile_range_endpoint": false,
+      "notes": "MC2010 canonical grade syntax is C<number>, not EN C<number>/<cube>. Table 5.1-3 supplies both cylinder and cube strengths."
+    },
+    {
+      "profile": "fib_mc2010",
+      "canonical_class_string": "C35",
+      "f_ck_cylinder_mpa": 35,
+      "f_ck_cube_mpa": 45,
+      "authority_publication": [
+        "fib_mc2010_b65",
+        "fib_mc2010_2013"
+      ],
+      "equation_table_or_section": "§5.1.2; Table 5.1-3",
+      "reference_age_semantics": "28 days unless explicitly specified otherwise by the concrete definition/time-development context",
+      "profile_range_endpoint": false,
+      "notes": "MC2010 canonical grade syntax is C<number>, not EN C<number>/<cube>. Table 5.1-3 supplies both cylinder and cube strengths."
+    },
+    {
+      "profile": "fib_mc2010",
+      "canonical_class_string": "C40",
+      "f_ck_cylinder_mpa": 40,
+      "f_ck_cube_mpa": 50,
+      "authority_publication": [
+        "fib_mc2010_b65",
+        "fib_mc2010_2013"
+      ],
+      "equation_table_or_section": "§5.1.2; Table 5.1-3",
+      "reference_age_semantics": "28 days unless explicitly specified otherwise by the concrete definition/time-development context",
+      "profile_range_endpoint": false,
+      "notes": "MC2010 canonical grade syntax is C<number>, not EN C<number>/<cube>. Table 5.1-3 supplies both cylinder and cube strengths."
+    },
+    {
+      "profile": "fib_mc2010",
+      "canonical_class_string": "C45",
+      "f_ck_cylinder_mpa": 45,
+      "f_ck_cube_mpa": 55,
+      "authority_publication": [
+        "fib_mc2010_b65",
+        "fib_mc2010_2013"
+      ],
+      "equation_table_or_section": "§5.1.2; Table 5.1-3",
+      "reference_age_semantics": "28 days unless explicitly specified otherwise by the concrete definition/time-development context",
+      "profile_range_endpoint": false,
+      "notes": "MC2010 canonical grade syntax is C<number>, not EN C<number>/<cube>. Table 5.1-3 supplies both cylinder and cube strengths."
+    },
+    {
+      "profile": "fib_mc2010",
+      "canonical_class_string": "C50",
+      "f_ck_cylinder_mpa": 50,
+      "f_ck_cube_mpa": 60,
+      "authority_publication": [
+        "fib_mc2010_b65",
+        "fib_mc2010_2013"
+      ],
+      "equation_table_or_section": "§5.1.2; Table 5.1-3",
+      "reference_age_semantics": "28 days unless explicitly specified otherwise by the concrete definition/time-development context",
+      "profile_range_endpoint": false,
+      "notes": "MC2010 canonical grade syntax is C<number>, not EN C<number>/<cube>. Table 5.1-3 supplies both cylinder and cube strengths."
+    },
+    {
+      "profile": "fib_mc2010",
+      "canonical_class_string": "C55",
+      "f_ck_cylinder_mpa": 55,
+      "f_ck_cube_mpa": 67,
+      "authority_publication": [
+        "fib_mc2010_b65",
+        "fib_mc2010_2013"
+      ],
+      "equation_table_or_section": "§5.1.2; Table 5.1-3",
+      "reference_age_semantics": "28 days unless explicitly specified otherwise by the concrete definition/time-development context",
+      "profile_range_endpoint": false,
+      "notes": "MC2010 canonical grade syntax is C<number>, not EN C<number>/<cube>. Table 5.1-3 supplies both cylinder and cube strengths."
+    },
+    {
+      "profile": "fib_mc2010",
+      "canonical_class_string": "C60",
+      "f_ck_cylinder_mpa": 60,
+      "f_ck_cube_mpa": 75,
+      "authority_publication": [
+        "fib_mc2010_b65",
+        "fib_mc2010_2013"
+      ],
+      "equation_table_or_section": "§5.1.2; Table 5.1-3",
+      "reference_age_semantics": "28 days unless explicitly specified otherwise by the concrete definition/time-development context",
+      "profile_range_endpoint": false,
+      "notes": "MC2010 canonical grade syntax is C<number>, not EN C<number>/<cube>. Table 5.1-3 supplies both cylinder and cube strengths."
+    },
+    {
+      "profile": "fib_mc2010",
+      "canonical_class_string": "C70",
+      "f_ck_cylinder_mpa": 70,
+      "f_ck_cube_mpa": 85,
+      "authority_publication": [
+        "fib_mc2010_b65",
+        "fib_mc2010_2013"
+      ],
+      "equation_table_or_section": "§5.1.2; Table 5.1-3",
+      "reference_age_semantics": "28 days unless explicitly specified otherwise by the concrete definition/time-development context",
+      "profile_range_endpoint": false,
+      "notes": "MC2010 canonical grade syntax is C<number>, not EN C<number>/<cube>. Table 5.1-3 supplies both cylinder and cube strengths."
+    },
+    {
+      "profile": "fib_mc2010",
+      "canonical_class_string": "C80",
+      "f_ck_cylinder_mpa": 80,
+      "f_ck_cube_mpa": 95,
+      "authority_publication": [
+        "fib_mc2010_b65",
+        "fib_mc2010_2013"
+      ],
+      "equation_table_or_section": "§5.1.2; Table 5.1-3",
+      "reference_age_semantics": "28 days unless explicitly specified otherwise by the concrete definition/time-development context",
+      "profile_range_endpoint": false,
+      "notes": "MC2010 canonical grade syntax is C<number>, not EN C<number>/<cube>. Table 5.1-3 supplies both cylinder and cube strengths."
+    },
+    {
+      "profile": "fib_mc2010",
+      "canonical_class_string": "C90",
+      "f_ck_cylinder_mpa": 90,
+      "f_ck_cube_mpa": 105,
+      "authority_publication": [
+        "fib_mc2010_b65",
+        "fib_mc2010_2013"
+      ],
+      "equation_table_or_section": "§5.1.2; Table 5.1-3",
+      "reference_age_semantics": "28 days unless explicitly specified otherwise by the concrete definition/time-development context",
+      "profile_range_endpoint": false,
+      "notes": "MC2010 canonical grade syntax is C<number>, not EN C<number>/<cube>. Table 5.1-3 supplies both cylinder and cube strengths."
+    },
+    {
+      "profile": "fib_mc2010",
+      "canonical_class_string": "C100",
+      "f_ck_cylinder_mpa": 100,
+      "f_ck_cube_mpa": 115,
+      "authority_publication": [
+        "fib_mc2010_b65",
+        "fib_mc2010_2013"
+      ],
+      "equation_table_or_section": "§5.1.2; Table 5.1-3",
+      "reference_age_semantics": "28 days unless explicitly specified otherwise by the concrete definition/time-development context",
+      "profile_range_endpoint": false,
+      "notes": "MC2010 canonical grade syntax is C<number>, not EN C<number>/<cube>. Table 5.1-3 supplies both cylinder and cube strengths."
+    },
+    {
+      "profile": "fib_mc2010",
+      "canonical_class_string": "C110",
+      "f_ck_cylinder_mpa": 110,
+      "f_ck_cube_mpa": 130,
+      "authority_publication": [
+        "fib_mc2010_b65",
+        "fib_mc2010_2013"
+      ],
+      "equation_table_or_section": "§5.1.2; Table 5.1-3",
+      "reference_age_semantics": "28 days unless explicitly specified otherwise by the concrete definition/time-development context",
+      "profile_range_endpoint": false,
+      "notes": "MC2010 canonical grade syntax is C<number>, not EN C<number>/<cube>. Table 5.1-3 supplies both cylinder and cube strengths."
+    },
+    {
+      "profile": "fib_mc2010",
+      "canonical_class_string": "C120",
+      "f_ck_cylinder_mpa": 120,
+      "f_ck_cube_mpa": 140,
+      "authority_publication": [
+        "fib_mc2010_b65",
+        "fib_mc2010_2013"
+      ],
+      "equation_table_or_section": "§5.1.2; Table 5.1-3",
+      "reference_age_semantics": "28 days unless explicitly specified otherwise by the concrete definition/time-development context",
+      "profile_range_endpoint": true,
+      "notes": "MC2010 canonical grade syntax is C<number>, not EN C<number>/<cube>. Table 5.1-3 supplies both cylinder and cube strengths."
+    },
+    {
+      "profile": "ec2_2004",
+      "canonical_class_string": "C12/15",
+      "f_ck_cylinder_mpa": 12,
+      "f_ck_cube_mpa": 15,
+      "authority_publication": [
+        "en_1992_1_1_2004"
+      ],
+      "equation_table_or_section": "§3.1.2; Table 3.1",
+      "reference_age_semantics": "28 days for the named strength classes and Table 3.1 reference properties",
+      "profile_range_endpoint": true,
+      "notes": "EN class identity is a cylinder/cube pair in accordance with EN 206-1. C90/105 is the recommended Cmax in the base Eurocode; National Annex may govern Cmax."
+    },
+    {
+      "profile": "ec2_2004",
+      "canonical_class_string": "C16/20",
+      "f_ck_cylinder_mpa": 16,
+      "f_ck_cube_mpa": 20,
+      "authority_publication": [
+        "en_1992_1_1_2004"
+      ],
+      "equation_table_or_section": "§3.1.2; Table 3.1",
+      "reference_age_semantics": "28 days for the named strength classes and Table 3.1 reference properties",
+      "profile_range_endpoint": false,
+      "notes": "EN class identity is a cylinder/cube pair in accordance with EN 206-1. C90/105 is the recommended Cmax in the base Eurocode; National Annex may govern Cmax."
+    },
+    {
+      "profile": "ec2_2004",
+      "canonical_class_string": "C20/25",
+      "f_ck_cylinder_mpa": 20,
+      "f_ck_cube_mpa": 25,
+      "authority_publication": [
+        "en_1992_1_1_2004"
+      ],
+      "equation_table_or_section": "§3.1.2; Table 3.1",
+      "reference_age_semantics": "28 days for the named strength classes and Table 3.1 reference properties",
+      "profile_range_endpoint": false,
+      "notes": "EN class identity is a cylinder/cube pair in accordance with EN 206-1. C90/105 is the recommended Cmax in the base Eurocode; National Annex may govern Cmax."
+    },
+    {
+      "profile": "ec2_2004",
+      "canonical_class_string": "C25/30",
+      "f_ck_cylinder_mpa": 25,
+      "f_ck_cube_mpa": 30,
+      "authority_publication": [
+        "en_1992_1_1_2004"
+      ],
+      "equation_table_or_section": "§3.1.2; Table 3.1",
+      "reference_age_semantics": "28 days for the named strength classes and Table 3.1 reference properties",
+      "profile_range_endpoint": false,
+      "notes": "EN class identity is a cylinder/cube pair in accordance with EN 206-1. C90/105 is the recommended Cmax in the base Eurocode; National Annex may govern Cmax."
+    },
+    {
+      "profile": "ec2_2004",
+      "canonical_class_string": "C30/37",
+      "f_ck_cylinder_mpa": 30,
+      "f_ck_cube_mpa": 37,
+      "authority_publication": [
+        "en_1992_1_1_2004"
+      ],
+      "equation_table_or_section": "§3.1.2; Table 3.1",
+      "reference_age_semantics": "28 days for the named strength classes and Table 3.1 reference properties",
+      "profile_range_endpoint": false,
+      "notes": "EN class identity is a cylinder/cube pair in accordance with EN 206-1. C90/105 is the recommended Cmax in the base Eurocode; National Annex may govern Cmax."
+    },
+    {
+      "profile": "ec2_2004",
+      "canonical_class_string": "C35/45",
+      "f_ck_cylinder_mpa": 35,
+      "f_ck_cube_mpa": 45,
+      "authority_publication": [
+        "en_1992_1_1_2004"
+      ],
+      "equation_table_or_section": "§3.1.2; Table 3.1",
+      "reference_age_semantics": "28 days for the named strength classes and Table 3.1 reference properties",
+      "profile_range_endpoint": false,
+      "notes": "EN class identity is a cylinder/cube pair in accordance with EN 206-1. C90/105 is the recommended Cmax in the base Eurocode; National Annex may govern Cmax."
+    },
+    {
+      "profile": "ec2_2004",
+      "canonical_class_string": "C40/50",
+      "f_ck_cylinder_mpa": 40,
+      "f_ck_cube_mpa": 50,
+      "authority_publication": [
+        "en_1992_1_1_2004"
+      ],
+      "equation_table_or_section": "§3.1.2; Table 3.1",
+      "reference_age_semantics": "28 days for the named strength classes and Table 3.1 reference properties",
+      "profile_range_endpoint": false,
+      "notes": "EN class identity is a cylinder/cube pair in accordance with EN 206-1. C90/105 is the recommended Cmax in the base Eurocode; National Annex may govern Cmax."
+    },
+    {
+      "profile": "ec2_2004",
+      "canonical_class_string": "C45/55",
+      "f_ck_cylinder_mpa": 45,
+      "f_ck_cube_mpa": 55,
+      "authority_publication": [
+        "en_1992_1_1_2004"
+      ],
+      "equation_table_or_section": "§3.1.2; Table 3.1",
+      "reference_age_semantics": "28 days for the named strength classes and Table 3.1 reference properties",
+      "profile_range_endpoint": false,
+      "notes": "EN class identity is a cylinder/cube pair in accordance with EN 206-1. C90/105 is the recommended Cmax in the base Eurocode; National Annex may govern Cmax."
+    },
+    {
+      "profile": "ec2_2004",
+      "canonical_class_string": "C50/60",
+      "f_ck_cylinder_mpa": 50,
+      "f_ck_cube_mpa": 60,
+      "authority_publication": [
+        "en_1992_1_1_2004"
+      ],
+      "equation_table_or_section": "§3.1.2; Table 3.1",
+      "reference_age_semantics": "28 days for the named strength classes and Table 3.1 reference properties",
+      "profile_range_endpoint": false,
+      "notes": "EN class identity is a cylinder/cube pair in accordance with EN 206-1. C90/105 is the recommended Cmax in the base Eurocode; National Annex may govern Cmax."
+    },
+    {
+      "profile": "ec2_2004",
+      "canonical_class_string": "C55/67",
+      "f_ck_cylinder_mpa": 55,
+      "f_ck_cube_mpa": 67,
+      "authority_publication": [
+        "en_1992_1_1_2004"
+      ],
+      "equation_table_or_section": "§3.1.2; Table 3.1",
+      "reference_age_semantics": "28 days for the named strength classes and Table 3.1 reference properties",
+      "profile_range_endpoint": false,
+      "notes": "EN class identity is a cylinder/cube pair in accordance with EN 206-1. C90/105 is the recommended Cmax in the base Eurocode; National Annex may govern Cmax."
+    },
+    {
+      "profile": "ec2_2004",
+      "canonical_class_string": "C60/75",
+      "f_ck_cylinder_mpa": 60,
+      "f_ck_cube_mpa": 75,
+      "authority_publication": [
+        "en_1992_1_1_2004"
+      ],
+      "equation_table_or_section": "§3.1.2; Table 3.1",
+      "reference_age_semantics": "28 days for the named strength classes and Table 3.1 reference properties",
+      "profile_range_endpoint": false,
+      "notes": "EN class identity is a cylinder/cube pair in accordance with EN 206-1. C90/105 is the recommended Cmax in the base Eurocode; National Annex may govern Cmax."
+    },
+    {
+      "profile": "ec2_2004",
+      "canonical_class_string": "C70/85",
+      "f_ck_cylinder_mpa": 70,
+      "f_ck_cube_mpa": 85,
+      "authority_publication": [
+        "en_1992_1_1_2004"
+      ],
+      "equation_table_or_section": "§3.1.2; Table 3.1",
+      "reference_age_semantics": "28 days for the named strength classes and Table 3.1 reference properties",
+      "profile_range_endpoint": false,
+      "notes": "EN class identity is a cylinder/cube pair in accordance with EN 206-1. C90/105 is the recommended Cmax in the base Eurocode; National Annex may govern Cmax."
+    },
+    {
+      "profile": "ec2_2004",
+      "canonical_class_string": "C80/95",
+      "f_ck_cylinder_mpa": 80,
+      "f_ck_cube_mpa": 95,
+      "authority_publication": [
+        "en_1992_1_1_2004"
+      ],
+      "equation_table_or_section": "§3.1.2; Table 3.1",
+      "reference_age_semantics": "28 days for the named strength classes and Table 3.1 reference properties",
+      "profile_range_endpoint": false,
+      "notes": "EN class identity is a cylinder/cube pair in accordance with EN 206-1. C90/105 is the recommended Cmax in the base Eurocode; National Annex may govern Cmax."
+    },
+    {
+      "profile": "ec2_2004",
+      "canonical_class_string": "C90/105",
+      "f_ck_cylinder_mpa": 90,
+      "f_ck_cube_mpa": 105,
+      "authority_publication": [
+        "en_1992_1_1_2004"
+      ],
+      "equation_table_or_section": "§3.1.2; Table 3.1",
+      "reference_age_semantics": "28 days for the named strength classes and Table 3.1 reference properties",
+      "profile_range_endpoint": true,
+      "notes": "EN class identity is a cylinder/cube pair in accordance with EN 206-1. C90/105 is the recommended Cmax in the base Eurocode; National Annex may govern Cmax."
+    },
+    {
+      "profile": "ec2_2023",
+      "canonical_class_string": "C12/15",
+      "f_ck_cylinder_mpa": 12,
+      "f_ck_cube_mpa": 15,
+      "authority_publication": [
+        "en_1992_1_1_2023"
+      ],
+      "equation_table_or_section": "§5.1.2; Table 5.1",
+      "reference_age_semantics": "t_ref = 28 days in general; project may specify t_ref from 28 to 91 days",
+      "profile_range_endpoint": true,
+      "notes": "EN 206 class identity; 2023 Table 5.1 extends the family through C100/115."
+    },
+    {
+      "profile": "ec2_2023",
+      "canonical_class_string": "C16/20",
+      "f_ck_cylinder_mpa": 16,
+      "f_ck_cube_mpa": 20,
+      "authority_publication": [
+        "en_1992_1_1_2023"
+      ],
+      "equation_table_or_section": "§5.1.2; Table 5.1",
+      "reference_age_semantics": "t_ref = 28 days in general; project may specify t_ref from 28 to 91 days",
+      "profile_range_endpoint": false,
+      "notes": "EN 206 class identity; 2023 Table 5.1 extends the family through C100/115."
+    },
+    {
+      "profile": "ec2_2023",
+      "canonical_class_string": "C20/25",
+      "f_ck_cylinder_mpa": 20,
+      "f_ck_cube_mpa": 25,
+      "authority_publication": [
+        "en_1992_1_1_2023"
+      ],
+      "equation_table_or_section": "§5.1.2; Table 5.1",
+      "reference_age_semantics": "t_ref = 28 days in general; project may specify t_ref from 28 to 91 days",
+      "profile_range_endpoint": false,
+      "notes": "EN 206 class identity; 2023 Table 5.1 extends the family through C100/115."
+    },
+    {
+      "profile": "ec2_2023",
+      "canonical_class_string": "C25/30",
+      "f_ck_cylinder_mpa": 25,
+      "f_ck_cube_mpa": 30,
+      "authority_publication": [
+        "en_1992_1_1_2023"
+      ],
+      "equation_table_or_section": "§5.1.2; Table 5.1",
+      "reference_age_semantics": "t_ref = 28 days in general; project may specify t_ref from 28 to 91 days",
+      "profile_range_endpoint": false,
+      "notes": "EN 206 class identity; 2023 Table 5.1 extends the family through C100/115."
+    },
+    {
+      "profile": "ec2_2023",
+      "canonical_class_string": "C30/37",
+      "f_ck_cylinder_mpa": 30,
+      "f_ck_cube_mpa": 37,
+      "authority_publication": [
+        "en_1992_1_1_2023"
+      ],
+      "equation_table_or_section": "§5.1.2; Table 5.1",
+      "reference_age_semantics": "t_ref = 28 days in general; project may specify t_ref from 28 to 91 days",
+      "profile_range_endpoint": false,
+      "notes": "EN 206 class identity; 2023 Table 5.1 extends the family through C100/115."
+    },
+    {
+      "profile": "ec2_2023",
+      "canonical_class_string": "C35/45",
+      "f_ck_cylinder_mpa": 35,
+      "f_ck_cube_mpa": 45,
+      "authority_publication": [
+        "en_1992_1_1_2023"
+      ],
+      "equation_table_or_section": "§5.1.2; Table 5.1",
+      "reference_age_semantics": "t_ref = 28 days in general; project may specify t_ref from 28 to 91 days",
+      "profile_range_endpoint": false,
+      "notes": "EN 206 class identity; 2023 Table 5.1 extends the family through C100/115."
+    },
+    {
+      "profile": "ec2_2023",
+      "canonical_class_string": "C40/50",
+      "f_ck_cylinder_mpa": 40,
+      "f_ck_cube_mpa": 50,
+      "authority_publication": [
+        "en_1992_1_1_2023"
+      ],
+      "equation_table_or_section": "§5.1.2; Table 5.1",
+      "reference_age_semantics": "t_ref = 28 days in general; project may specify t_ref from 28 to 91 days",
+      "profile_range_endpoint": false,
+      "notes": "EN 206 class identity; 2023 Table 5.1 extends the family through C100/115."
+    },
+    {
+      "profile": "ec2_2023",
+      "canonical_class_string": "C45/55",
+      "f_ck_cylinder_mpa": 45,
+      "f_ck_cube_mpa": 55,
+      "authority_publication": [
+        "en_1992_1_1_2023"
+      ],
+      "equation_table_or_section": "§5.1.2; Table 5.1",
+      "reference_age_semantics": "t_ref = 28 days in general; project may specify t_ref from 28 to 91 days",
+      "profile_range_endpoint": false,
+      "notes": "EN 206 class identity; 2023 Table 5.1 extends the family through C100/115."
+    },
+    {
+      "profile": "ec2_2023",
+      "canonical_class_string": "C50/60",
+      "f_ck_cylinder_mpa": 50,
+      "f_ck_cube_mpa": 60,
+      "authority_publication": [
+        "en_1992_1_1_2023"
+      ],
+      "equation_table_or_section": "§5.1.2; Table 5.1",
+      "reference_age_semantics": "t_ref = 28 days in general; project may specify t_ref from 28 to 91 days",
+      "profile_range_endpoint": false,
+      "notes": "EN 206 class identity; 2023 Table 5.1 extends the family through C100/115."
+    },
+    {
+      "profile": "ec2_2023",
+      "canonical_class_string": "C55/67",
+      "f_ck_cylinder_mpa": 55,
+      "f_ck_cube_mpa": 67,
+      "authority_publication": [
+        "en_1992_1_1_2023"
+      ],
+      "equation_table_or_section": "§5.1.2; Table 5.1",
+      "reference_age_semantics": "t_ref = 28 days in general; project may specify t_ref from 28 to 91 days",
+      "profile_range_endpoint": false,
+      "notes": "EN 206 class identity; 2023 Table 5.1 extends the family through C100/115."
+    },
+    {
+      "profile": "ec2_2023",
+      "canonical_class_string": "C60/75",
+      "f_ck_cylinder_mpa": 60,
+      "f_ck_cube_mpa": 75,
+      "authority_publication": [
+        "en_1992_1_1_2023"
+      ],
+      "equation_table_or_section": "§5.1.2; Table 5.1",
+      "reference_age_semantics": "t_ref = 28 days in general; project may specify t_ref from 28 to 91 days",
+      "profile_range_endpoint": false,
+      "notes": "EN 206 class identity; 2023 Table 5.1 extends the family through C100/115."
+    },
+    {
+      "profile": "ec2_2023",
+      "canonical_class_string": "C70/85",
+      "f_ck_cylinder_mpa": 70,
+      "f_ck_cube_mpa": 85,
+      "authority_publication": [
+        "en_1992_1_1_2023"
+      ],
+      "equation_table_or_section": "§5.1.2; Table 5.1",
+      "reference_age_semantics": "t_ref = 28 days in general; project may specify t_ref from 28 to 91 days",
+      "profile_range_endpoint": false,
+      "notes": "EN 206 class identity; 2023 Table 5.1 extends the family through C100/115."
+    },
+    {
+      "profile": "ec2_2023",
+      "canonical_class_string": "C80/95",
+      "f_ck_cylinder_mpa": 80,
+      "f_ck_cube_mpa": 95,
+      "authority_publication": [
+        "en_1992_1_1_2023"
+      ],
+      "equation_table_or_section": "§5.1.2; Table 5.1",
+      "reference_age_semantics": "t_ref = 28 days in general; project may specify t_ref from 28 to 91 days",
+      "profile_range_endpoint": false,
+      "notes": "EN 206 class identity; 2023 Table 5.1 extends the family through C100/115."
+    },
+    {
+      "profile": "ec2_2023",
+      "canonical_class_string": "C90/105",
+      "f_ck_cylinder_mpa": 90,
+      "f_ck_cube_mpa": 105,
+      "authority_publication": [
+        "en_1992_1_1_2023"
+      ],
+      "equation_table_or_section": "§5.1.2; Table 5.1",
+      "reference_age_semantics": "t_ref = 28 days in general; project may specify t_ref from 28 to 91 days",
+      "profile_range_endpoint": false,
+      "notes": "EN 206 class identity; 2023 Table 5.1 extends the family through C100/115."
+    },
+    {
+      "profile": "ec2_2023",
+      "canonical_class_string": "C100/115",
+      "f_ck_cylinder_mpa": 100,
+      "f_ck_cube_mpa": 115,
+      "authority_publication": [
+        "en_1992_1_1_2023"
+      ],
+      "equation_table_or_section": "§5.1.2; Table 5.1",
+      "reference_age_semantics": "t_ref = 28 days in general; project may specify t_ref from 28 to 91 days",
+      "profile_range_endpoint": true,
+      "notes": "EN 206 class identity; 2023 Table 5.1 extends the family through C100/115."
+    }
+  ],
+  "semantic_adjudications": {
+    "E_initial": {
+      "decision": "Do not alias E_cm to E_initial.",
+      "fib_mc2010": "Map directly to E_ci, the mean initial/tangent modulus.",
+      "ec2_2004": "E_cm is the normative secant modulus. The selected general/Sargin relation authorizes a derived tangent modulus E_c; 1.05 E_cm is an allowed approximation. Therefore E_initial is DERIVED, not a directly tabulated E_initial property.",
+      "ec2_2023": "E_cm is the secant modulus between sigma_c=0 and 0.4 f_cm. E_c,28 is the tangent modulus at 28 days and may be approximated as 1.05 E_cm,28, with Annex B/testing as more accurate alternatives. The mapping is age-conditional.",
+      "ec2_2023_policy": "For a class/profile evaluated at t_ref=28 d, E_initial may map as DERIVED to E_c,28 using the standard-authorized approximation 1.05 E_cm (or a more accurate Annex B/test value when explicitly selected). For t_ref>28 d, the base class profile must leave E_initial unresolved/None unless an age-development context supplies a 28-day tangent modulus; never apply 1.05 to an E_cm evaluated at a different reference age by analogy.",
+      "repository_semantics": "E_initial means the initial/tangent elastic modulus appropriate to the physical material state and reference-age policy selected by the profile; it is not a generic alias for whichever elastic modulus a standard supplies."
+    },
+    "E_secant": {
+      "fib_mc2010": "Map to reduced/secant E_c of §5.1.7.2/Eq. (5.1-23), not E_c1 from the Sargin peak.",
+      "ec2_2004": "E_cm is the secant modulus from zero stress to 0.4 f_cm.",
+      "ec2_2023": "E_cm is the secant modulus from zero stress to 0.4 f_cm."
+    },
+    "compression_landmarks": {
+      "decision": "Use general nonlinear/Sargin landmarks, not simplified design-law strains.",
+      "fib_mc2010": "epsilon_c1 and epsilon_c,lim from §5.1.8.1/Table 5.1-8.",
+      "ec2_2004": "epsilon_c1 and epsilon_cu1 associated with §3.1.5 nonlinear relation/Table 3.1.",
+      "ec2_2023": "epsilon_c1 Eq. (5.9) and epsilon_cu1 Eq. (5.10); do not use the simplified design-law 0.20%/0.35% pair."
+    },
+    "fracture_energy": {
+      "fib_mc2010": "Direct G_F authority exists in §5.1.5.2 Eq. (5.1-9).",
+      "ec2_2004": "No plain-concrete G_F authority found in scoped Section 3 material rules; explicit composition required.",
+      "ec2_2023": "No plain-concrete G_F authority found in scoped Section 5 material rules; explicit composition required."
+    },
+    "poisson_ratio": {
+      "fib_mc2010": "nu_c=0.20 is the MC2010 engineering estimate, qualified by its stated stress range.",
+      "ec2_2004": "0.20 uncracked; 0 cracked. poisson_elastic maps to uncracked 0.20.",
+      "ec2_2023": "0.20 uncracked; 0 when cracked in tension. poisson_elastic maps to uncracked 0.20."
+    },
+    "aggregate_stiffness": {
+      "fib_mc2010": "alpha_E depends on aggregate type; quartzite=1.0 is a reference value, not a universal hidden default.",
+      "ec2_2004": "Table 3.1 E_cm is for quartzite; limestone -10%, sandstone -30%, basalt +20%.",
+      "ec2_2023": "k_E=9500 may be assumed for quartzite; other aggregates may fall 5000–13000 and National Annex may specify country values."
+    },
+    "reference_age": {
+      "fib_mc2010": "28 days unless explicitly specified otherwise.",
+      "ec2_2004": "Class strengths and Table 3.1 reference properties are 28-day quantities.",
+      "ec2_2023": "t_ref is 28 days generally, but may be project-specified from 28 to 91 days. Reference age must become explicit repository context."
+    },
+    "tensile_characteristic_naming": {
+      "decision": "Canonical cross-profile fields are f_ctk_lower and f_ctk_upper.",
+      "fib_mc2010": "Map f_ctk,min and f_ctk,max to lower/upper. Do not expose percentile aliases as normative MC2010 names.",
+      "ec2_2004": "f_ctk,0.05 and f_ctk,0.95 map directly and may additionally expose 005/095 aliases.",
+      "ec2_2023": "f_ctk,0.05 and f_ctk,0.95 map directly and may additionally expose 005/095 aliases."
+    },
+    "shear_modulus": {
+      "decision": "Rename the v2 field to shear_modulus_secant_equivalent.",
+      "v1_field_under_adjudication": "shear_modulus",
+      "v2_field_name": "shear_modulus_secant_equivalent",
+      "semantic_identity": "derived isotropic secant-equivalent shear modulus",
+      "formula": "G = E_secant / (2 * (1 + poisson_elastic))",
+      "source_kind": "DERIVED",
+      "derived_from": [
+        "E_secant",
+        "poisson_elastic"
+      ],
+      "reason": "The rename prevents callers from mistaking this repository-derived quantity for a standard-specified or initial/tangent shear modulus."
+    },
+    "compression_strain_sign": {
+      "decision": "Canonical repository compression-strain landmarks are stored as positive magnitudes.",
+      "normalization_requirement": "If an authority expresses compression as negative strain, the sign conversion must be represented as normalization/derivation metadata and not only in free-text notes.",
+      "fib_mc2010": "MC2010 Table 5.1-8 presents negative compression strains; normalize by absolute value and convert per-mille to dimensionless.",
+      "ec2_profiles": "Store the selected compression landmarks as positive magnitudes in the physical schema."
+    }
+  },
+  "schema_implications": {
+    "physical_schema_version_bump_required": true,
+    "recommended_next_schema_version": "concrete_physical_properties.v2",
+    "material_definition_serialization_bump_recommended": true,
+    "reasons": [
+      "EC2 profiles do not supply plain-concrete fracture_energy; required float fields cannot represent truthful absence.",
+      "Tensile characteristic lower/upper fields are missing from v1.",
+      "Reference-age semantics are required for EC2:2023.",
+      "Compression-strain source sign conventions differ and need an explicit canonical convention.",
+      "shear_modulus depends on a declared modulus basis; the current name alone is ambiguous.",
+      "Derived provenance needs machine-readable dependency relations."
+    ],
+    "recommended_field_changes": {
+      "add": [
+        "f_ctk_lower",
+        "f_ctk_upper",
+        "reference_age_days"
+      ],
+      "make_optional": [
+        "fracture_energy",
+        "E_initial"
+      ],
+      "retain_but_define": [
+        "E_secant",
+        "poisson_elastic",
+        "strain_peak_compression",
+        "strain_limit_compression"
+      ],
+      "do_not_add_as_intrinsic": [
+        "characteristic_length",
+        "l_ch",
+        "l0"
+      ],
+      "rename": {
+        "shear_modulus": "shear_modulus_secant_equivalent"
+      }
+    },
+    "provenance_change": {
+      "required": true,
+      "recommendation": "Add machine-readable derived_from: tuple[str, ...] (or equivalent immutable dependency identifiers).",
+      "rationale": "Free-text notes cannot safely encode E_c<-E_cm, G<-E_secant+nu, unit conversions, or composed-source dependency chains.",
+      "optional_additions": [
+        "statistical_detail_or_quantile",
+        "source_sign_convention",
+        "reference_age_days_or_context_id"
+      ],
+      "required_machine_readable_relation": "derived_from"
+    },
+    "tensile_characteristic_naming": {
+      "recommendation": "Use cross-profile f_ctk_lower/f_ctk_upper as canonical fields; expose f_ctk_005/f_ctk_095 aliases only where the standard explicitly uses percentile semantics.",
+      "reason": "MC2010 authority uses f_ctk,min/f_ctk,max terminology; EC2 explicitly uses 0.05/0.95 fractiles."
+    },
+    "compression_strain_sign_convention": "positive magnitude; source-sign normalization must be machine-readable provenance metadata",
+    "reference_age_policy": {
+      "ec2_2023_default_days": 28,
+      "ec2_2023_allowed_project_reference_age_days": [
+        28,
+        91
+      ],
+      "E_initial_policy": "At reference_age_days=28, E_initial may be DERIVED from E_cm,28 through the standard-authorized 1.05 approximation when that policy is explicitly selected. For reference_age_days>28, leave E_initial unresolved/None unless an explicit age-development context supplies the required 28-day tangent information."
+    }
+  },
+  "remaining_nonblocking_questions": [
+    {
+      "id": "EC2_2023_EREF_GT_28_IMPLEMENTATION",
+      "question": "How should a future age-development layer compute tangent modulus when project t_ref is above 28 days?",
+      "disposition": "Not a G1-A authority ambiguity. G1-B base profiles must leave E_initial None for t_ref>28 unless an explicit age-development context is supplied. A later time-development gate may define that context."
+    }
+  ],
+  "g1b_guardrails": [
+    "No legacy_v1 numerical changes.",
+    "No mutation of qualification/legacy_v1_baseline.json.",
+    "No CDPM2 implementation.",
+    "No StructuralCodes runtime dependency.",
+    "Implement schema/provenance changes before operational standard profiles.",
+    "Keep standard formulas profile-local and provenance-complete.",
+    "Class parsers must use the class_authority_matrix, not infer cube strength from cylinder strength."
+  ],
+  "authoritative_starting_point": {
+    "commit": "f05fb14fea819efd2108bd227ba2ffd570d7e56d",
+    "tree": "239152e3ac00811fd5a71cbbaa10f78b13b7e0af",
+    "legacy_baseline_sha256": "e3f4529072aab2e57d2b482135297a19c0333a2a0a48b94250bf59bf6c230c32"
+  },
+  "resolved_authority_questions": [
+    "AC:2010 affects the EC2:2004 epsilon_c1 cap notation only; A1:2014 does not change scoped 3.1 physical-property clauses.",
+    "MC2010 characteristic tensile strengths use canonical lower/upper naming in this repository; no percentile alias is asserted for MC2010.",
+    "EC2:2023 E_initial is age-conditional: derived E_c,28 at 28 d only; unresolved in a t_ref>28 base profile without time-development context.",
+    "ConcretePhysicalProperties.v2 should rename shear_modulus to shear_modulus_secant_equivalent; provenance derived_from=(E_secant, poisson_elastic).",
+    "Compression landmarks use canonical positive magnitudes; source-sign conversion must be traceable as machine-readable normalization/derivation metadata.",
+    "E_initial is profile/reference-age semantic initial/tangent modulus, never a generic alias for Ecm."
+  ],
+  "qualification_evidence": {
+    "baseline_tree_verified_from_uploaded_snapshot": true,
+    "verified_tree_sha": "239152e3ac00811fd5a71cbbaa10f78b13b7e0af",
+    "remote_main_commit_verified": "f05fb14fea819efd2108bd227ba2ffd570d7e56d",
+    "legacy_baseline_must_remain_sha256": "e3f4529072aab2e57d2b482135297a19c0333a2a0a48b94250bf59bf6c230c32"
+  }
+}
