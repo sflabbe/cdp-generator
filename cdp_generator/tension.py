@@ -4,10 +4,13 @@ Tension Behavior Module
 Functions for calculating tension behavior and damage.
 """
 
+from typing import Any
+
 import numpy as np
+from numpy.typing import NDArray
 
 
-def calculate_tension_bilinear(f_ctm, G_f, n_points):
+def calculate_tension_bilinear(f_ctm: float, G_f: float, n_points: int) -> dict[str, Any]:
     """
     Calculate tension softening using bilinear model (FIB2010).
 
@@ -37,7 +40,9 @@ def calculate_tension_bilinear(f_ctm, G_f, n_points):
     return {"crack_opening": crack_opening, "stress": stress, "w_1": w_1, "w_c": w_c}
 
 
-def calculate_tension_power_law(f_ctm, G_f, w_c, crack_opening):
+def calculate_tension_power_law(
+    f_ctm: float, G_f: float, w_c: float, crack_opening: NDArray[np.float64]
+) -> NDArray[np.float64]:
     """
     Calculate tension softening using generalized power law.
 
@@ -56,7 +61,7 @@ def calculate_tension_power_law(f_ctm, G_f, w_c, crack_opening):
     return stress
 
 
-def calculate_tension_damage(stress, f_ctm):
+def calculate_tension_damage(stress: NDArray[np.float64], f_ctm: float) -> NDArray[np.float64]:
     """
     Calculate tension damage parameter.
 

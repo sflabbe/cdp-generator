@@ -1,7 +1,7 @@
 UV ?= uv
 PYTHONPATHS := cdp_generator tests
 
-.PHONY: sync test lint format format-check lock lock-check run-cdp run-steel clean
+.PHONY: sync test lint typecheck format format-check check lock lock-check run-cdp run-steel clean
 
 sync:
 	$(UV) sync --all-extras --dev
@@ -10,15 +10,19 @@ test:
 	$(UV) run pytest
 
 lint:
-	$(UV) run flake8 $(PYTHONPATHS)
+	$(UV) run ruff check $(PYTHONPATHS)
+
+typecheck:
+	$(UV) run mypy cdp_generator
 
 format:
-	$(UV) run isort $(PYTHONPATHS)
-	$(UV) run black $(PYTHONPATHS)
+	$(UV) run ruff check --fix $(PYTHONPATHS)
+	$(UV) run ruff format $(PYTHONPATHS)
 
 format-check:
-	$(UV) run isort --check-only $(PYTHONPATHS)
-	$(UV) run black --check $(PYTHONPATHS)
+	$(UV) run ruff format --check $(PYTHONPATHS)
+
+check: lint typecheck format-check test
 
 lock:
 	$(UV) lock

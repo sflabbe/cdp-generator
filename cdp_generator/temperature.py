@@ -4,10 +4,13 @@ Temperature Effects Module
 Functions for applying temperature effects to material properties.
 """
 
+from typing import Any
+
 import numpy as np
+from numpy.typing import NDArray
 
 
-def get_eurocode_temperature_table():
+def get_eurocode_temperature_table() -> NDArray[np.float64]:
     """
     Return Eurocode temperature-dependent reduction factors.
 
@@ -32,7 +35,11 @@ def get_eurocode_temperature_table():
     )
 
 
-def apply_temperature_effects(base_props, temperature, temp_table):
+def apply_temperature_effects(
+    base_props: dict[str, float],
+    temperature: float,
+    temp_table: NDArray[np.float64],
+) -> dict[str, Any]:
     """
     Apply temperature effects to material properties based on Eurocode.
 

@@ -4,6 +4,9 @@ Core Module
 Main calculation functions for stress-strain relationships.
 """
 
+from collections.abc import Sequence
+from typing import Any
+
 import numpy as np
 
 from .compression import (
@@ -28,7 +31,13 @@ from .tension import (
 )
 
 
-def calculate_stress_strain(f_cm, e_c1, e_clim, l_ch, strain_rates):
+def calculate_stress_strain(
+    f_cm: float,
+    e_c1: float,
+    e_clim: float,
+    l_ch: float,
+    strain_rates: Sequence[float],
+) -> dict[str, Any]:
     """
     Calculate stress-strain relationships for different strain rates.
 
@@ -172,7 +181,13 @@ def calculate_stress_strain(f_cm, e_c1, e_clim, l_ch, strain_rates):
     }
 
 
-def calculate_stress_strain_temp(f_cm, e_c1, e_clim, l_ch, verbose=True):
+def calculate_stress_strain_temp(
+    f_cm: float,
+    e_c1: float,
+    e_clim: float,
+    l_ch: float,
+    verbose: bool = True,
+) -> dict[str, Any]:
     """
     Calculate stress-strain relationships for different temperatures.
 
@@ -238,7 +253,7 @@ def calculate_stress_strain_temp(f_cm, e_c1, e_clim, l_ch, verbose=True):
         if verbose:
             print(f"\nTensile Strength [N/mm²], at {temp} [°C]: {f_ctm_temp:.3f}")
             print(
-                f'Tensile Strength [N/mm²] (EC2), at {temp} [°C]: {temp_props["f_ctm_temp_EC"]:.3f}'
+                f"Tensile Strength [N/mm²] (EC2), at {temp} [°C]: {temp_props['f_ctm_temp_EC']:.3f}"
             )
             print(f"E-Modul sekant [N/mm²], at {temp} [°C]: {E_c1_temp:.1f}")
             print(f"E-Modul tangent [N/mm²], at {temp} [°C]: {E_ci_temp:.1f}")

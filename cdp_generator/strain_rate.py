@@ -5,7 +5,7 @@ Functions for applying strain rate effects to material properties.
 """
 
 
-def apply_strain_rate_effects(base_props, strain_rate):
+def apply_strain_rate_effects(base_props: dict[str, float], strain_rate: float) -> dict[str, float]:
     """
     Apply strain rate effects to material properties.
 
@@ -51,7 +51,7 @@ def apply_strain_rate_effects(base_props, strain_rate):
     }
 
 
-def apply_fracture_energy_rate_effects(G_f, strain_rate, l_ch):
+def apply_fracture_energy_rate_effects(G_f: float, strain_rate: float, l_ch: float) -> float:
     """
     Apply strain rate effects to fracture energy (Li et al.).
 

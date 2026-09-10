@@ -4,10 +4,12 @@ Material Properties Module
 Functions for calculating basic concrete material properties.
 """
 
+from typing import Any
+
 import numpy as np
 
 
-def calculate_concrete_strength_properties(f_cm):
+def calculate_concrete_strength_properties(f_cm: float) -> dict[str, Any]:
     """
     Calculate basic concrete strength properties based on mean compressive strength.
 
@@ -28,7 +30,7 @@ def calculate_concrete_strength_properties(f_cm):
     return {"f_ck": f_ck, "f_ctm": f_ctm}
 
 
-def calculate_elastic_modulus(f_cm, alpha_E=1.0):
+def calculate_elastic_modulus(f_cm: float, alpha_E: float = 1.0) -> dict[str, float]:
     """
     Calculate elastic modulus based on concrete strength.
     Assumes Quartzite aggregates by default.
@@ -47,7 +49,7 @@ def calculate_elastic_modulus(f_cm, alpha_E=1.0):
     return {"E_ci": E_ci, "E_c": E_c}
 
 
-def calculate_poisson_ratios(f_cm, E_c, e_c1):
+def calculate_poisson_ratios(f_cm: float, E_c: float, e_c1: float) -> dict[str, float]:
     """
     Calculate Poisson's ratios at different states.
 
@@ -65,7 +67,9 @@ def calculate_poisson_ratios(f_cm, E_c, e_c1):
     return {"v_c0": v_c0, "v_ce": v_ce}
 
 
-def calculate_cdp_parameters(f_cm, E_c, e_c1, v_c0, v_ce):
+def calculate_cdp_parameters(
+    f_cm: float, E_c: float, e_c1: float, v_c0: float, v_ce: float
+) -> dict[str, Any]:
     """
     Calculate CDP (Concrete Damage Plasticity) model parameters.
 
@@ -93,7 +97,7 @@ def calculate_cdp_parameters(f_cm, E_c, e_c1, v_c0, v_ce):
     return {"dilation_angle": dilation_angle, "fbfc": fbfc, "K_c": K_c}
 
 
-def calculate_fracture_energy(f_cm):
+def calculate_fracture_energy(f_cm: float) -> float:
     """
     Calculate fracture energy for concrete.
 
@@ -106,7 +110,7 @@ def calculate_fracture_energy(f_cm):
     return 73 * f_cm**0.18 / 1000
 
 
-def calculate_characteristic_length(E_c, G_f, f_ctm):
+def calculate_characteristic_length(E_c: float, G_f: float, f_ctm: float) -> float:
     """
     Calculate characteristic element length for mesh.
 

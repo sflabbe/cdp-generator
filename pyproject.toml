@@ -11,45 +11,39 @@ authors = [
     { name = "CDP Generator Contributors" }
 ]
 license = { text = "MIT" }
-requires-python = ">=3.8"
+requires-python = ">=3.13"
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Science/Research",
     "Topic :: Scientific/Engineering",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
 ]
 keywords = ["concrete", "steel", "damage-plasticity", "CDP", "Johnson-Cook", "ABAQUS", "finite-element", "material-modeling"]
 dependencies = [
-    "matplotlib>=3.3.0",
-    "numpy>=1.20.0",
-    "openpyxl>=3.0.0",
-    "pandas>=1.3.0",
+    "matplotlib>=3.9.2",
+    "numpy>=2.1.0",
+    "openpyxl>=3.1.5",
+    "pandas>=2.2.3",
 ]
 
 [project.optional-dependencies]
 # Legacy compatibility for users who still install with package extras.
 # The uv development workflow uses [dependency-groups].dev below.
 dev = [
-    "black>=22.0.0",
-    "flake8>=5.0.0",
-    "isort>=5.0.0",
-    "pytest>=7.0.0",
-    "pytest-cov>=4.0.0",
+    "mypy>=2.3.1,<3",
+    "pytest>=9.0.0,<10",
+    "pytest-cov>=7.0.0,<8",
+    "ruff>=0.16.6,<0.17",
 ]
 
 [dependency-groups]
 dev = [
-    "black>=22.0.0",
-    "flake8>=5.0.0",
-    "isort>=5.0.0",
-    "pytest>=7.0.0",
-    "pytest-cov>=4.0.0",
+    "mypy>=2.3.1,<3",
+    "pytest>=9.0.0,<10",
+    "pytest-cov>=7.0.0,<8",
+    "ruff>=0.16.6,<0.17",
 ]
 
 [project.scripts]
@@ -62,18 +56,56 @@ Repository = "https://github.com/sflabbe/cdp-generator"
 Issues = "https://github.com/sflabbe/cdp-generator/issues"
 
 [tool.setuptools]
-packages = ["cdp_generator", "cdp_generator.steel"]
+packages = [
+    "cdp_generator",
+    "cdp_generator.steel",
+    "cdp_generator.concrete",
+    "cdp_generator.concrete.standards",
+    "cdp_generator.concrete.models",
+]
 
 [tool.setuptools.package-data]
 cdp_generator = ["py.typed"]
 
-[tool.black]
+[tool.ruff]
 line-length = 100
-target-version = ["py38", "py39", "py310", "py311", "py312"]
+target-version = "py313"
+extend-exclude = ["cdp_generator/steel"]
 
-[tool.isort]
-profile = "black"
-line_length = 100
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I", "UP", "B", "SIM", "RUF"]
+
+[tool.ruff.lint.per-file-ignores]
+# Preserve the curated legacy public-API grouping instead of alphabetizing it.
+"cdp_generator/__init__.py" = ["RUF022"]
+# These branches are part of the frozen LEGACY_V1_BEHAVIOR numerical baseline.
+# G0 must not rewrite them merely to satisfy a style suggestion.
+"cdp_generator/material_properties.py" = ["SIM108"]
+"cdp_generator/temperature.py" = ["SIM108"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
+
+[tool.mypy]
+python_version = "3.13"
+files = ["cdp_generator"]
+check_untyped_defs = true
+disallow_incomplete_defs = true
+disallow_untyped_defs = true
+ignore_missing_imports = true
+no_implicit_optional = true
+pretty = true
+show_error_codes = true
+warn_redundant_casts = true
+warn_unreachable = true
+warn_unused_ignores = true
+
+[[tool.mypy.overrides]]
+# G0 keeps the mature Johnson-Cook package outside this modernization scope.
+module = ["cdp_generator.steel.*"]
+ignore_errors = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

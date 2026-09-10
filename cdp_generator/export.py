@@ -4,11 +4,19 @@ Export Module
 Functions for exporting CDP results to Excel and other formats.
 """
 
+from collections.abc import Sequence
+from typing import Any
+
 import numpy as np
 import pandas as pd
 
 
-def export_to_excel(results, var, mode="strain_rate", filename="CDP-Results.xlsx"):
+def export_to_excel(
+    results: dict[str, Any],
+    var: Sequence[float],
+    mode: str = "strain_rate",
+    filename: str = "CDP-Results.xlsx",
+) -> str:
     """
     Export CDP results to Excel file.
 
@@ -158,7 +166,7 @@ def export_to_excel(results, var, mode="strain_rate", filename="CDP-Results.xlsx
     return filename
 
 
-def print_properties(f_cm, results):
+def print_properties(f_cm: float, results: dict[str, Any]) -> None:
     """
     Print material properties summary.
 
@@ -170,13 +178,13 @@ def print_properties(f_cm, results):
     print("MATERIAL PROPERTIES SUMMARY")
     print("=" * 60)
     print(f"Compressive Strength: {f_cm} [MPa]")
-    print(f'Tensile Strength: {results["properties"]["tensile strength"]:.2f} [MPa]')
-    print(f'Elasticity Modulus: {results["properties"]["elasticity"]:.2f} [MPa]')
-    print(f'Poisson: {results["properties"]["poisson"]:.2f} [-]')
-    print(f'Shear Modulus: {results["properties"]["shear"]:.2f} [MPa]')
-    print(f'Fracture Energy: {results["properties"]["fracture energy"]:.4f} [N/mm]')
-    print(f'CDP Dilation angle: {results["properties"]["dilation angle"]:.2f} [°]')
-    print(f'CDP fb/fc: {results["properties"]["fbfc"]:.2f} [-]')
-    print(f'CDP Kc: {results["properties"]["Kc"]:.2f} [-]')
-    print(f'Max. Mesh Size: {results["properties"]["l0"]:.2f} [m]')
+    print(f"Tensile Strength: {results['properties']['tensile strength']:.2f} [MPa]")
+    print(f"Elasticity Modulus: {results['properties']['elasticity']:.2f} [MPa]")
+    print(f"Poisson: {results['properties']['poisson']:.2f} [-]")
+    print(f"Shear Modulus: {results['properties']['shear']:.2f} [MPa]")
+    print(f"Fracture Energy: {results['properties']['fracture energy']:.4f} [N/mm]")
+    print(f"CDP Dilation angle: {results['properties']['dilation angle']:.2f} [°]")
+    print(f"CDP fb/fc: {results['properties']['fbfc']:.2f} [-]")
+    print(f"CDP Kc: {results['properties']['Kc']:.2f} [-]")
+    print(f"Max. Mesh Size: {results['properties']['l0']:.2f} [m]")
     print("=" * 60)

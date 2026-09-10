@@ -4,12 +4,23 @@ Plotting Module
 Functions for visualizing CDP results.
 """
 
+from collections.abc import Sequence
 from itertools import cycle
+from typing import Any
 
 import matplotlib.pyplot as plt
 
 
-def plot_curve(x, y, title, xlabel, ylabel, var, mode="strain_rate", style=None):
+def plot_curve(
+    x: Any,
+    y: Any,
+    title: str,
+    xlabel: str,
+    ylabel: str,
+    var: float,
+    mode: str = "strain_rate",
+    style: dict[str, Any] | None = None,
+) -> None:
     """
     Plot a single curve with appropriate labeling.
 
@@ -38,7 +49,15 @@ def plot_curve(x, y, title, xlabel, ylabel, var, mode="strain_rate", style=None)
     plt.ylabel(ylabel)
 
 
-def plot_multiple_curves(x, y, title, xlabel, ylabel, var, mode="strain_rate"):
+def plot_multiple_curves(
+    x: Any,
+    y: Sequence[Any],
+    title: str,
+    xlabel: str,
+    ylabel: str,
+    var: Sequence[float],
+    mode: str = "strain_rate",
+) -> None:
     """
     Create a figure with multiple curves.
 
@@ -66,7 +85,9 @@ def plot_multiple_curves(x, y, title, xlabel, ylabel, var, mode="strain_rate"):
         "#393b79",
     ]
     custom_markers = ["o", "s", "^", "v", "D", "P", "*", "X", "h", "<", ">", "8"]
-    custom_style = cycle([{"color": c, "marker": m} for c, m in zip(custom_colors, custom_markers)])
+    custom_style = cycle(
+        [{"color": c, "marker": m} for c, m in zip(custom_colors, custom_markers, strict=True)]
+    )
 
     plt.figure()
 
@@ -87,7 +108,9 @@ def plot_multiple_curves(x, y, title, xlabel, ylabel, var, mode="strain_rate"):
     plt.show()
 
 
-def plot_all_results(results, var, mode="strain_rate"):
+def plot_all_results(
+    results: dict[str, Any], var: Sequence[float], mode: str = "strain_rate"
+) -> None:
     """
     Plot all CDP results including compression, tension, and damage.
 

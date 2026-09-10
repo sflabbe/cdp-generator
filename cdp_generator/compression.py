@@ -4,10 +4,20 @@ Compression Behavior Module
 Functions for calculating compression behavior and damage.
 """
 
+from typing import Any
+
 import numpy as np
+from numpy.typing import NDArray
 
 
-def calculate_compression_behavior(f_cm, e_c1, E_ci, E_c1, n_points, e_max):
+def calculate_compression_behavior(
+    f_cm: float,
+    e_c1: float,
+    E_ci: float,
+    E_c1: float,
+    n_points: int,
+    e_max: float,
+) -> dict[str, Any]:
     """
     Calculate compressive stress-strain behavior using CEB-90 model.
 
@@ -52,7 +62,12 @@ def calculate_compression_behavior(f_cm, e_c1, E_ci, E_c1, n_points, e_max):
     return {"strain": strain, "stress": stress, "e_clim": e_clim}
 
 
-def calculate_inelastic_compression(strain, stress, f_cm, E_c1):
+def calculate_inelastic_compression(
+    strain: NDArray[np.float64],
+    stress: NDArray[np.float64],
+    f_cm: float,
+    E_c1: float,
+) -> dict[str, NDArray[np.float64]]:
     """
     Calculate inelastic strain and stress for compression.
 
@@ -90,7 +105,11 @@ def calculate_inelastic_compression(strain, stress, f_cm, E_c1):
     }
 
 
-def calculate_compression_damage(inelastic_stress, inelastic_strain, f_cm):
+def calculate_compression_damage(
+    inelastic_stress: NDArray[np.float64],
+    inelastic_strain: NDArray[np.float64],
+    f_cm: float,
+) -> NDArray[np.float64]:
     """
     Calculate compression damage parameter.
 

@@ -10,11 +10,29 @@ Both models support strain-rate and temperature-dependent properties.
 ## Features
 
 ### Concrete (CDP)
+- **Authority-split facade (G0)**: `cdp_generator.concrete` separates physical concrete data and provenance from constitutive-model parameters while preserving the legacy API
+- **Legacy compatibility profile**: `legacy_v1` reproduces current behavior without claiming verified fib/Eurocode authority
 - **Modular Architecture**: Clean separation of concerns with dedicated modules
 - **Strain Rate Dependent Analysis**: Calculates CDP parameters for multiple strain rates
 - **Temperature Dependent Analysis**: Computes temperature-dependent properties based on Eurocode
 - **Multiple Models**: Supports both bilinear and power law tension softening models
 - **Comprehensive Output**: Generates stress-strain curves, damage parameters, and material properties
+
+### Concrete authority facade
+
+G0 adds a parallel, backward-compatible API without moving the existing concrete modules:
+
+```python
+from cdp_generator.concrete import Concrete
+
+concrete = Concrete.from_mean_strength(
+    f_cm=38.0, e_c1=0.0022, e_clim=0.0035, profile="legacy_v1"
+)
+physical = concrete.physical
+abaqus = concrete.to_abaqus_cdp(calibration="abaqus_cdp_legacy")
+```
+
+`legacy_v1` is a compatibility authority, not a claim of verified normative-code equivalence. Verified fib/EC2 profiles and the Grassl CDPM2 backend are reserved for later gates. See `docs/concrete_authority_architecture.md`.
 
 ### Steel (Johnson-Cook)
 - **Standards Database**: Built-in properties for EC2 (Eurocode), ACI/ASTM, and NCh standards
@@ -32,8 +50,9 @@ Both models support strain-rate and temperature-dependent properties.
 
 This repository uses **uv** as the maintained dependency, environment and command runner. The source of truth is:
 
-- `pyproject.toml` for package metadata and dependency groups
-- `uv.lock` for the resolved environment, when available
+- `pyproject.toml` for package metadata, Python 3.13 policy, and dependency groups
+- `.python-version` to pin the local uv interpreter family to Python 3.13
+- `uv.lock` for the resolved environment
 - `Makefile` for repeatable development commands
 
 ### Install uv
@@ -46,7 +65,10 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 
 ### Create or synchronize the environment
 
+The maintained baseline is Python 3.13.
+
 ```bash
+uv python install 3.13
 uv sync --all-extras --dev
 ```
 
@@ -64,14 +86,16 @@ uv run pytest
 make test
 ```
 
-### Run lint and formatting tools
+### Run lint, type checking, and formatting tools
 
-This repo keeps the existing formatter/linter stack: Black, isort and flake8. Ruff was not added during the uv migration to avoid turning an infrastructure cleanup into a style refactor.
+Development targets Python 3.13. Ruff is the single linter/formatter/import sorter, and mypy checks the maintained package API.
 
 ```bash
 make lint
+make typecheck
 make format-check
 make format
+make check
 ```
 
 ### Run the interactive CLIs
