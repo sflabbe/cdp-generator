@@ -1,15 +1,20 @@
-"""Authority-split concrete facade introduced by G0.
-
-The existing top-level concrete functions remain supported unchanged. This
-parallel namespace provides an immutable physical schema, provenance, and
-explicit constitutive-model conversion without moving legacy implementation
-files.
-"""
+"""Authority-split concrete facade introduced by G0 and prepared for G1."""
 
 import json
-from dataclasses import dataclass
-from typing import Any, Never, Self
+from dataclasses import dataclass, field
+from typing import Any, Literal, Never, Self
 
+from .class_registry import (
+    ConcreteClassEntry,
+    ConcreteClassError,
+    CrossProfileConcreteClassError,
+    MalformedConcreteClassError,
+    UnknownPhysicalProfileError,
+    UnsupportedConcreteClassError,
+    class_entries,
+    parse_concrete_class,
+)
+from .configuration import ProfileConfiguration
 from .models import AbaqusCdpParameters, LegacyAbaqusCdpBackend
 from .profiles import (
     LEGACY_ABAQUS_CALIBRATION,
@@ -18,8 +23,17 @@ from .profiles import (
     RESERVED_PHYSICAL_PROFILES,
     get_physical_profile,
 )
-from .provenance import PropertyProvenance, SourceKind, StatisticalBasis
+from .provenance import (
+    NormalizationKind,
+    PropertyNormalization,
+    PropertyProvenance,
+    PropertyResolutionStatus,
+    SourceKind,
+    StatisticalBasis,
+)
 from .schema import ConcretePhysicalProperties
+
+type MaterialSerializationVersion = Literal["v1", "v2"]
 
 
 @dataclass(frozen=True, slots=True)
@@ -28,6 +42,7 @@ class Concrete:
 
     physical_profile: str
     physical: ConcretePhysicalProperties
+    profile_parameters: ProfileConfiguration = field(default_factory=ProfileConfiguration)
 
     @classmethod
     def from_mean_strength(
@@ -45,10 +60,11 @@ class Concrete:
 
     @classmethod
     def from_class(cls, concrete_class: str, profile: str = "ec2_2023") -> Never:
-        """Reserved G1 API for concrete-class/standard resolution."""
+        """Reserved verified-standard construction seam; still non-operational in B1."""
 
         raise NotImplementedError(
-            "Concrete.from_class() is reserved for G1 verified-standard resolution; "
+            "Concrete.from_class() remains reserved for G1 verified-standard profiles "
+            "until they are implemented; "
             f"requested class={concrete_class!r}, profile={profile!r}"
         )
 
@@ -60,46 +76,89 @@ class Concrete:
         raise ValueError(f"Unknown ABAQUS-CDP calibration: {calibration!r}")
 
     def to_cdpm2(self, calibration: str = "cdpm2_grassl_2013") -> Never:
-        """Reserved G2 conversion seam; no CDPM2 formulas are implemented in G0."""
+        """Reserved G2 conversion seam; no CDPM2 formulas are implemented in G1."""
 
         if calibration in RESERVED_CONSTITUTIVE_PROFILES:
             raise NotImplementedError(
-                f"CDPM2 backend {calibration!r} is reserved for G2 and is not implemented in G0"
+                f"CDPM2 backend {calibration!r} is reserved for G2 and is not implemented in G1"
             )
         raise ValueError(f"Unknown CDPM2 calibration: {calibration!r}")
 
-    def to_dict(self, abaqus_cdp: AbaqusCdpParameters | None = None) -> dict[str, Any]:
-        """Return a deterministic JSON-serializable material definition.
-
-        Constitutive data is included only when explicitly supplied, preserving
-        the distinction between physical properties and model parameters.
-        """
-
+    def _to_dict_v1(self, abaqus_cdp: AbaqusCdpParameters | None) -> dict[str, Any]:
         constitutive_models: dict[str, Any] = {}
         constitutive_provenance: dict[str, Any] = {}
         if abaqus_cdp is not None:
             constitutive_models["abaqus_cdp"] = abaqus_cdp.values_dict()
-            constitutive_provenance["abaqus_cdp"] = abaqus_cdp.provenance_dict()
+            constitutive_provenance["abaqus_cdp"] = {
+                field: abaqus_cdp.provenance[field].to_legacy_v1_dict()
+                for field in abaqus_cdp.values_dict()
+            }
 
         return {
             "schema_version": "concrete_material_definition.v1",
             "physical_profile": self.physical_profile,
-            "physical": self.physical.values_dict(),
+            "physical": self.physical.legacy_v1_values_dict(),
             "constitutive_models": constitutive_models,
             "provenance": {
-                "physical": self.physical.provenance_dict(),
+                "physical": self.physical.legacy_v1_provenance_dict(),
                 "constitutive_models": constitutive_provenance,
             },
         }
+
+    def _to_dict_v2(self, abaqus_cdp: AbaqusCdpParameters | None) -> dict[str, Any]:
+        constitutive_models: dict[str, Any] = {}
+        if abaqus_cdp is not None:
+            constitutive_models["abaqus_cdp"] = abaqus_cdp.to_dict()
+
+        return {
+            "schema_version": "concrete_material_definition.v2",
+            "physical_profile": self.physical_profile,
+            "profile_parameters": self.profile_parameters.to_dict(),
+            "physical": self.physical.to_dict(),
+            "constitutive_models": constitutive_models,
+        }
+
+    def to_dict(
+        self,
+        abaqus_cdp: AbaqusCdpParameters | None = None,
+        schema_version: MaterialSerializationVersion | None = None,
+    ) -> dict[str, Any]:
+        """Return deterministic material serialization with explicit version policy.
+
+        Legacy profile callers retain the historical v1 payload by default.  The
+        canonical v2 representation is available explicitly now and will become
+        the natural default for future verified profiles.
+        """
+
+        selected_version = schema_version
+        if selected_version is None:
+            selected_version = "v1" if self.physical_profile == LEGACY_PHYSICAL_PROFILE else "v2"
+
+        if selected_version not in ("v1", "v2"):
+            raise ValueError(
+                f"Unknown concrete material serialization version: {selected_version!r}"
+            )
+        if selected_version == "v1":
+            if self.physical_profile != LEGACY_PHYSICAL_PROFILE:
+                raise ValueError(
+                    "v1 material serialization is reserved for legacy_v1 compatibility"
+                )
+            return self._to_dict_v1(abaqus_cdp)
+        return self._to_dict_v2(abaqus_cdp)
 
     def to_json(
         self,
         abaqus_cdp: AbaqusCdpParameters | None = None,
         indent: int | None = 2,
+        schema_version: MaterialSerializationVersion | None = None,
     ) -> str:
         """Serialize deterministically for qualification and downstream tools."""
 
-        return json.dumps(self.to_dict(abaqus_cdp=abaqus_cdp), indent=indent, sort_keys=True)
+        return json.dumps(
+            self.to_dict(abaqus_cdp=abaqus_cdp, schema_version=schema_version),
+            indent=indent,
+            sort_keys=True,
+        )
 
 
 __all__ = [
@@ -109,9 +168,21 @@ __all__ = [
     "RESERVED_PHYSICAL_PROFILES",
     "AbaqusCdpParameters",
     "Concrete",
+    "ConcreteClassEntry",
+    "ConcreteClassError",
     "ConcretePhysicalProperties",
+    "CrossProfileConcreteClassError",
     "LegacyAbaqusCdpBackend",
+    "MalformedConcreteClassError",
+    "NormalizationKind",
+    "ProfileConfiguration",
+    "PropertyNormalization",
     "PropertyProvenance",
+    "PropertyResolutionStatus",
     "SourceKind",
     "StatisticalBasis",
+    "UnknownPhysicalProfileError",
+    "UnsupportedConcreteClassError",
+    "class_entries",
+    "parse_concrete_class",
 ]

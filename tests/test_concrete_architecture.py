@@ -103,17 +103,33 @@ def test_legacy_abaqus_backend_matches_existing_cdp_function_exactly():
         assert abaqus.Kc == legacy["K_c"]
 
 
-def test_physical_schema_has_provenance_for_every_generated_field():
+def test_physical_schema_has_provenance_for_every_legacy_generated_field():
     concrete = Concrete.from_mean_strength(38.0, E_C1, E_CLIM)
     physical = concrete.physical
 
-    for field, value in physical.values_dict().items():
-        assert value is not None
+    legacy_generated = (
+        "f_cm",
+        "f_ck",
+        "f_ctm",
+        "E_initial",
+        "E_secant",
+        "poisson_elastic",
+        "shear_modulus_secant_equivalent",
+        "fracture_energy",
+        "strain_peak_compression",
+        "strain_limit_compression",
+    )
+    for field in legacy_generated:
+        assert physical.values_dict()[field] is not None
         assert field in physical.provenance
         provenance = physical.provenance[field]
         assert provenance.source_id == "legacy_v1"
         assert provenance.source_kind is not SourceKind.STANDARD
         assert provenance.units
+
+    assert physical.f_ctk_lower is None
+    assert physical.f_ctk_upper is None
+    assert physical.reference_age_days is None
 
 
 def test_abaqus_schema_has_provenance_and_is_not_generic_physical_data():

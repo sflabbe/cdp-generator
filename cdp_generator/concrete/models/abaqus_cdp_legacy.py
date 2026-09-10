@@ -41,7 +41,7 @@ class AbaqusCdpParameters:
         }
 
     def provenance_dict(self) -> dict[str, dict[str, Any]]:
-        return {field: self.provenance[field].to_dict() for field in self.values_dict()}
+        return {field: self.provenance[field].to_legacy_v1_dict() for field in self.values_dict()}
 
     def to_dict(self) -> dict[str, Any]:
         return {

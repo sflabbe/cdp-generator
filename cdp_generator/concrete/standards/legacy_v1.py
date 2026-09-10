@@ -6,7 +6,12 @@ from ...material_properties import (
     calculate_fracture_energy,
     calculate_poisson_ratios,
 )
-from ..provenance import PropertyProvenance, SourceKind, StatisticalBasis
+from ..provenance import (
+    PropertyProvenance,
+    PropertyResolutionStatus,
+    SourceKind,
+    StatisticalBasis,
+)
 from ..schema import ConcretePhysicalProperties
 
 PROFILE_ID = "legacy_v1"
@@ -85,12 +90,16 @@ class LegacyV1Profile:
                 "calculate_poisson_ratios:v_ce",
                 "Legacy elastic Poisson ratio value.",
             ),
-            "shear_modulus": _legacy_provenance(
-                "MPa",
-                StatisticalBasis.NOT_APPLICABLE,
-                "G=E_c/(2*(1+v_ce))",
-                "Derived from legacy_v1 E_secant and poisson_elastic.",
+            "shear_modulus_secant_equivalent": PropertyProvenance(
+                source_id=PROFILE_ID,
                 source_kind=SourceKind.DERIVED,
+                edition=None,
+                equation_or_section="G=E_c/(2*(1+v_ce))",
+                units="MPa",
+                statistical_basis=StatisticalBasis.NOT_APPLICABLE,
+                notes="Derived from legacy_v1 E_secant and poisson_elastic.",
+                overridden=False,
+                derived_from=("E_secant", "poisson_elastic"),
             ),
             "fracture_energy": _legacy_provenance(
                 "N/mm",
@@ -116,12 +125,30 @@ class LegacyV1Profile:
             f_cm=f_cm,
             f_ck=strength["f_ck"],
             f_ctm=strength["f_ctm"],
+            f_ctk_lower=None,
+            f_ctk_upper=None,
             E_initial=elastic["E_ci"],
             E_secant=elastic["E_c"],
             poisson_elastic=poisson["v_ce"],
-            shear_modulus=shear_modulus,
+            shear_modulus_secant_equivalent=shear_modulus,
             fracture_energy=fracture_energy,
             strain_peak_compression=e_c1,
             strain_limit_compression=e_clim,
+            reference_age_days=None,
             provenance=provenance,
+            resolution={
+                "f_cm": PropertyResolutionStatus.DIRECT,
+                "f_ck": PropertyResolutionStatus.DIRECT,
+                "f_ctm": PropertyResolutionStatus.DIRECT,
+                "f_ctk_lower": PropertyResolutionStatus.UNRESOLVED,
+                "f_ctk_upper": PropertyResolutionStatus.UNRESOLVED,
+                "E_initial": PropertyResolutionStatus.DIRECT,
+                "E_secant": PropertyResolutionStatus.DIRECT,
+                "poisson_elastic": PropertyResolutionStatus.DIRECT,
+                "shear_modulus_secant_equivalent": PropertyResolutionStatus.DERIVED,
+                "fracture_energy": PropertyResolutionStatus.DIRECT,
+                "strain_peak_compression": PropertyResolutionStatus.DIRECT,
+                "strain_limit_compression": PropertyResolutionStatus.DIRECT,
+                "reference_age_days": PropertyResolutionStatus.UNRESOLVED,
+            },
         )
