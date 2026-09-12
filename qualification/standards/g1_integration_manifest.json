@@ -1,0 +1,111 @@
+{
+  "schema_version": "g1_integration_manifest.v1",
+  "gate": "G1-Q",
+  "starting_authority": {
+    "head": "844aac57735e8a82c39c04f13ca2897a7d7afe1f",
+    "tree": "4738bd5461cee72a69337707af0dbd6ef29df239"
+  },
+  "frozen_artifacts": {
+    "qualification/legacy_v1_baseline.json": "e3f4529072aab2e57d2b482135297a19c0333a2a0a48b94250bf59bf6c230c32",
+    "qualification/standards/authority_matrix.json": "f334f77eae280252fd604b5a6b8ab90383092e08d94cc094a8fe1c76aa0b890f",
+    "qualification/standards/fib_mc2010_reference.json": "fefddf141960fee8d0a79eb2089241260b50172217ab417279340c4a0dca8a28",
+    "qualification/standards/ec2_2004_reference.json": "ce98440a428858f4d192afe6a036fb1db7b53662acbd74746038a0596c9e2127",
+    "qualification/standards/ec2_2023_reference.json": "b9053278e15ad39372e90cfdb14bc8ac4a4fc600a96a7c6bdf53c83413d02ee0",
+    "docs/standards_sources.md": "a45fd3ae2e169b716fbb574a9d742192a054c38bbd111fb2cdf278fbb3e1bf4a"
+  },
+  "profiles": {
+    "legacy_v1": {
+      "role": "historical_compatibility",
+      "source_id": "legacy_v1",
+      "class_count": 0,
+      "construction": "from_mean_strength",
+      "serialization": "concrete_material_definition.v1",
+      "configuration_caller_keys": [],
+      "configuration_effective_keys": [],
+      "reference_age_policy": "unresolved_legacy_context",
+      "fracture_energy_policy": "DIRECT",
+      "E_initial_policy": "legacy_compatibility_value"
+    },
+    "fib_mc2010": {
+      "role": "verified_normative_physical_authority",
+      "source_id": "fib_mc2010_2013",
+      "class_count": 17,
+      "construction": "from_class",
+      "serialization": "concrete_material_definition.v2",
+      "configuration_caller_keys": [
+        "aggregate_type",
+        "reference_age_days"
+      ],
+      "configuration_effective_keys": [
+        "aggregate_type",
+        "alpha_E",
+        "reference_age_days"
+      ],
+      "reference_age_policy": "28_days_only",
+      "fracture_energy_policy": "DIRECT",
+      "E_initial_policy": "DIRECT_STANDARD_E_ci"
+    },
+    "ec2_2004": {
+      "role": "verified_normative_physical_authority",
+      "source_id": "en_1992_1_1_2004",
+      "class_count": 14,
+      "construction": "from_class",
+      "serialization": "concrete_material_definition.v2",
+      "configuration_caller_keys": [
+        "aggregate_type",
+        "reference_age_days"
+      ],
+      "configuration_effective_keys": [
+        "aggregate_type",
+        "Ecm_factor",
+        "reference_age_days"
+      ],
+      "reference_age_policy": "28_days_only",
+      "fracture_energy_policy": "COMPOSED_REQUIRED",
+      "E_initial_policy": "DERIVED_1.05_E_secant"
+    },
+    "ec2_2023": {
+      "role": "verified_normative_physical_authority",
+      "source_id": "en_1992_1_1_2023",
+      "class_count": 15,
+      "construction": "from_class",
+      "serialization": "concrete_material_definition.v2",
+      "configuration_caller_keys": [
+        "k_E",
+        "reference_age_days"
+      ],
+      "configuration_effective_keys": [
+        "k_E",
+        "k_E_basis",
+        "reference_age_days"
+      ],
+      "reference_age_policy": "project_selected_28_to_91_days",
+      "fracture_energy_policy": "COMPOSED_REQUIRED",
+      "E_initial_policy": "DERIVED_at_28_UNRESOLVED_above_28"
+    }
+  },
+  "class_counts": {
+    "fib_mc2010": 17,
+    "ec2_2004": 14,
+    "ec2_2023": 15,
+    "total": 46
+  },
+  "runtime_modules": [
+    "cdp_generator/concrete/schema.py",
+    "cdp_generator/concrete/provenance.py",
+    "cdp_generator/concrete/configuration.py",
+    "cdp_generator/concrete/class_registry.py",
+    "cdp_generator/concrete/profiles.py",
+    "cdp_generator/concrete/standards/legacy_v1.py",
+    "cdp_generator/concrete/standards/fib_mc2010.py",
+    "cdp_generator/concrete/standards/ec2_2004.py",
+    "cdp_generator/concrete/standards/ec2_2023.py",
+    "cdp_generator/concrete/models/abaqus_cdp_legacy.py"
+  ],
+  "reserved_constitutive_backend": "cdpm2_grassl_2013",
+  "master_invariant": [
+    "LEGACY_COMPATIBILITY",
+    "NORMATIVE_AUTHORITY",
+    "CONSTITUTIVE_MODEL_CALIBRATION"
+  ]
+}
