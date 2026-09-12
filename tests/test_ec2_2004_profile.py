@@ -414,12 +414,10 @@ def test_serialization_is_deterministic_and_preserves_composed_required_absence(
     assert payload["physical"]["values"]["f_ck"] == 30.0
 
 
-def test_ec2_2004_activation_does_not_activate_ec2_2023():
+def test_ec2_2004_remains_operational_after_ec2_2023_activation():
     ec2 = Concrete.from_class("C30/37", profile="ec2_2004")
     assert ec2.physical_profile == "ec2_2004"
-
-    with pytest.raises(NotImplementedError, match="later G1 slice"):
-        Concrete.from_class("C30/37", profile="ec2_2023")
+    assert ec2.physical.f_ck == 30.0
 
 
 def test_fib_mc2010_remains_operational_after_ec2_2004_activation():

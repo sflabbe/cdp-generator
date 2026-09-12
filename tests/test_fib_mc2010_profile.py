@@ -387,9 +387,7 @@ def test_mc2010_json_is_deterministic_v2_and_contains_machine_readable_provenanc
     )
 
 
-def test_ec2_2023_physical_construction_remains_non_operational_and_fib_mean_strength_path_is_rejected():
-    with pytest.raises(NotImplementedError, match="later G1 slice"):
-        Concrete.from_class("C30/37", profile="ec2_2023")
+def test_fib_mean_strength_path_remains_rejected_after_later_verified_profiles_activate():
     with pytest.raises(NotImplementedError, match="class-based"):
         Concrete.from_mean_strength(38.0, 0.0022, 0.0035, profile="fib_mc2010")
 

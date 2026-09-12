@@ -187,13 +187,13 @@ def test_serialization_is_deterministic_and_keeps_domains_separate():
     assert payload["provenance"]["physical"]["f_cm"]["source_id"] == "legacy_v1"
 
 
-def test_future_standard_and_cdpm2_profiles_are_reserved_not_implemented():
+def test_verified_standard_mean_strength_paths_and_cdpm2_remain_explicitly_bounded():
     for profile in ("fib_mc2010", "ec2_2023", "ec2_2004"):
         with pytest.raises(NotImplementedError, match="G1"):
             Concrete.from_mean_strength(38.0, E_C1, E_CLIM, profile=profile)
 
-    with pytest.raises(NotImplementedError, match="G1"):
-        Concrete.from_class("C30/37")
+    default_verified = Concrete.from_class("C30/37")
+    assert default_verified.physical_profile == "ec2_2023"
 
     concrete = Concrete.from_mean_strength(38.0, E_C1, E_CLIM)
     with pytest.raises(NotImplementedError, match="G2"):
