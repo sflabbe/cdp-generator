@@ -17,6 +17,7 @@ from .class_registry import (
 from .configuration import ProfileConfiguration
 from .models import AbaqusCdpParameters, LegacyAbaqusCdpBackend
 from .profiles import (
+    EC2_2004_PHYSICAL_PROFILE,
     FIB_MC2010_PHYSICAL_PROFILE,
     LEGACY_ABAQUS_CALIBRATION,
     LEGACY_PHYSICAL_PROFILE,
@@ -172,6 +173,7 @@ class Concrete:
 
 
 __all__ = [
+    "EC2_2004_PHYSICAL_PROFILE",
     "FIB_MC2010_PHYSICAL_PROFILE",
     "LEGACY_ABAQUS_CALIBRATION",
     "LEGACY_PHYSICAL_PROFILE",
