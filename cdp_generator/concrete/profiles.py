@@ -1,25 +1,59 @@
-"""Profile identities and G0 resolver functions."""
+"""Physical-profile identities and construction-path resolvers."""
 
+from typing import Protocol
+
+from .class_registry import ConcreteClassEntry
+from .configuration import ProfileConfiguration
+from .schema import ConcretePhysicalProperties
+from .standards.fib_mc2010 import FibMc2010Profile
 from .standards.legacy_v1 import LegacyV1Profile
 
 LEGACY_PHYSICAL_PROFILE = "legacy_v1"
+FIB_MC2010_PHYSICAL_PROFILE = "fib_mc2010"
 LEGACY_ABAQUS_CALIBRATION = "abaqus_cdp_legacy"
 
 RESERVED_PHYSICAL_PROFILES: tuple[str, ...] = (
-    "fib_mc2010",
     "ec2_2023",
     "ec2_2004",
 )
 RESERVED_CONSTITUTIVE_PROFILES: tuple[str, ...] = ("cdpm2_grassl_2013",)
 
 
+class ClassPhysicalProfile(Protocol):
+    """Construction contract shared by verified named-class physical profiles."""
+
+    profile_id: str
+
+    def build(
+        self,
+        class_entry: ConcreteClassEntry,
+        profile_parameters: ProfileConfiguration | None = None,
+    ) -> tuple[ConcretePhysicalProperties, ProfileConfiguration]: ...
+
+
 def get_physical_profile(profile: str) -> LegacyV1Profile:
-    """Resolve an implemented physical profile without guessing future authority."""
+    """Resolve the legacy mean-strength construction path only."""
 
     if profile == LEGACY_PHYSICAL_PROFILE:
         return LegacyV1Profile()
+    if profile == FIB_MC2010_PHYSICAL_PROFILE:
+        raise NotImplementedError(
+            "G1 verified profile 'fib_mc2010' is class-based; use Concrete.from_class()"
+        )
     if profile in RESERVED_PHYSICAL_PROFILES:
         raise NotImplementedError(
-            f"Physical profile {profile!r} is reserved for G1 and is not implemented in G0"
+            f"Physical profile {profile!r} is reserved for G1 and is not implemented"
         )
     raise ValueError(f"Unknown physical concrete profile: {profile!r}")
+
+
+def get_class_physical_profile(profile: str) -> ClassPhysicalProfile:
+    """Resolve an implemented verified named-class physical profile."""
+
+    if profile == FIB_MC2010_PHYSICAL_PROFILE:
+        return FibMc2010Profile()
+    if profile in RESERVED_PHYSICAL_PROFILES:
+        raise NotImplementedError(
+            f"Physical profile {profile!r} is reserved for a later G1 slice and is not implemented"
+        )
+    raise ValueError(f"Unknown class-based physical concrete profile: {profile!r}")

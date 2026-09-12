@@ -17,10 +17,12 @@ from .class_registry import (
 from .configuration import ProfileConfiguration
 from .models import AbaqusCdpParameters, LegacyAbaqusCdpBackend
 from .profiles import (
+    FIB_MC2010_PHYSICAL_PROFILE,
     LEGACY_ABAQUS_CALIBRATION,
     LEGACY_PHYSICAL_PROFILE,
     RESERVED_CONSTITUTIVE_PROFILES,
     RESERVED_PHYSICAL_PROFILES,
+    get_class_physical_profile,
     get_physical_profile,
 )
 from .provenance import (
@@ -59,13 +61,21 @@ class Concrete:
         return cls(physical_profile=profile, physical=physical)
 
     @classmethod
-    def from_class(cls, concrete_class: str, profile: str = "ec2_2023") -> Never:
-        """Reserved verified-standard construction seam; still non-operational in B1."""
+    def from_class(
+        cls,
+        concrete_class: str,
+        profile: str = "ec2_2023",
+        profile_parameters: ProfileConfiguration | None = None,
+    ) -> Self:
+        """Create a verified named-class physical profile when implemented."""
 
-        raise NotImplementedError(
-            "Concrete.from_class() remains reserved for G1 verified-standard profiles "
-            "until they are implemented; "
-            f"requested class={concrete_class!r}, profile={profile!r}"
+        class_entry = parse_concrete_class(profile, concrete_class)
+        implementation = get_class_physical_profile(profile)
+        physical, effective_parameters = implementation.build(class_entry, profile_parameters)
+        return cls(
+            physical_profile=profile,
+            physical=physical,
+            profile_parameters=effective_parameters,
         )
 
     def to_abaqus_cdp(self, calibration: str = LEGACY_ABAQUS_CALIBRATION) -> AbaqusCdpParameters:
@@ -162,6 +172,7 @@ class Concrete:
 
 
 __all__ = [
+    "FIB_MC2010_PHYSICAL_PROFILE",
     "LEGACY_ABAQUS_CALIBRATION",
     "LEGACY_PHYSICAL_PROFILE",
     "RESERVED_CONSTITUTIVE_PROFILES",
