@@ -1,5 +1,16 @@
 """Backend-agnostic CDPM2 Grassl 2013 semantic schema foundation."""
 
+from .backend import (
+    CDPM2_BACKEND_ID,
+    CDPM2_BACKEND_INPUT_SCHEMA_VERSION,
+    CDPM2_CHARACTERISTIC_LENGTH_UNITS,
+    CDPM2_LEGACY_FIXED_SLOTS,
+    CDPM2_LEGACY_SEMANTIC_SLOT_MAP,
+    CDPM2_LEGACY_SLOT_COUNT,
+    CDPM2_LEGACY_SLOT_NAMES,
+    Cdpm2Legacy24BackendInput,
+    adapt_cdpm2_legacy_backend,
+)
 from .configuration import (
     CDPM2_CONFIGURATION_SCHEMA_VERSION,
     CDPM2_OVERRIDE_FIELDS,
@@ -28,8 +39,15 @@ from .schema import (
 )
 
 __all__ = [
+    "CDPM2_BACKEND_ID",
+    "CDPM2_BACKEND_INPUT_SCHEMA_VERSION",
+    "CDPM2_CHARACTERISTIC_LENGTH_UNITS",
     "CDPM2_CONFIGURATION_SCHEMA_VERSION",
     "CDPM2_FRACTURE_ENERGY_COMPOSITION_SCHEMA_VERSION",
+    "CDPM2_LEGACY_FIXED_SLOTS",
+    "CDPM2_LEGACY_SEMANTIC_SLOT_MAP",
+    "CDPM2_LEGACY_SLOT_COUNT",
+    "CDPM2_LEGACY_SLOT_NAMES",
     "CDPM2_MODEL_ID",
     "CDPM2_OVERRIDE_FIELDS",
     "CDPM2_PARAMETERS_SCHEMA_VERSION",
@@ -43,10 +61,12 @@ __all__ = [
     "Cdpm2FractureEnergyComposition",
     "Cdpm2Grassl2013Configuration",
     "Cdpm2Grassl2013Parameters",
+    "Cdpm2Legacy24BackendInput",
     "Cdpm2ParameterProvenance",
     "Cdpm2ReadinessAssessment",
     "Cdpm2SourceKind",
     "Cdpm2TensileSofteningType",
+    "adapt_cdpm2_legacy_backend",
     "assess_cdpm2_grassl_2013_readiness",
     "resolve_cdpm2_grassl_2013",
 ]
