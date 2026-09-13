@@ -1,0 +1,411 @@
+{
+  "calibration_id": "grassl_2013_static_default_v1",
+  "canonical_units": {
+    "calibration_parameters": "dimensionless",
+    "crack_opening": "mm",
+    "fracture_energy": "N/mm",
+    "strain": "dimensionless",
+    "stress_modulus": "MPa"
+  },
+  "composition_policy": {
+    "future_authorized_mechanisms": [
+      "explicit_secondary_physical_authority_with_provenance",
+      "explicit_constitutive_G_Ft_override_with_user_constitutive_override_provenance"
+    ],
+    "implicit_cross_standard_composition": "FORBIDDEN"
+  },
+  "conversion_readiness_states": [
+    "READY",
+    "UNRESOLVED_PHYSICAL_INPUT",
+    "COMPOSITION_REQUIRED",
+    "NOT_AUTHORIZED_PHYSICAL_SOURCE",
+    "UNSUPPORTED_CONFIGURATION"
+  ],
+  "default_authority_notes": {
+    "A_s": "15 is an OOFEM/Grassl LS-DYNA implementation default, not a universal value asserted by the 2013 paper. Corrigendum As=7 is dataset-specific.",
+    "eccentricity": "baseline policy follows 2013 Eq. (60); OOFEM 0.525 remains an implementation-default alternative, not this calibration identity.",
+    "epsilon_fc": "1e-4 is used repeatedly in 2013 compression comparisons and is the OOFEM/LS-DYNA implementation default."
+  },
+  "derived_relations": {
+    "E_h": "B_h-D_h",
+    "F_h": "(B_h-D_h)*C_h/(A_h-B_h)",
+    "baseline_ratios": {
+      "f_t1_over_f_t": 0.3,
+      "w_f1_over_w_f": 0.15
+    },
+    "bilinear_area_exact": "G_Ft = f_t*w_f1/2 + f_t1*w_f/2",
+    "eccentricity": {
+      "authority": "Grassl et al. 2013 Eq. (60)",
+      "e": "(1+epsilon)/(2-epsilon)",
+      "epsilon": "(f_t/f_bc)*(f_bc^2-f_c^2)/(f_c^2-f_t^2)",
+      "f_bc": "1.16*f_c"
+    },
+    "exact_area_coefficient": 0.225,
+    "f_t1": "0.3*f_t",
+    "m0": "3*(f_c^2-f_t^2)/(f_c*f_t)*eccentricity/(eccentricity+1)",
+    "w_f": "G_Ft/(0.225*f_t)",
+    "w_f1": "0.15*w_f"
+  },
+  "excluded_from_semantic_object": {
+    "B_s": "backend compatibility extension fixed to 1 for canonical 2013 Eq. (56)",
+    "ERATETYPE_SRATETYPE": "deferred rate extension; static adapter fixed 0",
+    "FAILFLG": "runtime solver/deletion policy",
+    "LCHAR_helem": "runtime mesh/regularization context",
+    "PRINTFLAG": "nonmechanical backend output control",
+    "density": "general FE material context",
+    "history_state": "runtime constitutive state/restart context",
+    "thermal_expansion": "general FE thermal context",
+    "yieldtol_newtoniter_fd_steps_substep_depth": "solver/integration controls"
+  },
+  "fields": [
+    {
+      "constructor_input": true,
+      "effective_serialized": true,
+      "name": "E",
+      "origin": "G1 E_initial or explicit constitutive override",
+      "override_permitted": true,
+      "units": "MPa"
+    },
+    {
+      "constructor_input": true,
+      "effective_serialized": true,
+      "name": "nu",
+      "origin": "G1 poisson_elastic or explicit constitutive override",
+      "override_permitted": true,
+      "units": "dimensionless"
+    },
+    {
+      "constructor_input": true,
+      "effective_serialized": true,
+      "name": "f_t",
+      "origin": "G1 f_ctm or explicit constitutive override",
+      "override_permitted": true,
+      "units": "MPa"
+    },
+    {
+      "constructor_input": true,
+      "effective_serialized": true,
+      "name": "f_c",
+      "origin": "G1 f_cm or explicit constitutive override",
+      "override_permitted": true,
+      "units": "MPa"
+    },
+    {
+      "constructor_input": true,
+      "effective_serialized": true,
+      "name": "G_Ft",
+      "origin": "G1 fracture_energy, explicit composition, or explicit constitutive override",
+      "override_permitted": true,
+      "units": "N/mm"
+    },
+    {
+      "constructor_input": false,
+      "effective_serialized": true,
+      "name": "w_f",
+      "origin": "derived: G_Ft/(0.225*f_t)",
+      "override_permitted": false,
+      "units": "mm"
+    },
+    {
+      "constructor_input": false,
+      "effective_serialized": true,
+      "name": "w_f1",
+      "origin": "derived: 0.15*w_f",
+      "override_permitted": false,
+      "units": "mm"
+    },
+    {
+      "constructor_input": false,
+      "effective_serialized": true,
+      "name": "f_t1",
+      "origin": "derived: 0.3*f_t",
+      "override_permitted": false,
+      "units": "MPa"
+    },
+    {
+      "constructor_input": true,
+      "effective_serialized": true,
+      "name": "eccentricity",
+      "origin": "baseline derived by Grassl 2013 Eq. (60), or explicit constitutive override",
+      "override_permitted": true,
+      "units": "dimensionless"
+    },
+    {
+      "constructor_input": true,
+      "effective_serialized": true,
+      "name": "q_h0",
+      "origin": "Grassl 2013 default 0.3",
+      "override_permitted": true,
+      "units": "dimensionless"
+    },
+    {
+      "constructor_input": true,
+      "effective_serialized": true,
+      "name": "H_p",
+      "origin": "Grassl 2013 default 0.01",
+      "override_permitted": true,
+      "units": "dimensionless"
+    },
+    {
+      "constructor_input": true,
+      "effective_serialized": true,
+      "name": "D_f",
+      "origin": "Grassl 2013 default 0.85",
+      "override_permitted": true,
+      "units": "dimensionless"
+    },
+    {
+      "constructor_input": true,
+      "effective_serialized": true,
+      "name": "A_h",
+      "origin": "Grassl 2013 default 0.08",
+      "override_permitted": true,
+      "units": "dimensionless"
+    },
+    {
+      "constructor_input": true,
+      "effective_serialized": true,
+      "name": "B_h",
+      "origin": "Grassl 2013 default 0.003",
+      "override_permitted": true,
+      "units": "dimensionless"
+    },
+    {
+      "constructor_input": true,
+      "effective_serialized": true,
+      "name": "C_h",
+      "origin": "Grassl 2013 default 2",
+      "override_permitted": true,
+      "units": "dimensionless"
+    },
+    {
+      "constructor_input": true,
+      "effective_serialized": true,
+      "name": "D_h",
+      "origin": "Grassl 2013 default 1e-6",
+      "override_permitted": true,
+      "units": "dimensionless"
+    },
+    {
+      "constructor_input": true,
+      "effective_serialized": true,
+      "name": "A_s",
+      "origin": "OOFEM/LS-DYNA implementation baseline default 15; dataset calibration may override",
+      "override_permitted": true,
+      "units": "dimensionless"
+    },
+    {
+      "constructor_input": true,
+      "effective_serialized": true,
+      "name": "epsilon_fc",
+      "origin": "static baseline 1e-4; Grassl 2013 comparisons and OOFEM implementation",
+      "override_permitted": true,
+      "units": "dimensionless"
+    },
+    {
+      "constructor_input": false,
+      "effective_serialized": true,
+      "name": "tensile_softening_type",
+      "origin": "policy fixed: bilinear",
+      "override_permitted": false,
+      "units": "enum"
+    },
+    {
+      "constructor_input": false,
+      "effective_serialized": true,
+      "name": "damage_formulation",
+      "origin": "policy fixed: two_damage_variables",
+      "override_permitted": false,
+      "units": "enum"
+    }
+  ],
+  "g1_mapping": {
+    "ec2_2004": {
+      "automatic_static_cdpm2_readiness": "COMPOSITION_REQUIRED",
+      "blockers": [
+        "G_Ft requires explicit secondary authority or explicit constitutive override"
+      ],
+      "mappings": {
+        "E": {
+          "g1_field": "E_initial",
+          "reason": "G1 derives tangent E_initial=1.05*E_secant",
+          "state": "DERIVABLE"
+        },
+        "G_Ft": {
+          "g1_field": "fracture_energy",
+          "state": "COMPOSED_REQUIRED"
+        },
+        "f_c": {
+          "g1_field": "f_cm",
+          "state": "DIRECTLY_AVAILABLE"
+        },
+        "f_t": {
+          "g1_field": "f_ctm",
+          "state": "DIRECTLY_AVAILABLE"
+        },
+        "nu": {
+          "g1_field": "poisson_elastic",
+          "state": "DIRECTLY_AVAILABLE"
+        }
+      },
+      "policy": "VERIFIED_G1_MAPPING"
+    },
+    "ec2_2023_above_28_days": {
+      "additional_readiness_condition": "COMPOSITION_REQUIRED",
+      "automatic_static_cdpm2_readiness": "UNRESOLVED_PHYSICAL_INPUT",
+      "blockers": [
+        "E_initial unresolved; never substitute E_secant",
+        "G_Ft composition required"
+      ],
+      "condition": "reference_age_days > 28",
+      "mappings": {
+        "E": {
+          "g1_field": "E_initial",
+          "reason": "G1 E_initial is intentionally unresolved above 28 days; E_secant fallback is forbidden",
+          "state": "UNRESOLVED"
+        },
+        "G_Ft": {
+          "g1_field": "fracture_energy",
+          "state": "COMPOSED_REQUIRED"
+        },
+        "f_c": {
+          "g1_field": "f_cm",
+          "state": "DIRECTLY_AVAILABLE"
+        },
+        "f_t": {
+          "g1_field": "f_ctm",
+          "state": "DIRECTLY_AVAILABLE"
+        },
+        "nu": {
+          "g1_field": "poisson_elastic",
+          "state": "DIRECTLY_AVAILABLE"
+        }
+      },
+      "policy": "VERIFIED_G1_MAPPING",
+      "profile": "ec2_2023"
+    },
+    "ec2_2023_at_28_days": {
+      "automatic_static_cdpm2_readiness": "COMPOSITION_REQUIRED",
+      "blockers": [
+        "G_Ft requires explicit secondary authority or explicit constitutive override"
+      ],
+      "condition": "reference_age_days == 28",
+      "mappings": {
+        "E": {
+          "g1_field": "E_initial",
+          "reason": "G1 derives E_c,28 tangent approximation at 28 days",
+          "state": "DERIVABLE"
+        },
+        "G_Ft": {
+          "g1_field": "fracture_energy",
+          "state": "COMPOSED_REQUIRED"
+        },
+        "f_c": {
+          "g1_field": "f_cm",
+          "state": "DIRECTLY_AVAILABLE"
+        },
+        "f_t": {
+          "g1_field": "f_ctm",
+          "state": "DIRECTLY_AVAILABLE"
+        },
+        "nu": {
+          "g1_field": "poisson_elastic",
+          "state": "DIRECTLY_AVAILABLE"
+        }
+      },
+      "policy": "VERIFIED_G1_MAPPING",
+      "profile": "ec2_2023"
+    },
+    "fib_mc2010": {
+      "automatic_static_cdpm2_readiness": "READY",
+      "blockers": [],
+      "mappings": {
+        "E": {
+          "g1_field": "E_initial",
+          "reason": "MC2010 E_initial=E_ci",
+          "state": "DIRECTLY_AVAILABLE"
+        },
+        "G_Ft": {
+          "g1_field": "fracture_energy",
+          "state": "DIRECTLY_AVAILABLE"
+        },
+        "f_c": {
+          "g1_field": "f_cm",
+          "state": "DIRECTLY_AVAILABLE"
+        },
+        "f_t": {
+          "g1_field": "f_ctm",
+          "state": "DIRECTLY_AVAILABLE"
+        },
+        "nu": {
+          "g1_field": "poisson_elastic",
+          "state": "DIRECTLY_AVAILABLE"
+        }
+      },
+      "policy": "VERIFIED_G1_MAPPING"
+    },
+    "legacy_v1": {
+      "automatic_static_cdpm2_readiness": "NOT_AUTHORIZED_PHYSICAL_SOURCE",
+      "blockers": [
+        "legacy physical authority is compatibility-only"
+      ],
+      "mappings": {
+        "E": {
+          "g1_field": "E_initial",
+          "state": "NOT_AUTHORIZED"
+        },
+        "G_Ft": {
+          "g1_field": "fracture_energy",
+          "state": "NOT_AUTHORIZED"
+        },
+        "f_c": {
+          "g1_field": "f_cm",
+          "state": "NOT_AUTHORIZED"
+        },
+        "f_t": {
+          "g1_field": "f_ctm",
+          "state": "NOT_AUTHORIZED"
+        },
+        "nu": {
+          "g1_field": "poisson_elastic",
+          "state": "NOT_AUTHORIZED"
+        }
+      },
+      "policy": "NOT_AUTHORIZED_PHYSICAL_SOURCE",
+      "reason": "legacy_v1 is historical compatibility authority, not a verified normative physical source for the new CDPM2 backend. A separate explicit legacy-compatibility conversion may be adjudicated later."
+    }
+  },
+  "gate": "G2-A",
+  "model_id": "cdpm2_grassl_2013",
+  "named_calibration_policy": {
+    "A_h": 0.08,
+    "A_s": 15.0,
+    "B_h": 0.003,
+    "B_s_backend_fixed": 1.0,
+    "C_h": 2.0,
+    "D_f": 0.85,
+    "D_h": 1e-06,
+    "H_p": 0.01,
+    "damage_formulation": "two_damage_variables",
+    "epsilon_fc": 0.0001,
+    "failure_erosion": "disabled",
+    "q_h0": 0.3,
+    "rate_effects": "disabled",
+    "tensile_softening_type": "bilinear"
+  },
+  "override_provenance_policy": {
+    "Grassl_direct_or_default": "GRASSL_2013_DIRECT/GRASSL_2013_DEFAULT_CALIBRATION",
+    "OOFEM_default": "OOFEM_IMPLEMENTATION_DEFAULT",
+    "adapter_fixed": "DOWNSTREAM_ADAPTER_FIXED",
+    "derived": "GRASSL_2013_DERIVED",
+    "mapped_G1_values": "PHYSICAL_SOURCE",
+    "user_constitutive_override": "USER_CONSTITUTIVE_OVERRIDE"
+  },
+  "schema_version": "cdpm2_semantic_parameter_contract.v1",
+  "scope": "static_rate_independent_bilinear_two_damage_variable_cdpm2",
+  "sign_convention": {
+    "epsilon_fc": "positive inelastic-strain magnitude",
+    "f_c": "positive magnitude",
+    "f_t": "positive magnitude"
+  }
+}
