@@ -1,0 +1,218 @@
+{
+  "cases": [
+    {
+      "class": "C30",
+      "configuration": {},
+      "expected_values": {
+        "A_h": 0.08,
+        "A_s": 15.0,
+        "B_h": 0.003,
+        "C_h": 2.0,
+        "D_f": 0.85,
+        "D_h": 1e-06,
+        "E": 33550.55114021952,
+        "G_Ft": 0.14050245330952899,
+        "H_p": 0.01,
+        "damage_formulation": "two_damage_variables",
+        "eccentricity": 0.5173293125036417,
+        "epsilon_fc": 0.0001,
+        "f_c": 38.0,
+        "f_t": 2.896468153816889,
+        "f_t1": 0.8689404461450667,
+        "nu": 0.2,
+        "q_h0": 0.3,
+        "tensile_softening_type": "bilinear",
+        "w_f": 0.2155919951059915,
+        "w_f1": 0.03233879926589872
+      },
+      "id": "fib_mc2010_C30_default",
+      "profile": "fib_mc2010",
+      "readiness": "READY"
+    },
+    {
+      "blockers": [
+        "G_Ft composition required"
+      ],
+      "class": "C30/37",
+      "configuration": {},
+      "id": "ec2_2004_C30_37_default",
+      "profile": "ec2_2004",
+      "readiness": "COMPOSITION_REQUIRED"
+    },
+    {
+      "class": "C30/37",
+      "configuration": {
+        "G_Ft": 0.15
+      },
+      "expected_values": {
+        "A_h": 0.08,
+        "A_s": 15.0,
+        "B_h": 0.003,
+        "C_h": 2.0,
+        "D_f": 0.85,
+        "D_h": 1e-06,
+        "E": 34478.39643289733,
+        "G_Ft": 0.15,
+        "H_p": 0.01,
+        "damage_formulation": "two_damage_variables",
+        "eccentricity": 0.5173293125036417,
+        "epsilon_fc": 0.0001,
+        "f_c": 38.0,
+        "f_t": 2.896468153816889,
+        "f_t1": 0.8689404461450667,
+        "nu": 0.2,
+        "q_h0": 0.3,
+        "tensile_softening_type": "bilinear",
+        "w_f": 0.23016537081139693,
+        "w_f1": 0.03452480562170954
+      },
+      "id": "ec2_2004_C30_37_GFt_override",
+      "profile": "ec2_2004",
+      "readiness": "READY"
+    },
+    {
+      "class": "C30/37",
+      "composition_source": "fib_mc2010_C30.fracture_energy",
+      "composition_value": 0.14050245330952899,
+      "configuration": {},
+      "expected_values": {
+        "A_h": 0.08,
+        "A_s": 15.0,
+        "B_h": 0.003,
+        "C_h": 2.0,
+        "D_f": 0.85,
+        "D_h": 1e-06,
+        "E": 34478.39643289733,
+        "G_Ft": 0.14050245330952899,
+        "H_p": 0.01,
+        "damage_formulation": "two_damage_variables",
+        "eccentricity": 0.5173293125036417,
+        "epsilon_fc": 0.0001,
+        "f_c": 38.0,
+        "f_t": 2.896468153816889,
+        "f_t1": 0.8689404461450667,
+        "nu": 0.2,
+        "q_h0": 0.3,
+        "tensile_softening_type": "bilinear",
+        "w_f": 0.2155919951059915,
+        "w_f1": 0.03233879926589872
+      },
+      "id": "ec2_2004_C30_37_mc2010_composition",
+      "profile": "ec2_2004",
+      "readiness": "READY"
+    },
+    {
+      "blockers": [
+        "G_Ft composition required"
+      ],
+      "class": "C30/37",
+      "configuration": {},
+      "id": "ec2_2023_C30_37_28_default",
+      "profile": "ec2_2023",
+      "profile_parameters": {
+        "reference_age_days": 28
+      },
+      "readiness": "COMPOSITION_REQUIRED"
+    },
+    {
+      "blockers": [
+        "E_initial unresolved; E_secant fallback forbidden",
+        "G_Ft composition required"
+      ],
+      "class": "C30/37",
+      "configuration": {},
+      "id": "ec2_2023_C30_37_56_default",
+      "profile": "ec2_2023",
+      "profile_parameters": {
+        "reference_age_days": 56
+      },
+      "readiness": "UNRESOLVED_PHYSICAL_INPUT"
+    },
+    {
+      "blockers": [
+        "E_initial unresolved; E_secant fallback forbidden"
+      ],
+      "class": "C30/37",
+      "configuration": {
+        "G_Ft": 0.15
+      },
+      "id": "ec2_2023_C30_37_56_GFt_override_only",
+      "profile": "ec2_2023",
+      "profile_parameters": {
+        "reference_age_days": 56
+      },
+      "readiness": "UNRESOLVED_PHYSICAL_INPUT"
+    },
+    {
+      "blockers": [
+        "G_Ft composition required"
+      ],
+      "class": "C30/37",
+      "configuration": {
+        "E": 36000.0
+      },
+      "id": "ec2_2023_C30_37_56_E_override_only",
+      "profile": "ec2_2023",
+      "profile_parameters": {
+        "reference_age_days": 56
+      },
+      "readiness": "COMPOSITION_REQUIRED"
+    },
+    {
+      "class": "C30/37",
+      "configuration": {
+        "E": 36000.0,
+        "G_Ft": 0.15
+      },
+      "expected_values": {
+        "A_h": 0.08,
+        "A_s": 15.0,
+        "B_h": 0.003,
+        "C_h": 2.0,
+        "D_f": 0.85,
+        "D_h": 1e-06,
+        "E": 36000.0,
+        "G_Ft": 0.15,
+        "H_p": 0.01,
+        "damage_formulation": "two_damage_variables",
+        "eccentricity": 0.5173293125036417,
+        "epsilon_fc": 0.0001,
+        "f_c": 38.0,
+        "f_t": 2.896468153816889,
+        "f_t1": 0.8689404461450667,
+        "nu": 0.2,
+        "q_h0": 0.3,
+        "tensile_softening_type": "bilinear",
+        "w_f": 0.23016537081139693,
+        "w_f1": 0.03452480562170954
+      },
+      "id": "ec2_2023_C30_37_56_E_GFt_overrides",
+      "profile": "ec2_2023",
+      "profile_parameters": {
+        "reference_age_days": 56
+      },
+      "readiness": "READY"
+    },
+    {
+      "blockers": [
+        "physical profile is not authorized for verified static CDPM2 mapping"
+      ],
+      "construction": "mean_strength",
+      "id": "legacy_v1_default",
+      "profile": "legacy_v1",
+      "readiness": "NOT_AUTHORIZED_PHYSICAL_SOURCE"
+    }
+  ],
+  "evidence": {
+    "bilinear_relation": "w_f=G_Ft/(0.225*f_t); w_f1=0.15*w_f; f_t1=0.30*f_t",
+    "eccentricity_relation": "Grassl 2013 Eq. (60): f_bc=1.16*f_c; epsilon=(f_t/f_bc)*(f_bc^2-f_c^2)/(f_c^2-f_t^2); e=(1+epsilon)/(2-epsilon)",
+    "g1_reference_files": [
+      "qualification/standards/fib_mc2010_reference.json",
+      "qualification/standards/ec2_2004_reference.json",
+      "qualification/standards/ec2_2023_reference.json"
+    ],
+    "method": "independent one-off calculation from frozen G1 reference JSON plus frozen G2-A equations/defaults; generated without importing cdp_generator mapping.py"
+  },
+  "gate": "G2-C",
+  "schema_version": "cdpm2_g2c_mapping_reference.v1"
+}

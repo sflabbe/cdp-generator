@@ -2,7 +2,7 @@
 
 import json
 from dataclasses import dataclass, field
-from typing import Any, Literal, Never, Self
+from typing import Any, Literal, Self
 
 from .class_registry import (
     ConcreteClassEntry,
@@ -15,7 +15,19 @@ from .class_registry import (
     parse_concrete_class,
 )
 from .configuration import ProfileConfiguration
-from .models import AbaqusCdpParameters, LegacyAbaqusCdpBackend
+from .models import (
+    AbaqusCdpParameters,
+    Cdpm2ConversionNotReadyError,
+    Cdpm2ConversionReadiness,
+    Cdpm2FractureEnergyComposition,
+    Cdpm2Grassl2013Configuration,
+    Cdpm2Grassl2013Parameters,
+    Cdpm2ReadinessAssessment,
+    LegacyAbaqusCdpBackend,
+    assess_cdpm2_grassl_2013_readiness,
+    resolve_cdpm2_grassl_2013,
+)
+from .models.cdpm2 import CDPM2_STATIC_CALIBRATION_ID
 from .profiles import (
     EC2_2004_PHYSICAL_PROFILE,
     EC2_2023_PHYSICAL_PROFILE,
@@ -87,14 +99,53 @@ class Concrete:
             return LegacyAbaqusCdpBackend.from_physical(self.physical)
         raise ValueError(f"Unknown ABAQUS-CDP calibration: {calibration!r}")
 
-    def to_cdpm2(self, calibration: str = "cdpm2_grassl_2013") -> Never:
-        """Reserved G2 conversion seam; no CDPM2 formulas are implemented in G1."""
+    def cdpm2_readiness(
+        self,
+        calibration: str = CDPM2_STATIC_CALIBRATION_ID,
+        configuration: Cdpm2Grassl2013Configuration | None = None,
+        fracture_energy_composition: Cdpm2FractureEnergyComposition | None = None,
+    ) -> Cdpm2ReadinessAssessment:
+        """Assess whether this physical concrete can resolve static CDPM2 semantics."""
 
-        if calibration in RESERVED_CONSTITUTIVE_PROFILES:
-            raise NotImplementedError(
-                f"CDPM2 backend {calibration!r} is reserved for G2 and is not implemented in G1"
+        if calibration != CDPM2_STATIC_CALIBRATION_ID:
+            raise ValueError(f"Unknown CDPM2 calibration: {calibration!r}")
+        if configuration is not None and configuration.calibration_id != calibration:
+            raise ValueError(
+                "CDPM2 configuration calibration_id does not match requested calibration"
             )
-        raise ValueError(f"Unknown CDPM2 calibration: {calibration!r}")
+        return assess_cdpm2_grassl_2013_readiness(
+            physical_profile=self.physical_profile,
+            physical=self.physical,
+            configuration=configuration,
+            fracture_energy_composition=fracture_energy_composition,
+        )
+
+    def to_cdpm2(
+        self,
+        calibration: str = CDPM2_STATIC_CALIBRATION_ID,
+        configuration: Cdpm2Grassl2013Configuration | None = None,
+        fracture_energy_composition: Cdpm2FractureEnergyComposition | None = None,
+    ) -> Cdpm2Grassl2013Parameters:
+        """Resolve this physical concrete to the verified static CDPM2 semantic schema."""
+
+        if calibration == "cdpm2_grassl_2013":
+            raise NotImplementedError(
+                "The pre-G2 model-id placeholder selector remains reserved for G2 "
+                "lifecycle compatibility; "
+                f"use {CDPM2_STATIC_CALIBRATION_ID!r}"
+            )
+        if calibration != CDPM2_STATIC_CALIBRATION_ID:
+            raise ValueError(f"Unknown CDPM2 calibration: {calibration!r}")
+        if configuration is not None and configuration.calibration_id != calibration:
+            raise ValueError(
+                "CDPM2 configuration calibration_id does not match requested calibration"
+            )
+        return resolve_cdpm2_grassl_2013(
+            physical_profile=self.physical_profile,
+            physical=self.physical,
+            configuration=configuration,
+            fracture_energy_composition=fracture_energy_composition,
+        )
 
     def _to_dict_v1(self, abaqus_cdp: AbaqusCdpParameters | None) -> dict[str, Any]:
         constitutive_models: dict[str, Any] = {}
@@ -182,6 +233,12 @@ __all__ = [
     "RESERVED_CONSTITUTIVE_PROFILES",
     "RESERVED_PHYSICAL_PROFILES",
     "AbaqusCdpParameters",
+    "Cdpm2ConversionNotReadyError",
+    "Cdpm2ConversionReadiness",
+    "Cdpm2FractureEnergyComposition",
+    "Cdpm2Grassl2013Configuration",
+    "Cdpm2Grassl2013Parameters",
+    "Cdpm2ReadinessAssessment",
     "Concrete",
     "ConcreteClassEntry",
     "ConcreteClassError",

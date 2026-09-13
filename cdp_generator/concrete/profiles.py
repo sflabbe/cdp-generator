@@ -17,7 +17,7 @@ EC2_2023_PHYSICAL_PROFILE = "ec2_2023"
 LEGACY_ABAQUS_CALIBRATION = "abaqus_cdp_legacy"
 
 RESERVED_PHYSICAL_PROFILES: tuple[str, ...] = ()
-RESERVED_CONSTITUTIVE_PROFILES: tuple[str, ...] = ("cdpm2_grassl_2013",)
+RESERVED_CONSTITUTIVE_PROFILES: tuple[str, ...] = ()
 
 
 class ClassPhysicalProfile(Protocol):

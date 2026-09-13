@@ -196,5 +196,7 @@ def test_verified_standard_mean_strength_paths_and_cdpm2_remain_explicitly_bound
     assert default_verified.physical_profile == "ec2_2023"
 
     concrete = Concrete.from_mean_strength(38.0, E_C1, E_CLIM)
-    with pytest.raises(NotImplementedError, match="G2"):
+    assessment = concrete.cdpm2_readiness()
+    assert assessment.state.value == "NOT_AUTHORIZED_PHYSICAL_SOURCE"
+    with pytest.raises(ValueError, match="NOT_AUTHORIZED_PHYSICAL_SOURCE"):
         concrete.to_cdpm2()

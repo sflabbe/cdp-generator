@@ -8,6 +8,13 @@ from .configuration import (
     Cdpm2Grassl2013Configuration,
     Cdpm2ReadinessAssessment,
 )
+from .mapping import (
+    CDPM2_FRACTURE_ENERGY_COMPOSITION_SCHEMA_VERSION,
+    Cdpm2ConversionNotReadyError,
+    Cdpm2FractureEnergyComposition,
+    assess_cdpm2_grassl_2013_readiness,
+    resolve_cdpm2_grassl_2013,
+)
 from .provenance import Cdpm2ParameterProvenance, Cdpm2SourceKind
 from .schema import (
     CDPM2_MODEL_ID,
@@ -22,6 +29,7 @@ from .schema import (
 
 __all__ = [
     "CDPM2_CONFIGURATION_SCHEMA_VERSION",
+    "CDPM2_FRACTURE_ENERGY_COMPOSITION_SCHEMA_VERSION",
     "CDPM2_MODEL_ID",
     "CDPM2_OVERRIDE_FIELDS",
     "CDPM2_PARAMETERS_SCHEMA_VERSION",
@@ -29,12 +37,16 @@ __all__ = [
     "CDPM2_PARAMETER_UNITS",
     "CDPM2_READINESS_SCHEMA_VERSION",
     "CDPM2_STATIC_CALIBRATION_ID",
+    "Cdpm2ConversionNotReadyError",
     "Cdpm2ConversionReadiness",
     "Cdpm2DamageFormulation",
+    "Cdpm2FractureEnergyComposition",
     "Cdpm2Grassl2013Configuration",
     "Cdpm2Grassl2013Parameters",
     "Cdpm2ParameterProvenance",
     "Cdpm2ReadinessAssessment",
     "Cdpm2SourceKind",
     "Cdpm2TensileSofteningType",
+    "assess_cdpm2_grassl_2013_readiness",
+    "resolve_cdpm2_grassl_2013",
 ]
