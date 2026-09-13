@@ -1,0 +1,142 @@
+{
+  "closed_g1_artifact_hashes": {
+    "docs/standards_sources.md": "a45fd3ae2e169b716fbb574a9d742192a054c38bbd111fb2cdf278fbb3e1bf4a",
+    "qualification/legacy_v1_baseline.json": "e3f4529072aab2e57d2b482135297a19c0333a2a0a48b94250bf59bf6c230c32",
+    "qualification/standards/authority_matrix.json": "f334f77eae280252fd604b5a6b8ab90383092e08d94cc094a8fe1c76aa0b890f",
+    "qualification/standards/ec2_2004_reference.json": "ce98440a428858f4d192afe6a036fb1db7b53662acbd74746038a0596c9e2127",
+    "qualification/standards/ec2_2023_reference.json": "b9053278e15ad39372e90cfdb14bc8ac4a4fc600a96a7c6bdf53c83413d02ee0",
+    "qualification/standards/fib_mc2010_reference.json": "fefddf141960fee8d0a79eb2089241260b50172217ab417279340c4a0dca8a28",
+    "qualification/standards/g1_integration_manifest.json": "428fbdbb382e20e165c40138ba563c4116d70cb59de85fa7775ace75d9379726"
+  },
+  "closed_g2a_artifact_hashes": {
+    "docs/cdpm2_sources.md": "876eae013ec05963fc539d8682fef7d501afbf0c1c11b1701292aad9b3c2eabf",
+    "qualification/cdpm2/authority_matrix.json": "f03c5fe35d1bc436ea50c1bfdaa51247bd6dd6966e3df0b568bcd380161f8e43",
+    "qualification/cdpm2/backend_compatibility_contract.json": "33eb4ac8e3b7a607e17fd890c3b99b38d2fc2feb26701529206d4752735c6244",
+    "qualification/cdpm2/semantic_parameter_contract.json": "bf4821a886a3224e9cf1dc3933e6fd001a098f9924b4169cf5aae4c619d2b5b0",
+    "tests/test_cdpm2_authority_contract.py": "d6c36c518110d9ff36e40bcc21bddc2b4208d1a02bf7cd9c9de3d95b2bd735c8"
+  },
+  "closed_g2b_core_hashes": {
+    "cdp_generator/concrete/models/cdpm2/configuration.py": "5620268ac36031cebd846d78d883c9e73ba843ebb40b97f1f1af0fbc04edfe23",
+    "cdp_generator/concrete/models/cdpm2/provenance.py": "88c867609f34f9f3ab8619127458145f7e72c3397fa350f77e3a00750be60657",
+    "cdp_generator/concrete/models/cdpm2/schema.py": "01cf8e2d04b7c3c77cff7c84fb2a23a1a09b07a5bdb61922734d84cf3cd853e7"
+  },
+  "closed_g2c_core_hashes": {
+    "cdp_generator/concrete/models/cdpm2/mapping.py": "5da4e7e45828300b8608d408ad0c76de567cf2907e3bdcd966699214842f9f03",
+    "qualification/cdpm2/g2c_mapping_reference.json": "dcf57b5128520a3c17e2ce5d6708bf4b1161216244375575cb880d6accf934ee",
+    "tests/test_cdpm2_mapping.py": "ee89b7c8f5b160a4ea1bdfe7986529b52c7973c508580d08310dfc0b12df9d78"
+  },
+  "closed_g2d_core_hashes": {
+    "cdp_generator/concrete/models/cdpm2/backend.py": "4f5a1779aa254a0e43e7e34e24a2b940dc5f974b1ed93efc889d7f87a24c9021",
+    "qualification/cdpm2/g2d_backend_reference.json": "417b7456b11a760715b581a5e173ac16e677f3a4387c3c72ebe8208d6b561b64",
+    "tests/test_cdpm2_backend_adapter.py": "668559ff2ae4e019140bac01d9a2a5b650005433a938ac5ff631f603382bdab4"
+  },
+  "downstream_compatibility": {
+    "c1_parameter_map_blob_sha": "f23a109880fd17191a47654b4429ba4f5bf5ce14",
+    "cdpm2_3d_law_blob_sha": "d803a4ab5b3e517e5c7da7f6349d0e298ff8ef5b",
+    "current_commit_message": "draft",
+    "current_head": "bf7f78b97229e10ecadb0c04dc88f343fb825b79",
+    "current_parent": "ce6daff41bb8683db94a7c9818886627e1154f4f",
+    "current_tree": "6318b2f5bc6483f1e8616ac9d592af0cf73d4fdc",
+    "delta_adjudication": "one additive C6 qualification-foundation commit; no material contract file changed",
+    "previous_qualified_head": "ce6daff41bb8683db94a7c9818886627e1154f4f",
+    "previous_qualified_tree": "faf6f04df4d0a1f169fce494460fe96368c44589",
+    "repository": "sflabbe/cdpm2-kratos",
+    "result": "EXACT_MATERIAL_BACKEND_CONTRACT_PRESERVED"
+  },
+  "expected_case_method": "Authored independently from production readiness control flow using frozen G2-C/G2-D contracts.",
+  "formal_recommendation": "G2-Q CLOSED/PASS(scope=final-cdpm2-material-factory-integration-qualification); G2 CLOSED/PASS(scope=verified-cdpm2-material-factory-through-backend-boundary)",
+  "gate": "G2-Q",
+  "installed_runtime_result": "PASS: exact installed wheel executed outside the source checkout; fib full chain, EC2:2004 default/override, explicit physical composition, EC2:2023 >28 explicit-authority path, legacy authorization boundary, and invalid-LCHAR rejection all PASS",
+  "lifecycle_export_hashes": {
+    "cdp_generator/concrete/__init__.py": "b577f0a9f25f346ce117af526203ab06584d55b281b71661060ee89d5094242a",
+    "cdp_generator/concrete/models/__init__.py": "ce2215f940019eba3ac498dbc98f77c07e7e1655b7a001af81363b5966e27f76",
+    "cdp_generator/concrete/models/cdpm2/__init__.py": "9785c855272408d61cc81562e4ad7c3cc0a54059558e932b68308e0698c8edd8",
+    "cdp_generator/concrete/profiles.py": "ebe0f7b23915f8714c175aef4ef5f6279b3456227e9ed1059c07048872491f8b",
+    "pyproject.toml": "37b576673010a1b0369a0833e528144989817d675911023943542dcaef4e2d01"
+  },
+  "mechanics_boundary_adjudication": "NO_CONSTITUTIVE_MECHANICS_OR_EVOLVING_STATE_OR_SOLVER_POLICY_IN_CDP_GENERATOR_G2",
+  "pipeline_layers": [
+    "Concrete physical/material definition",
+    "CDPM2 readiness and authority resolution",
+    "Cdpm2Grassl2013Parameters semantic constitutive definition",
+    "Cdpm2Legacy24BackendInput exact backend compatibility input",
+    "characteristic_length enters only at backend adapter boundary"
+  ],
+  "representative_case_matrix": [
+    {
+      "backend": "SUCCESS",
+      "expected_readiness": "READY",
+      "id": "fib_mc2010_C30_default",
+      "semantic": "SUCCESS"
+    },
+    {
+      "backend": "NOT_REACHED",
+      "expected_readiness": "COMPOSITION_REQUIRED",
+      "id": "ec2_2004_C30_37_default",
+      "semantic": "BLOCKED"
+    },
+    {
+      "backend": "SUCCESS",
+      "expected_readiness": "READY",
+      "id": "ec2_2004_C30_37_GFt_override",
+      "semantic": "SUCCESS"
+    },
+    {
+      "backend": "SUCCESS",
+      "expected_readiness": "READY",
+      "id": "ec2_2004_C30_37_physical_composition",
+      "semantic": "SUCCESS"
+    },
+    {
+      "backend": "NOT_REACHED",
+      "expected_readiness": "COMPOSITION_REQUIRED",
+      "id": "ec2_2023_C30_37_28_default",
+      "semantic": "BLOCKED"
+    },
+    {
+      "backend": "NOT_REACHED",
+      "expected_readiness": "UNRESOLVED_PHYSICAL_INPUT",
+      "id": "ec2_2023_C30_37_56_default",
+      "semantic": "BLOCKED"
+    },
+    {
+      "backend": "NOT_REACHED",
+      "expected_readiness": "UNRESOLVED_PHYSICAL_INPUT",
+      "id": "ec2_2023_C30_37_56_GFt_only",
+      "semantic": "BLOCKED"
+    },
+    {
+      "backend": "NOT_REACHED",
+      "expected_readiness": "COMPOSITION_REQUIRED",
+      "id": "ec2_2023_C30_37_56_E_only",
+      "semantic": "BLOCKED"
+    },
+    {
+      "backend": "SUCCESS",
+      "expected_readiness": "READY",
+      "id": "ec2_2023_C30_37_56_E_GFt",
+      "semantic": "SUCCESS"
+    },
+    {
+      "backend": "NOT_REACHED",
+      "expected_readiness": "NOT_AUTHORIZED_PHYSICAL_SOURCE",
+      "id": "legacy_v1",
+      "semantic": "BLOCKED"
+    }
+  ],
+  "runtime_dependency_adjudication": {
+    "KratosMultiphysics": "NOT_REQUIRED",
+    "cdpm2-kratos checkout": "NOT_REQUIRED",
+    "docs": "NOT_REQUIRED",
+    "qualification assets": "NOT_REQUIRED"
+  },
+  "schema_version": "cdpm2_g2q_integration_manifest.v1",
+  "serialization_policy_adjudication": "NO_NEW_PRODUCTION_ENVELOPE",
+  "serialization_policy_reason": "Three separate deterministic serializers preserve physical, semantic constitutive, and backend/runtime authority boundaries while composing directly.",
+  "starting_head": "2c4fff85c45d0f6c61325367a63690d7d6e6ffbb",
+  "starting_tree": "22f2a0c965f271abd4e80414e99fe83295d46e73",
+  "starting_worktree_state": "clean source archive matched authoritative tree exactly",
+  "test_floor_after": 437,
+  "test_floor_before": 413,
+  "wheel_qualification_result": "PASS: exact post-format uv build; required production modules present; qualification/docs/tests absent; isolated install PASS"
+}
