@@ -645,3 +645,21 @@ backward-compatible eight-sheet XLSX in the browser.
 This first UI exposes the **legacy concrete CDP curve generator**. It does not
 claim EC2/fib curve qualification or offer CDPM2 conversion. Temperature cases
 come from the kernel; damage uses the first case. See [web architecture](docs/web_architecture.md).
+
+### Windows qualification
+
+Run the complete qualification in UTF-8 mode with a fail-fast PowerShell script:
+
+```powershell
+.\scripts\qualify_web.ps1
+# After qualification, also commit and push the portability fix:
+.\scripts\qualify_web.ps1 -CommitAndPush
+```
+
+`.gitattributes` pins scientific text artifacts to LF. For an existing Windows
+checkout, the script first restores CRLF-converted frozen files **only if** their
+LF bytes exactly match the original recorded SHA256. Other content changes are
+rejected before any file is written. No frozen hash or baseline is regenerated.
+Frozen tests retain their original bytes; `PYTHONUTF8=1` supplies the portable
+encoding and is restored afterwards. Execute the `.ps1` as a file: pasting
+individual commands into an interactive shell can continue after a `throw`.

@@ -1,0 +1,10 @@
+# Scientific qualification hashes are defined over the repository's LF bytes.
+# Explicit eol overrides Windows core.autocrlf during future checkouts.
+* text=auto
+*.py text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.toml text eol=lf
+*.txt text eol=lf
+*.lock text eol=lf
+*.ps1 text eol=lf
