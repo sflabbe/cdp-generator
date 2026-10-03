@@ -18,6 +18,7 @@ from cdp_generator.application import (
     run_cdpm2_conversion,
 )
 from cdp_generator.application.authority_requests import JSONScalar
+from cdp_generator.visualization.cdpm2_plotly import build_cdpm2_figures
 from cdp_generator.web.shared import add_to_compare
 
 
@@ -33,7 +34,8 @@ def _json_download(label: str, data: object, filename: str) -> None:
 def render_authority() -> None:
     st.title("Authority-aware physical material / CDPM2")
     st.caption(
-        "Physical authority → Grassl 2013 constitutive calibration → legacy24 compatibility payload. This workflow generates no EC2/fib stress-strain curves."
+        "Physical authority → Grassl 2013 constitutive calibration → legacy24 compatibility "
+        "payload. This workflow generates no EC2/fib stress-strain curves."
     )
     profile = st.sidebar.selectbox(
         "Physical authority/profile",
@@ -61,6 +63,15 @@ def render_authority() -> None:
                     disabled=not spec.editable,
                     key=key,
                 )
+        use_fib_gf = st.checkbox(
+            "Use fib MC2010 G_F when missing",
+            value=False,
+            key="authority_fib_gf_if_missing",
+            help=(
+                "Uses fib Model Code 2010 as a secondary physical authority only when the "
+                "selected primary profile does not resolve fracture energy."
+            ),
+        )
         st.caption(
             "Explicit constitutive overrides. Values apply only when their checkbox is enabled."
         )
@@ -88,8 +99,11 @@ def render_authority() -> None:
                     "Enter a value for enabled override(s): " + ", ".join(missing)
                 )
             request = Cdpm2ConversionRequest(
-                AuthorityConcreteRequest(profile, concrete_class, profile_parameters),
-                parse_cdpm2_overrides(advanced, common),
+                material=AuthorityConcreteRequest(profile, concrete_class, profile_parameters),
+                overrides=parse_cdpm2_overrides(advanced, common),
+                fracture_energy_policy=(
+                    "fib_mc2010_if_missing" if use_fib_gf else "profile_only"
+                ),
             )
             result = run_cdpm2_conversion(request)
         except AuthorityInputError as exc:
@@ -109,6 +123,13 @@ def render_authority() -> None:
     st.write("Requested profile parameters", material.requested_profile_parameters)
     st.write("Effective profile parameters", material.effective_profile_parameters)
     st.write("Displayed constitutive overrides", result.configuration["overrides"])
+    st.write("Fracture-energy policy", st.session_state["authority_request"].fracture_energy_policy)
+    if result.fracture_energy_composition is not None:
+        composition = result.fracture_energy_composition
+        st.info(
+            "Secondary fib MC2010 fracture-energy composition: "
+            f"{composition['value']:.6g} N/mm."
+        )
     physical, provenance, cdpm2, backend, exports = st.tabs(
         ["Physical properties", "Provenance", "CDPM2", "Backend", "Raw / Export"]
     )
@@ -164,9 +185,30 @@ def render_authority() -> None:
                 ],
                 hide_index=True,
             )
+            if result.fracture_energy_composition is not None:
+                st.write("Fracture-energy composition provenance")
+                st.json(result.fracture_energy_composition)
+            st.subheader("Tensile softening")
+            st.caption(
+                "These plots visualize the resolved CDPM2 bilinear tensile-softening input law. "
+                "They are not a numerical integration of a uniaxial CDPM2 loading path."
+            )
+            for group, figure in build_cdpm2_figures(result.curves).items():
+                st.plotly_chart(figure, width="stretch", key=f"authority_{group}")
+            opening_curve = next(
+                curve for curve in result.curves if curve.group == "cdpm2_tensile_softening"
+            )
+            st.write(
+                "Softening energy check",
+                {
+                    "G_Ft target [N/mm]": opening_curve.metadata["G_Ft"],
+                    "area under plotted law [N/mm]": opening_curve.metadata["integrated_area"],
+                },
+            )
     with backend:
         st.caption(
-            "Backend compatibility representation. LCHAR [mm] is runtime/mesh context, separate from the 20 semantic parameters and cm(1:24)."
+            "Backend compatibility representation. LCHAR [mm] is runtime/mesh context, "
+            "separate from the 20 semantic parameters and cm(1:24)."
         )
         if result.semantic_parameters is None:
             st.info("Resolve CDPM2 before providing runtime context.")
@@ -182,7 +224,10 @@ def render_authority() -> None:
                         raise AuthorityInputError("Enter LCHAR [mm].")
                     previous = st.session_state["authority_request"]
                     request = Cdpm2ConversionRequest(
-                        previous.material, previous.overrides, float(lchar)
+                        material=previous.material,
+                        overrides=previous.overrides,
+                        characteristic_length_mm=float(lchar),
+                        fracture_energy_policy=previous.fracture_energy_policy,
                     )
                     updated = run_cdpm2_conversion(request)
                 except AuthorityInputError as exc:

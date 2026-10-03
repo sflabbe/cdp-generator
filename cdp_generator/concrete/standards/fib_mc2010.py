@@ -103,6 +103,36 @@ def _standard_provenance(
     )
 
 
+def estimate_fib_mc2010_fracture_energy(
+    f_cm: float,
+) -> tuple[float, PropertyProvenance]:
+    """Return the verified MC2010 fracture-energy estimate in repository units.
+
+    This is the single scientific source of truth for the repository-normalized
+    Eq. (5.1-9) estimate used when experimental fracture-energy data are absent.
+    """
+
+    if isinstance(f_cm, bool) or not isinstance(f_cm, int | float):
+        raise TypeError("f_cm must be numeric")
+    value = float(f_cm)
+    if not math.isfinite(value) or value <= 0.0:
+        raise ValueError("f_cm must be finite and strictly positive [MPa]")
+    fracture_energy_n_per_m = 73.0 * value**0.18
+    fracture_energy = fracture_energy_n_per_m / 1000.0
+    provenance = _standard_provenance(
+        units="N/mm",
+        statistical_basis=StatisticalBasis.NOT_APPLICABLE,
+        equation_or_section="§5.1.5.2, Eq. (5.1-9)",
+        notes=(
+            "MC2010 G_F for ordinary normal-weight concrete when experimental "
+            "data are unavailable; source equation returns N/m."
+        ),
+        derived_from=("f_cm",),
+        normalizations=(_GF_UNIT_NORMALIZATION,),
+    )
+    return fracture_energy, provenance
+
+
 def _resolve_configuration(
     profile_parameters: ProfileConfiguration | None,
 ) -> ProfileConfiguration:
@@ -184,8 +214,7 @@ class FibMc2010Profile:
         poisson_elastic = _POISSON_ELASTIC
         shear_modulus = e_secant / (2.0 * (1.0 + poisson_elastic))
 
-        fracture_energy_n_per_m = 73.0 * f_cm**0.18
-        fracture_energy = fracture_energy_n_per_m / 1000.0
+        fracture_energy, fracture_energy_provenance = estimate_fib_mc2010_fracture_energy(f_cm)
 
         try:
             epsilon_c1_per_mille, epsilon_clim_per_mille = _COMPRESSION_STRAINS_PER_MILLE[
@@ -290,17 +319,7 @@ class FibMc2010Profile:
                 overridden=False,
                 derived_from=("E_secant", "poisson_elastic"),
             ),
-            "fracture_energy": _standard_provenance(
-                units="N/mm",
-                statistical_basis=StatisticalBasis.NOT_APPLICABLE,
-                equation_or_section="§5.1.5.2, Eq. (5.1-9)",
-                notes=(
-                    "MC2010 G_F for ordinary normal-weight concrete when experimental "
-                    "data are unavailable; source equation returns N/m."
-                ),
-                derived_from=("f_cm",),
-                normalizations=(_GF_UNIT_NORMALIZATION,),
-            ),
+            "fracture_energy": fracture_energy_provenance,
             "strain_peak_compression": _standard_provenance(
                 units="dimensionless",
                 statistical_basis=StatisticalBasis.NOT_APPLICABLE,

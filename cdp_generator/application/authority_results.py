@@ -5,6 +5,7 @@ from dataclasses import asdict, dataclass, field
 from typing import Any
 
 from ..concrete.configuration import JSONScalar
+from .results import CurveSeries
 
 
 class JsonResult:
@@ -47,6 +48,8 @@ class Cdpm2ConversionResult(JsonResult):
     readiness: dict[str, Any]
     semantic_parameters: dict[str, Any] | None
     backend: dict[str, Any] | None
+    fracture_energy_composition: dict[str, Any] | None
+    curves: list[CurveSeries]
     backend_slot_names: list[str]
     warnings: list[str]
     export_capabilities: list[str]

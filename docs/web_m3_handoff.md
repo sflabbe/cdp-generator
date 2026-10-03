@@ -97,9 +97,10 @@ cache aside and rerunning the same command passed without configuration changes.
 path was qualified with scripted stdin. Manual browser clicks/downloads were not
 performed; export content, download presence and workflows are automated checks.
 
-No Windows-native execution occurred here. Run the existing supported script on
-Windows: `.\scripts\qualify_web.ps1`. UTF-8, frozen LF normalization and fail-fast
-checks remain intact. Do not claim native Windows qualification until that run.
+Native Windows qualification was subsequently executed with the supported
+`.\scripts\qualify_web.ps1` gate: **566 passed in 9.94 s**, with **0 CRLF
+conversions repaired**. UTF-8, frozen LF normalization and fail-fast checks remained
+intact. This handoff note was amended after that native Windows qualification.
 
 ## Exact files
 
@@ -153,8 +154,8 @@ exclusions remain technical debt, not a reason to rewrite Johnson-Cook here.
 Optional secondary physical fracture-energy composition remains deferred from M2.
 
 The planned Python/Streamlit implementation scope is complete with Linux gates
-passing. Native Windows integration qualification remains the user's local gate.
-The next architectural decision is **keep Streamlit vs FastAPI + React/TypeScript**.
+passing and the later native Windows gate recorded above. The next architectural
+decision is **keep Streamlit vs FastAPI + React/TypeScript**.
 The existing versioned application contracts/services are suitable for
 application → FastAPI → OpenAPI/generated TS client → React, without forcing a
 migration now. Concrete triggers are authentication/users, persistent projects,

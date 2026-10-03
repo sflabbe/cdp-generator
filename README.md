@@ -640,7 +640,9 @@ streamlit run cdp_generator/web/app.py
 Choose strain rate or temperature, enter the legacy inputs, and press Calculate.
 The last successful result remains visible with its input summary. Inspect nine
 interactive plots, properties and raw curves; download canonical JSON or the
-backward-compatible eight-sheet XLSX in the browser.
+backward-compatible eight-sheet XLSX in the browser. The additive **Abaqus CDP**
+tab builds a static-reference full legacy material card with backend validation,
+focused export curves, provenance JSON and deterministic `.inp` download.
 
 The **Legacy curves** workflow exposes the historical concrete CDP curve
 generator without claiming EC2/fib curve qualification. Temperature cases come
@@ -693,6 +695,50 @@ result, semantic JSON when READY, and backend JSON when valid runtime context
 has been supplied. Physical authority, Grassl calibration, and legacy24
 compatibility remain distinct. No modern EC2/fib stress-strain curves or solver
 execution are introduced. See [M2 handoff](docs/web_m2_handoff.md).
+
+
+## Concrete backend successor (WEB-M4)
+
+WEB-M4 keeps physical authority, constitutive calibration and solver-backend
+compatibility separate while closing three concrete product gaps.
+
+**fib MC2010 fracture energy when missing.** In the authority/CDPM2 form, enable
+**Use fib MC2010 G_F when missing** to apply the verified MC2010 fracture-energy
+estimate as a secondary physical authority only when the selected primary profile
+has no usable fracture energy. Existing fib materials continue to use their
+primary value and no redundant composition is created. The primary EC2 material
+serialization remains unresolved/composition-required; only the CDPM2 conversion
+receives the separate composition. This option cannot be combined with an
+explicit constitutive `G_Ft` override.
+
+**CDPM2 plots.** READY results now show the exact resolved bilinear tensile
+softening input law as tensile stress versus crack opening using the semantic
+landmarks `(0,f_t)`, `(w_f1,f_t1)`, `(w_f,0)`. The application verifies that the
+polyline area equals `G_Ft`. With a backend LCHAR, it also shows a regularized
+crack-band strain view `w/LCHAR`. These are visualizations of resolved input
+semantics, **not** numerical integration of a uniaxial CDPM2 loading path; no
+compression response or damage history is invented.
+
+**Legacy Abaqus CDP.** The Legacy curves workflow now includes an **Abaqus CDP**
+tab. It preserves the repository's historical `dilation_angle`, `fbfc`, `Kc`,
+compression/tension curves and damage laws, wraps them in machine-readable
+provenance, and exports bilinear or power-law tension as
+`*CONCRETE TENSION STIFFENING, TYPE=DISPLACEMENT`. Abaqus-documented defaults
+`eccentricity=0.1` and `viscosity=0` are explicit backend settings and may be
+overridden. Backend-only compatibility normalization forces the first compression
+damage point to zero and caps damage at 0.99; the legacy arrays themselves are
+unchanged.
+
+Abaqus **REF LENGTH** is exposed separately as a damage-conversion reference
+length (default `1.0 mm` in this repository's N-mm-MPa convention); it is not the
+legacy crack-band `l_ch`. Before `.inp` export the service validates the documented
+plastic-strain/plastic-displacement conversions and refuses invalid executable
+cards. The JSON download carries all values, tables, provenance, normalization
+records, validation and documentation references. This is a **legacy compatibility
+calibration**: verify it against project calibration, experiments and the Abaqus
+version actually used. WEB-M4 does not run Abaqus and does not export dependent
+rate/temperature damage tables. See
+[WEB-M4 research basis](docs/research/abaqus_cdp_backend.md).
 
 
 ## Steel and comparison workspace (WEB-M3)

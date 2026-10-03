@@ -14,6 +14,9 @@ class AuthorityInputError(ValueError):
     """Expected request or domain-input error suitable for presentation."""
 
 
+FRACTURE_ENERGY_POLICIES = ("profile_only", "fib_mc2010_if_missing")
+
+
 @dataclass(frozen=True)
 class AuthorityConcreteRequest:
     physical_profile: str = "fib_mc2010"
@@ -44,6 +47,7 @@ class Cdpm2ConversionRequest:
     material: AuthorityConcreteRequest
     overrides: Mapping[str, float] = field(default_factory=dict)
     characteristic_length_mm: float | None = None
+    fracture_energy_policy: str = "profile_only"
 
     def __post_init__(self) -> None:
         if not isinstance(self.material, AuthorityConcreteRequest):
@@ -53,6 +57,15 @@ class Cdpm2ConversionRequest:
         except (TypeError, ValueError) as exc:
             raise AuthorityInputError(str(exc)) from exc
         object.__setattr__(self, "overrides", MappingProxyType(configuration.overrides_dict()))
+        if self.fracture_energy_policy not in FRACTURE_ENERGY_POLICIES:
+            raise AuthorityInputError(
+                "fracture_energy_policy must be profile_only or fib_mc2010_if_missing."
+            )
+        if self.fracture_energy_policy == "fib_mc2010_if_missing" and "G_Ft" in self.overrides:
+            raise AuthorityInputError(
+                "Choose either secondary fib physical composition or explicit constitutive "
+                "G_Ft override."
+            )
         value = self.characteristic_length_mm
         if value is not None:
             if (
@@ -69,6 +82,7 @@ class Cdpm2ConversionRequest:
             "material": self.material.to_dict(),
             "overrides": dict(self.overrides),
             "characteristic_length_mm": self.characteristic_length_mm,
+            "fracture_energy_policy": self.fracture_energy_policy,
         }
 
 

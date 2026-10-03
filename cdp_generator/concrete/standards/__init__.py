@@ -2,7 +2,13 @@
 
 from .ec2_2004 import Ec2_2004Profile
 from .ec2_2023 import Ec2_2023Profile
-from .fib_mc2010 import FibMc2010Profile
+from .fib_mc2010 import FibMc2010Profile, estimate_fib_mc2010_fracture_energy
 from .legacy_v1 import LegacyV1Profile
 
-__all__ = ["Ec2_2004Profile", "Ec2_2023Profile", "FibMc2010Profile", "LegacyV1Profile"]
+__all__ = [
+    "Ec2_2004Profile",
+    "Ec2_2023Profile",
+    "FibMc2010Profile",
+    "LegacyV1Profile",
+    "estimate_fib_mc2010_fracture_energy",
+]

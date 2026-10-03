@@ -11,17 +11,24 @@ def test_app_calculates_and_preserves_state(mode):
     ).run()
     assert not app.exception
     assert len(app.number_input) == 4
-    assert app.number_input[0].value == 28.0
+    f_cm_input = next(widget for widget in app.number_input if widget.label == "f_cm [MPa]")
+    assert f_cm_input.value == 28.0
     app.selectbox[0].select(mode)
-    app.button[0].click().run()
+    next(button for button in app.button if button.label == "Calculate").click().run()
     assert not app.exception
-    assert [tab.label for tab in app.tabs] == ["Curves", "Properties", "Raw data", "Export"]
+    assert [tab.label for tab in app.tabs] == [
+        "Curves", "Properties", "Raw data", "Abaqus CDP", "Export"
+    ]
     result = app.session_state["last_result"]
     assert result.mode == ("temperature" if mode == "Temperature" else "strain_rate")
-    app.number_input[0].set_value(35.0).run()
+    next(
+        widget for widget in app.number_input if widget.label == "f_cm [MPa]"
+    ).set_value(35.0).run()
     assert app.session_state["last_result"].inputs == result.inputs
-    app.number_input[0].set_value(-1.0)
-    app.button[0].click().run()
+    next(
+        widget for widget in app.number_input if widget.label == "f_cm [MPa]"
+    ).set_value(-1.0)
+    next(button for button in app.button if button.label == "Calculate").click().run()
     assert not app.exception
     assert app.error
     assert app.session_state["last_result"].inputs == result.inputs
@@ -32,6 +39,6 @@ def test_app_handles_bad_rate_text():
         str(Path(__file__).parents[1] / "cdp_generator/web/app.py"), default_timeout=30
     ).run()
     app.text_input[0].set_value("oops")
-    app.button[0].click().run()
+    next(button for button in app.button if button.label == "Calculate").click().run()
     assert not app.exception
     assert app.error

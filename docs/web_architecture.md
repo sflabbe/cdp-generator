@@ -48,9 +48,10 @@ without public constants are queried through the public material builder.
 `Cdpm2ConversionRequest → cdpm2_readiness → [READY only] to_cdpm2`.
 Readiness and every blocker come directly from the domain. The semantic JSON is
 the unmodified domain parameter payload; overrides retain user-constitutive
-provenance, and derived/default values retain Grassl/OOFEM provenance. No curves
-are generated or borrowed from M1. Non-READY is a normal result containing no
-semantic parameters or backend.
+provenance, and derived/default values retain Grassl/OOFEM provenance. WEB-M2
+itself generated no curves or borrowed M1 curves; WEB-M4 adds only canonical
+views of the resolved CDPM2 tensile-softening semantic law. Non-READY is a normal
+result containing no semantic parameters or backend.
 
 A valid optional `characteristic_length_mm` adds the backend through the existing
 `adapt_cdpm2_legacy_backend`. Backend JSON equals the canonical domain payload;
@@ -63,8 +64,10 @@ M1 `last_result`. Forms retain the displayed result until successful submission.
 Rebuilding a material clears any old backend context; invalid requests retain
 the previous successful result. JSON downloads mirror these displayed DTOs.
 Only expected input errors are presented; unexpected resolver/backend defects
-remain diagnosable. Explicit secondary physical fracture-energy composition is
-deferred; constitutive `G_Ft` override is supported without relabeling authority.
+remain diagnosable. Constitutive `G_Ft` override remains supported without
+relabeling authority; WEB-M4 additionally implements explicit secondary fib
+MC2010 fracture-energy composition when the primary physical profile leaves it
+unresolved.
 
 
 ## WEB-M3 steel boundary and session comparison
@@ -123,3 +126,66 @@ workflow. Versioned application DTOs/services can feed FastAPI, generated OpenAP
 clients and React if product requirements later justify that work. There are no
 FastAPI placeholders, authentication, persistent projects, database or jobs here.
 The existing steel-core Ruff/mypy exclusions remain separate modernization debt.
+
+
+## WEB-M4 concrete backend successor
+
+### Secondary fib fracture-energy composition
+
+`Cdpm2ConversionRequest.fracture_energy_policy` is frontend-independent and accepts
+`profile_only` or `fib_mc2010_if_missing`. The latter never forces fib over an
+already resolved primary fracture energy. When the primary profile reports
+`COMPOSED_REQUIRED`, the service applies the verified MC2010 Eq. (5.1-9) estimator
+to the primary material's resolved `f_cm` and passes a separate
+`Cdpm2FractureEnergyComposition` into the existing domain readiness/resolution
+path. The primary `ConcretePhysicalProperties` object is not mutated. An explicit
+constitutive `G_Ft` override and secondary fib composition are rejected as a
+source conflict at the request boundary.
+
+The MC2010 fracture-energy equation now has one source of truth in
+`estimate_fib_mc2010_fracture_energy`; the verified fib profile itself calls the
+same helper, preserving its previous values and provenance. Result JSON exposes
+the optional composition as a separate physical-authority object.
+
+### CDPM2 softening views
+
+READY semantic parameters are converted to canonical `CurveSeries` before any
+visualization. The crack-opening view contains exactly `(0,f_t)`, `(w_f1,f_t1)`
+and `(w_f,0)`. Application code integrates the two line segments and raises a
+scientific/programming error unless the area equals `G_Ft` within tight floating
+tolerance. If valid LCHAR runtime context exists, a second canonical view divides
+only the three crack openings by LCHAR. It is explicitly a **regularized
+tensile-softening view**, not an integrated uniaxial CDPM2 stress-strain response.
+Plotly only copies canonical curve data; no constitutive equations live in the
+visualization layer.
+
+### Full legacy Abaqus CDP material
+
+The Legacy curves workflow contains an additive **Abaqus CDP** tab backed by
+`AbaqusLegacyMaterialRequest → run_abaqus_legacy_material →
+AbaqusLegacyMaterialResult`. The service always regenerates a static reference
+legacy case (`strain_rate=0`) from the displayed base inputs; rate/temperature
+legacy visualizations are not exported as dependent Abaqus tables.
+
+The full material preserves the existing scalar legacy `dilation_angle`, `fbfc`
+and `Kc`; the old `Concrete.to_abaqus_cdp()` API is unchanged. Linear elastic
+`E`/`nu` and every stress/damage curve retain legacy implementation provenance.
+Abaqus-documented eccentricity 0.1 and viscosity 0.0 are backend defaults unless
+explicitly overridden. Tension exports the existing bilinear or power-law
+stress-crack-opening array using `TYPE=DISPLACEMENT`; `TYPE=GFI` is deliberately
+not used because it would replace the existing nonlinear law with Abaqus' linear
+GFI loss-of-strength assumption.
+
+The adapter normalizes only its Abaqus representation: first compression damage
+is exactly zero and damage above 0.99 is capped, with changed rows recorded as
+`ABAQUS_BACKEND_NORMALIZATION`. Historical kernel arrays are untouched. Abaqus
+`REF LENGTH` is a separate `damage_conversion_reference_length_mm` backend
+setting and is never inferred from legacy `l_ch`. Before `.inp` export the
+application validates the documented compression plastic-strain and tension
+plastic-displacement conversions for finite, nonnegative, monotonic output and
+exact coordinate alignment. Invalid material representations produce typed errors
+and no executable card.
+
+The deterministic JSON is the audit artifact; the deterministic `.inp` material
+card is the execution artifact. No Abaqus Python dependency, CAE object creation,
+job execution, Kratos or OOFEM dependency is introduced.

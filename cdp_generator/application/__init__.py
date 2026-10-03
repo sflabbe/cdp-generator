@@ -1,5 +1,18 @@
 """Frontend-independent analysis API."""
 
+from .abaqus_legacy import (
+    ABAQUS_LEGACY_FULL_CALIBRATION_ID,
+    AbaqusCdpProvenance,
+    AbaqusCdpSourceKind,
+    AbaqusLegacyInputError,
+    AbaqusLegacyMaterialRequest,
+    AbaqusLegacyMaterialResult,
+    AbaqusLegacyValidationError,
+    abaqus_legacy_material_text,
+    build_abaqus_legacy_cdp_material_text,
+    run_abaqus_legacy_material,
+    validate_abaqus_legacy_material_tables,
+)
 from .authority_catalog import (
     ProfileParameterSpec,
     available_concrete_classes,
@@ -20,7 +33,13 @@ from .authority_results import (
     Cdpm2ConversionResult,
     PhysicalPropertyRecord,
 )
-from .authority_services import build_authority_concrete, run_cdpm2_conversion
+from .authority_services import (
+    Cdpm2SofteningInvariantError,
+    build_authority_concrete,
+    cdpm2_tensile_softening_curves,
+    fib_mc2010_fracture_energy_composition,
+    run_cdpm2_conversion,
+)
 from .comparison import (
     ComparisonCase,
     ComparisonInputError,
@@ -41,11 +60,19 @@ from .steel_results import SteelAnalysisResult
 from .steel_services import run_steel_analysis, steel_result_abaqus_text, steel_result_excel_bytes
 
 __all__ = [
+    "ABAQUS_LEGACY_FULL_CALIBRATION_ID",
+    "AbaqusCdpProvenance",
+    "AbaqusCdpSourceKind",
+    "AbaqusLegacyInputError",
+    "AbaqusLegacyMaterialRequest",
+    "AbaqusLegacyMaterialResult",
+    "AbaqusLegacyValidationError",
     "AuthorityConcreteRequest",
     "AuthorityConcreteResult",
     "AuthorityInputError",
     "Cdpm2ConversionRequest",
     "Cdpm2ConversionResult",
+    "Cdpm2SofteningInvariantError",
     "ComparisonCase",
     "ComparisonInputError",
     "CurveSeries",
@@ -57,17 +84,21 @@ __all__ = [
     "SteelAnalysisRequest",
     "SteelAnalysisResult",
     "SteelInputError",
+    "abaqus_legacy_material_text",
     "add_comparison_case",
     "authority_comparison_tables",
     "available_concrete_classes",
     "available_physical_profiles",
     "available_steel_grades",
     "available_steel_standards",
+    "build_abaqus_legacy_cdp_material_text",
     "build_authority_concrete",
     "cdpm2_override_fields",
     "cdpm2_parameter_units",
+    "cdpm2_tensile_softening_curves",
     "compatible_curve_groups",
     "curve_semantic_signature",
+    "fib_mc2010_fracture_energy_composition",
     "make_comparison_case",
     "parse_cdpm2_overrides",
     "parse_float_series",
@@ -75,6 +106,7 @@ __all__ = [
     "profile_parameter_specs",
     "rename_comparison_case",
     "result_excel_bytes",
+    "run_abaqus_legacy_material",
     "run_cdpm2_conversion",
     "run_legacy_concrete_analysis",
     "run_steel_analysis",
@@ -82,4 +114,5 @@ __all__ = [
     "steel_result_abaqus_text",
     "steel_result_excel_bytes",
     "temperature_cases",
+    "validate_abaqus_legacy_material_tables",
 ]
