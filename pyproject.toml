@@ -29,6 +29,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+web = ["plotly>=6,<7", "streamlit>=1.50,<2"]
 # Legacy compatibility for users who still install with package extras.
 # The uv development workflow uses [dependency-groups].dev below.
 dev = [
@@ -58,6 +59,10 @@ Issues = "https://github.com/sflabbe/cdp-generator/issues"
 [tool.setuptools]
 packages = [
     "cdp_generator",
+    "cdp_generator.application",
+    "cdp_generator.application.adapters",
+    "cdp_generator.visualization",
+    "cdp_generator.web",
     "cdp_generator.steel",
     "cdp_generator.concrete",
     "cdp_generator.concrete.standards",

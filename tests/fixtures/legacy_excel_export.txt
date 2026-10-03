@@ -5,8 +5,6 @@ Functions for exporting CDP results to Excel and other formats.
 """
 
 from collections.abc import Sequence
-from io import BytesIO
-from pathlib import Path
 from typing import Any
 
 import numpy as np
@@ -31,15 +29,6 @@ def export_to_excel(
     Returns:
         str: Path to the created Excel file
     """
-    Path(filename).write_bytes(build_excel_bytes(results, var, mode))
-    return filename
-
-
-def build_excel_bytes(
-    results: dict[str, Any], var: Sequence[float], mode: str = "strain_rate"
-) -> bytes:
-    """Build the legacy workbook in memory, preserving sheets and cell semantics."""
-    buffer = BytesIO()
     is_strain_rate_mode = mode == "strain_rate"
     var_label = "Strain Rate [1/s]" if is_strain_rate_mode else "Temperature [°C]"
 
@@ -162,7 +151,7 @@ def build_excel_bytes(
     )
 
     # Write to Excel
-    with pd.ExcelWriter(buffer, engine="openpyxl") as writer:
+    with pd.ExcelWriter(filename) as writer:
         compression_strain_el_df.to_excel(
             writer, sheet_name="Compression Stress-Strain", index=False
         )
@@ -174,28 +163,4 @@ def build_excel_bytes(
         tension_cracking_power_df.to_excel(writer, sheet_name="Tension Cracking Power", index=False)
         tension_damage_power_df.to_excel(writer, sheet_name="Tension Damage Power", index=False)
 
-    return buffer.getvalue()
-
-
-def print_properties(f_cm: float, results: dict[str, Any]) -> None:
-    """
-    Print material properties summary.
-
-    Args:
-        f_cm: Mean compressive strength [MPa]
-        results: Dictionary of CDP results
-    """
-    print("\n" + "=" * 60)
-    print("MATERIAL PROPERTIES SUMMARY")
-    print("=" * 60)
-    print(f"Compressive Strength: {f_cm} [MPa]")
-    print(f"Tensile Strength: {results['properties']['tensile strength']:.2f} [MPa]")
-    print(f"Elasticity Modulus: {results['properties']['elasticity']:.2f} [MPa]")
-    print(f"Poisson: {results['properties']['poisson']:.2f} [-]")
-    print(f"Shear Modulus: {results['properties']['shear']:.2f} [MPa]")
-    print(f"Fracture Energy: {results['properties']['fracture energy']:.4f} [N/mm]")
-    print(f"CDP Dilation angle: {results['properties']['dilation angle']:.2f} [°]")
-    print(f"CDP fb/fc: {results['properties']['fbfc']:.2f} [-]")
-    print(f"CDP Kc: {results['properties']['Kc']:.2f} [-]")
-    print(f"Max. Mesh Size: {results['properties']['l0']:.2f} [m]")
-    print("=" * 60)
+    return filename

@@ -619,3 +619,29 @@ MIT License - see LICENSE file for details
 
 For questions, issues, or suggestions, please open an issue on GitHub.
 
+
+## Legacy concrete web UI
+
+Install the optional interactive stack:
+
+```bash
+pip install "cdp-generator[web]"
+# Repository development:
+uv sync --locked --extra web
+```
+
+Run from the repository root:
+
+```bash
+streamlit run cdp_generator/web/app.py
+# Or: uv run --locked --extra web streamlit run cdp_generator/web/app.py
+```
+
+Choose strain rate or temperature, enter the legacy inputs, and press Calculate.
+The last successful result remains visible with its input summary. Inspect nine
+interactive plots, properties and raw curves; download canonical JSON or the
+backward-compatible eight-sheet XLSX in the browser.
+
+This first UI exposes the **legacy concrete CDP curve generator**. It does not
+claim EC2/fib curve qualification or offer CDPM2 conversion. Temperature cases
+come from the kernel; damage uses the first case. See [web architecture](docs/web_architecture.md).

@@ -7,5 +7,4 @@ minimal so setup.py does not become a second source of truth.
 
 from setuptools import setup
 
-
 setup()

@@ -5,11 +5,11 @@ This script generates input parameters for the Concrete Damage Plasticity (CDP)
 model in ABAQUS, with support for strain-rate and temperature-dependent properties.
 """
 
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
 from itertools import cycle
 
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 
 # ============================================================================
 # Helper Functions - Material Properties
@@ -28,10 +28,7 @@ def calculate_concrete_strength_properties(f_cm):
     f_ck = f_cm - 8
 
     # Tensile strength according to FIB2010
-    if f_ck > 50:
-        f_ctm = 2.12 * np.log(1 + 0.1 * f_cm)
-    else:
-        f_ctm = 0.3 * (f_ck) ** (2/3)
+    f_ctm = 2.12 * np.log(1 + 0.1 * f_cm) if f_ck > 50 else 0.3 * f_ck ** (2 / 3)
 
     return {
         'f_ck': f_ck,
@@ -279,16 +276,10 @@ def apply_temperature_effects(base_props, temperature, temp_table):
     f_cm_temp = f_ratio * f_cm
 
     # Tensile strength at temperature (Eurocode approach)
-    if temperature <= 100:
-        f_ctm_temp_EC = f_ctm
-    else:
-        f_ctm_temp_EC = max(0, f_ctm * (1 - (temperature - 100) / 500))
+    f_ctm_temp_EC = f_ctm if temperature <= 100 else max(0, f_ctm * (1 - (temperature - 100) / 500))
 
     # Tensile strength (FIB approach)
-    if f_ck > 50:
-        f_ctm_temp = 2.12 * np.log(1 + 0.1 * f_cm_temp)
-    else:
-        f_ctm_temp = 0.3 * (f_ck_temp) ** (2/3)
+    f_ctm_temp = 2.12 * np.log(1 + 0.1 * f_cm_temp) if f_ck > 50 else 0.3 * f_ck_temp ** (2 / 3)
 
     # Strain at peak stress
     e_c1_temp = eps_c
@@ -338,7 +329,7 @@ def calculate_compression_behavior(f_cm, e_c1, E_ci, E_c1, n_points, e_max):
     eta_E = E_ci / E_c1
     e_clim = e_c1 * (0.5 * (0.5 * eta_E + 1) +
                      (0.25 * ((0.5 * eta_E + 1) ** 2) - 0.5) ** 0.5)
-    eta = strain / e_c1
+    _eta = strain / e_c1
     eta_lim = e_clim / e_c1
 
     xi = 4 * (eta_lim**2 * (eta_E - 2) + 2 * eta_lim - eta_E) / \
@@ -520,13 +511,13 @@ def calculate_stress_strain(f_cm, e_c1, e_clim, l_ch, strain_rates):
 
     # Base material properties
     strength_props = calculate_concrete_strength_properties(f_cm)
-    f_ck = strength_props['f_ck']
+    _f_ck = strength_props['f_ck']
     f_ctm = strength_props['f_ctm']
 
     elastic_props = calculate_elastic_modulus(f_cm)
     E_ci = elastic_props['E_ci']
     E_c = elastic_props['E_c']
-    E_c1 = f_cm / e_c1
+    _E_c1 = f_cm / e_c1
 
     poisson_props = calculate_poisson_ratios(f_cm, E_c, e_c1)
     v_c0 = poisson_props['v_c0']
@@ -684,7 +675,7 @@ def calculate_stress_strain_temp(f_cm, e_c1, e_clim, l_ch):
     f_ctm = strength_props['f_ctm']
 
     elastic_props = calculate_elastic_modulus(f_cm)
-    E_ci = elastic_props['E_ci']
+    _E_ci = elastic_props['E_ci']
     E_c = elastic_props['E_c']
     E_c1 = f_cm / e_c1
 
@@ -890,7 +881,7 @@ def plot_multiple_curves(x, y, title, xlabel, ylabel, var, mode='strain_rate'):
     custom_markers = ['o', 's', '^', 'v', 'D', 'P', '*', 'X', 'h', '<', '>', '8']
     custom_style = cycle([
         {"color": c, "marker": m}
-        for c, m in zip(custom_colors, custom_markers)
+        for c, m in zip(custom_colors, custom_markers, strict=False)
     ])
 
     plt.figure()
@@ -938,7 +929,7 @@ if __name__ == "__main__":
     e_c1 = float(e_c1.strip()) if e_c1.strip() else 0.0022
     e_clim = float(e_clim.strip()) if e_clim.strip() else 0.0035
     l_ch = float(l_ch.strip()) if l_ch.strip() else 1
-    strain_rates = [0] + list(map(float, e_rate.strip().split(','))) if e_rate.strip() else [0, 2, 30, 100]
+    strain_rates = [0, *list(map(float, e_rate.strip().split(',')))] if e_rate.strip() else [0, 2, 30, 100]
     temperatures = np.array([20, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100])
 
     # Calculate stress-strain relationships
