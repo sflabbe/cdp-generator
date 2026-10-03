@@ -642,9 +642,10 @@ The last successful result remains visible with its input summary. Inspect nine
 interactive plots, properties and raw curves; download canonical JSON or the
 backward-compatible eight-sheet XLSX in the browser.
 
-This first UI exposes the **legacy concrete CDP curve generator**. It does not
-claim EC2/fib curve qualification or offer CDPM2 conversion. Temperature cases
-come from the kernel; damage uses the first case. See [web architecture](docs/web_architecture.md).
+The **Legacy curves** workflow exposes the historical concrete CDP curve
+generator without claiming EC2/fib curve qualification. Temperature cases come
+from the kernel; damage uses the first case. Authority-aware physical definitions
+and CDPM2 conversion are available through a separate workflow. See [web architecture](docs/web_architecture.md).
 
 ### Windows qualification
 
@@ -663,3 +664,34 @@ rejected before any file is written. No frozen hash or baseline is regenerated.
 Frozen tests retain their original bytes; `PYTHONUTF8=1` supplies the portable
 encoding and is restored afterwards. Execute the `.ps1` as a file: pasting
 individual commands into an interactive shell can continue after a `throw`.
+
+
+## Authority-aware material / CDPM2 (WEB-M2)
+
+Run the same Streamlit command above and select **Authority-aware material / CDPM2**.
+Choose fib MC2010, EC2 2004 or EC2 2023, a registry class, and profile inputs.
+Press **Build material / Assess CDPM2** to inspect physical values, resolution,
+full provenance, requested/effective configuration, and domain readiness.
+
+- fib `C30` is READY with the static Grassl 2013 calibration.
+- EC2 2004 `C30/37` needs fracture energy: an explicitly enabled `G_Ft=0.15`
+  constitutive override resolves the representative case.
+- EC2 2023 `C30/37` at 56 days reports unresolved `E_initial` plus fracture-energy
+  composition. Explicit overrides `E=41000` and `G_Ft=0.15` resolve that case;
+  either override alone leaves the other blocker.
+
+These are qualification examples, not recommended project input values. The UI
+never guesses fracture energy or substitutes `E_secant` for unresolved `E_initial`.
+Common override fields start disabled and blank. Advanced JSON exposes the
+existing domain override catalog. All scientific validation remains in the domain.
+
+READY results display all 20 CDPM2 semantic fields with units and provenance.
+In **Backend**, supply a positive LCHAR in mm and press **Build backend payload**
+to inspect the frozen 24-slot representation. LCHAR is runtime/mesh context and
+is displayed separately from intrinsic properties and semantic parameters.
+
+**Raw / Export** provides canonical material JSON, the complete M2 application
+result, semantic JSON when READY, and backend JSON when valid runtime context
+has been supplied. Physical authority, Grassl calibration, and legacy24
+compatibility remain distinct. No modern EC2/fib stress-strain curves or solver
+execution are introduced. See [M2 handoff](docs/web_m2_handoff.md).

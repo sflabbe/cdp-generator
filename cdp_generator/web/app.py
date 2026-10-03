@@ -14,11 +14,10 @@ from cdp_generator.application.requests import parse_strain_rates
 from cdp_generator.visualization.plotly import build_figures
 
 
-def main() -> None:
-    st.set_page_config(page_title="CDP Generator", layout="wide")
+def render_legacy() -> None:
     st.title("CDP Generator — legacy concrete")
     st.caption(
-        "Legacy CDP curves. EC2/fib curve qualification and CDPM2 conversion are successor workflows."
+        "Legacy CDP curves. Verified physical materials and CDPM2 conversion have a separate workflow."
     )
     with st.sidebar.form("analysis"):
         mode_label = st.selectbox("Analysis mode", ["Strain rate", "Temperature"])
@@ -77,6 +76,19 @@ def main() -> None:
             "CDP-Results.xlsx",
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         )
+
+
+def main() -> None:
+    st.set_page_config(page_title="CDP Generator", layout="wide")
+    workflow = st.sidebar.radio(
+        "Workflow", ["Legacy curves", "Authority-aware material / CDPM2"], key="workflow"
+    )
+    if workflow == "Legacy curves":
+        render_legacy()
+    else:
+        from cdp_generator.web.authority import render_authority
+
+        render_authority()
 
 
 if __name__ == "__main__":
