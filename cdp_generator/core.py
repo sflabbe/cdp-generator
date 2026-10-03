@@ -181,6 +181,66 @@ def calculate_stress_strain(
     }
 
 
+def legacy_temperature_base_properties(f_cm: float, e_c1: float) -> dict[str, float]:
+    """
+    Room/reference base properties consumed by the legacy temperature kernel.
+
+    Single source of the ``base_props`` mapping passed to
+    :func:`apply_temperature_effects` by :func:`calculate_stress_strain_temp`.
+
+    Args:
+        f_cm: Mean compressive strength [MPa]
+        e_c1: Strain at peak compressive strength [-]
+
+    Returns:
+        dict: ``f_cm``, ``f_ck``, ``f_ctm`` [MPa] and legacy secant ``E_c1 = f_cm / e_c1`` [MPa]
+    """
+    strength_props = calculate_concrete_strength_properties(f_cm)
+    return {
+        "f_cm": f_cm,
+        "f_ck": strength_props["f_ck"],
+        "f_ctm": strength_props["f_ctm"],
+        "E_c1": f_cm / e_c1,
+    }
+
+
+def calculate_temperature_elastic_states(f_cm: float, e_c1: float) -> list[dict[str, float]]:
+    """
+    Elastic state per legacy temperature case, without copying any temperature formula.
+
+    Orchestrates the existing legacy functions. ``E_mpa`` is the exact modulus
+    (``E_c1_temp``) that :func:`calculate_stress_strain_temp` passes to
+    :func:`calculate_inelastic_compression` when it builds the inelastic strain of
+    each temperature family. Poisson's ratio is the legacy room/reference elastic
+    value ``v_ce`` held constant (legacy constant-nu assumption; no ``nu(T)`` law
+    exists in the kernel).
+
+    Args:
+        f_cm: Mean compressive strength [MPa]
+        e_c1: Strain at peak compressive strength [-]
+
+    Returns:
+        list: One dict per kernel temperature case with ``temperature_c``, ``E_mpa``,
+        ``E_ci_temp_mpa`` (informational tangent modulus) and ``nu``.
+    """
+    elastic_props = calculate_elastic_modulus(f_cm)
+    nu = calculate_poisson_ratios(f_cm, elastic_props["E_c"], e_c1)["v_ce"]
+    base_props = legacy_temperature_base_properties(f_cm, e_c1)
+    temp_table = get_eurocode_temperature_table()
+    states = []
+    for temp in temp_table[:, 0]:
+        temp_props = apply_temperature_effects(base_props, temp, temp_table)
+        states.append(
+            {
+                "temperature_c": float(temp),
+                "E_mpa": float(temp_props["E_c1_temp"]),
+                "E_ci_temp_mpa": float(temp_props["E_ci_temp"]),
+                "nu": float(nu),
+            }
+        )
+    return states
+
+
 def calculate_stress_strain_temp(
     f_cm: float,
     e_c1: float,
@@ -205,12 +265,10 @@ def calculate_stress_strain_temp(
 
     # Base material properties
     strength_props = calculate_concrete_strength_properties(f_cm)
-    f_ck = strength_props["f_ck"]
     f_ctm = strength_props["f_ctm"]
 
     elastic_props = calculate_elastic_modulus(f_cm)
     E_c = elastic_props["E_c"]
-    E_c1 = f_cm / e_c1
 
     poisson_props = calculate_poisson_ratios(f_cm, E_c, e_c1)
     v_c0 = poisson_props["v_c0"]
@@ -237,7 +295,7 @@ def calculate_stress_strain_temp(
     tension_cracking_strain = []
 
     # Base properties for temperature calculations
-    base_props = {"f_cm": f_cm, "f_ck": f_ck, "f_ctm": f_ctm, "E_c1": E_c1}
+    base_props = legacy_temperature_base_properties(f_cm, e_c1)
 
     # Calculate for each temperature
     for temp in temperatures:

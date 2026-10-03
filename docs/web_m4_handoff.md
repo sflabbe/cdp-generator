@@ -162,18 +162,31 @@ base/application import check with imports of streamlit and plotly deliberately 
 PASS
 ```
 
-The environment could not complete the locked WEB qualification because network access is disabled
-and the uv cache is incomplete. `UV_OFFLINE=1 uv run --locked --extra web ...` was attempted for
-Ruff, mypy, and pytest; dependency resolution stopped before those tools ran because required
-artifacts such as `matplotlib==3.10.9`, `plotly==6.9.0`, or `rpds-py==2026.6.3` were not cached.
-`UV_OFFLINE=1 uv build --wheel` likewise could not resolve uncached build-system dependencies.
+The sandbox that produced the M4 patch could not itself run the locked web environment
+(network-disabled uv cache without `streamlit`/`plotly`), so the sandbox list above is a partial
+pre-integration record only. That gap was closed by the integrated native run below; it is no
+longer an open qualification item.
 
-A direct full `pytest -q` also cannot collect the four AppTest modules because this execution
-environment has no `streamlit` installation. The same absence blocks the requested headless
-Streamlit health check. This is an environment qualification gap, not a passing result; no green
-claim is made for Ruff, mypy, wheel, AppTest, headless Streamlit, or native Windows M4 execution.
-The M4 Streamlit tests are nevertheless included in `tests/test_web_m4.py` for execution in the
-project's normal locked web environment.
+### Final integrated qualification (amended in ABAQUS-Q1 / WEB-M5)
+
+> **Amendment note.** An earlier version of this section stated that Ruff, mypy, the Streamlit
+> AppTests and native Windows execution were not qualified for M4. That statement described only
+> the pre-integration sandbox and is superseded by the final integrated M4 handoff supplied by
+> the user. `scripts/qualify_web.ps1` runs the frozen-artifact check, `git diff --check`, Ruff,
+> mypy and the full pytest suite (which includes the M4 AppTests); it does not launch a headless
+> Streamlit server, so this evidence makes no separate claim about that check. No M4
+> implementation detail was changed by this amendment.
+
+Historical M4 native Windows run of `scripts/qualify_web.ps1` on the integrated commit
+`ade662488cd865a67e30f5dd7a632490770b659d`:
+
+```text
+Frozen artifacts verified; 0 CRLF checkout conversions repaired.
+All checks passed.                      (Ruff)
+Success: no issues found in 64 source files   (mypy)
+595 passed in 10.78 s                   (pytest, including the M4 AppTests)
+Windows native: PASS
+```
 
 ## Known limitations / deferred scope
 

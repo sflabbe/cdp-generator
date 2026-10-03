@@ -189,3 +189,32 @@ and no executable card.
 The deterministic JSON is the audit artifact; the deterministic `.inp` material
 card is the execution artifact. No Abaqus Python dependency, CAE object creation,
 job execution, Kratos or OOFEM dependency is introduced.
+
+## ABAQUS-Q1 / WEB-M5 dependent Abaqus tables and solver gate
+
+The **Abaqus CDP** tab of the Legacy curves workflow now has an **Abaqus export mode**
+selector: *Static reference* (the unchanged M4 renderer), and — depending on the displayed
+legacy result — *Strain-rate dependent* or *Temperature dependent*. Dependent exports use the
+rates/temperature cases of the displayed result; nothing is re-typed.
+
+```text
+LegacyConcreteAnalysisRequest (displayed result)
+    → AbaqusLegacyDependentRequest(mode, …, damage_policy="omit" | "reference_damage")
+    → run_abaqus_legacy_dependent_material
+        ├─ core.calculate_stress_strain / calculate_stress_strain_temp   (exact families)
+        ├─ strain_rate.legacy_cracking_displacement_rate                 (shared w_dot)
+        ├─ core.calculate_temperature_elastic_states                     (E(T), constant nu)
+        ├─ run_abaqus_legacy_material (M4)                               (scalars, E0, nu)
+        └─ abaqus_table_checks per family                                (shared M4 checks)
+    → AbaqusLegacyDependentResult (JSON v1) → build_abaqus_legacy_dependent_material_text
+```
+
+`AbaqusLegacyDependentValidationError` carries structured failures; the web layer shows them
+and keeps the last valid dependent result. Plotly figures (`build_abaqus_dependent_figures`)
+draw one trace per exported family and a single reused reference-damage curve; nothing is
+synthesized in the web layer.
+
+Qualification decks (`application/abaqus_decks.py`) and the stdlib-only runner
+(`application/abaqus_runner.py`) are frontend-independent and are never imported by Streamlit.
+Solver execution belongs to `scripts/qualify_abaqus.py` and the `abaqus_external` pytest
+marker; the web UI only points to that command and has no button that launches Abaqus.

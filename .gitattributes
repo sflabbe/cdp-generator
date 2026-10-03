@@ -8,3 +8,4 @@
 *.txt text eol=lf
 *.lock text eol=lf
 *.ps1 text eol=lf
+*.inp text eol=lf

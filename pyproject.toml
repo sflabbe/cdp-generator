@@ -88,6 +88,9 @@ select = ["E4", "E7", "E9", "F", "I", "UP", "B", "SIM", "RUF"]
 # G0 must not rewrite them merely to satisfy a style suggestion.
 "cdp_generator/material_properties.py" = ["SIM108"]
 "cdp_generator/temperature.py" = ["SIM108"]
+# Runs only inside the Abaqus Python interpreter (2.7 or 3.x); ODB repositories are
+# probed with .keys() and files are written without Python-3-only idioms.
+"qualification/abaqus/postprocess_odb.py" = ["SIM115", "SIM118", "UP"]
 
 [tool.ruff.format]
 quote-style = "double"
@@ -118,3 +121,9 @@ testpaths = ["tests"]
 python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
+# Proprietary-solver jobs never run in ordinary `pytest -q`; opt in explicitly with
+# `pytest -m abaqus_external` (a later -m on the command line overrides this default).
+addopts = "-m 'not abaqus_external'"
+markers = [
+    "abaqus_external: launches a real Abaqus installation; skips only when no solver is found",
+]

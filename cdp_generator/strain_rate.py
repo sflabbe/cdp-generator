@@ -51,6 +51,24 @@ def apply_strain_rate_effects(base_props: dict[str, float], strain_rate: float) 
     }
 
 
+def legacy_cracking_displacement_rate(strain_rate: float, l_ch: float) -> float:
+    """
+    Legacy crack-opening-rate mapping shared by the kernel and Abaqus adapters.
+
+    The historical fracture-energy rate model (Li et al.) converts the legacy
+    curve-family control strain rate into a crack-opening rate through the
+    characteristic element length. This is the single source of that mapping.
+
+    Args:
+        strain_rate: Legacy curve-family control strain rate [1/s]
+        l_ch: Characteristic element length [mm]
+
+    Returns:
+        float: Legacy crack-opening (cracking displacement) rate [mm/s]
+    """
+    return strain_rate * l_ch
+
+
 def apply_fracture_energy_rate_effects(G_f: float, strain_rate: float, l_ch: float) -> float:
     """
     Apply strain rate effects to fracture energy (Li et al.).
@@ -66,7 +84,7 @@ def apply_fracture_energy_rate_effects(G_f: float, strain_rate: float, l_ch: flo
     if strain_rate == 0:
         return G_f
 
-    w_rate = strain_rate * l_ch
+    w_rate = legacy_cracking_displacement_rate(strain_rate, l_ch)
 
     if w_rate > 200:
         b_g = (200 / 0.01) ** (0.08 - 0.62)

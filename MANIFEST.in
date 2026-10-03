@@ -8,3 +8,5 @@ include .flake8
 include uv.lock
 recursive-include docs *.md
 recursive-include tests *.py
+recursive-include qualification *.json *.md *.py
+recursive-include scripts *.py *.ps1

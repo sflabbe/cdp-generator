@@ -1,5 +1,17 @@
 """Frontend-independent analysis API."""
 
+from .abaqus_dependent import (
+    AbaqusDamagePolicy,
+    AbaqusDependentMode,
+    AbaqusLegacyDependentRequest,
+    AbaqusLegacyDependentResult,
+    AbaqusLegacyDependentValidationError,
+    abaqus_legacy_dependent_material_text,
+    build_abaqus_legacy_dependent_material_text,
+    rate_mapping_audit_rows,
+    run_abaqus_legacy_dependent_material,
+    temperature_elastic_audit_rows,
+)
 from .abaqus_legacy import (
     ABAQUS_LEGACY_FULL_CALIBRATION_ID,
     AbaqusCdpProvenance,
@@ -63,6 +75,11 @@ __all__ = [
     "ABAQUS_LEGACY_FULL_CALIBRATION_ID",
     "AbaqusCdpProvenance",
     "AbaqusCdpSourceKind",
+    "AbaqusDamagePolicy",
+    "AbaqusDependentMode",
+    "AbaqusLegacyDependentRequest",
+    "AbaqusLegacyDependentResult",
+    "AbaqusLegacyDependentValidationError",
     "AbaqusLegacyInputError",
     "AbaqusLegacyMaterialRequest",
     "AbaqusLegacyMaterialResult",
@@ -84,6 +101,7 @@ __all__ = [
     "SteelAnalysisRequest",
     "SteelAnalysisResult",
     "SteelInputError",
+    "abaqus_legacy_dependent_material_text",
     "abaqus_legacy_material_text",
     "add_comparison_case",
     "authority_comparison_tables",
@@ -92,6 +110,7 @@ __all__ = [
     "available_steel_grades",
     "available_steel_standards",
     "build_abaqus_legacy_cdp_material_text",
+    "build_abaqus_legacy_dependent_material_text",
     "build_authority_concrete",
     "cdpm2_override_fields",
     "cdpm2_parameter_units",
@@ -104,8 +123,10 @@ __all__ = [
     "parse_float_series",
     "physical_profile_label",
     "profile_parameter_specs",
+    "rate_mapping_audit_rows",
     "rename_comparison_case",
     "result_excel_bytes",
+    "run_abaqus_legacy_dependent_material",
     "run_abaqus_legacy_material",
     "run_cdpm2_conversion",
     "run_legacy_concrete_analysis",
@@ -114,5 +135,6 @@ __all__ = [
     "steel_result_abaqus_text",
     "steel_result_excel_bytes",
     "temperature_cases",
+    "temperature_elastic_audit_rows",
     "validate_abaqus_legacy_material_tables",
 ]

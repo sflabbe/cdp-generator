@@ -127,7 +127,21 @@ not promoted to verified normative provenance. Every scalar/table identifies
 whether its source is legacy implementation, Abaqus documentation default,
 backend normalization, or explicit user backend override.
 
-Rate- and temperature-dependent full Abaqus tables are deferred. The current
+Rate- and temperature-dependent full Abaqus tables were deferred in WEB-M4 and
+are now provided additively by ABAQUS-Q1 / WEB-M5 (see the amendment below). The current
 backend always builds the static reference legacy case (`strain_rate=0`) from
 `calculate_stress_strain(...)`; the existing legacy rate/temperature plots remain
 analysis visualizations only.
+
+## Amendment — ABAQUS-Q1 / WEB-M5
+
+The static backend described above is unchanged (its `.inp` text is frozen by a
+fixture test). WEB-M5 adds a separate dependent backend
+(`run_abaqus_legacy_dependent_material`) for the legacy strain-rate and
+temperature families, with an explicit `omit`/`reference_damage` damage policy,
+temperature-dependent `*ELASTIC` rows, and family-wise damage compatibility
+validation. Details, column mappings and the truthful default outcomes are in
+[abaqus_dependent_tables.md](abaqus_dependent_tables.md). An optional
+solver-backed gate (`scripts/qualify_abaqus.py`) can datacheck/execute minimal
+single-element decks when an Abaqus installation is available; see
+`qualification/abaqus/README.md`.

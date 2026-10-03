@@ -737,8 +737,8 @@ cards. The JSON download carries all values, tables, provenance, normalization
 records, validation and documentation references. This is a **legacy compatibility
 calibration**: verify it against project calibration, experiments and the Abaqus
 version actually used. WEB-M4 does not run Abaqus and does not export dependent
-rate/temperature damage tables. See
-[WEB-M4 research basis](docs/research/abaqus_cdp_backend.md).
+rate/temperature damage tables (dependent hardening/stiffening tables were added in
+ABAQUS-Q1, below). See [WEB-M4 research basis](docs/research/abaqus_cdp_backend.md).
 
 
 ## Steel and comparison workspace (WEB-M3)
@@ -791,3 +791,49 @@ TS-GATE. Authentication/users, persistent projects, shareable URLs, complex
 client interactions, large responsive interfaces, background jobs or integration
 into a broader web product could justify a FastAPI + React/TypeScript migration.
 Until those needs arise, Streamlit remains a valid internal scientific frontend.
+
+## Abaqus dependent tables and solver qualification (ABAQUS-Q1 / WEB-M5)
+
+The Legacy curves **Abaqus CDP** tab offers three export modes:
+
+- **Static reference** — the unchanged WEB-M4 material.
+- **Strain-rate dependent** — exact legacy rate families as
+  `*CONCRETE COMPRESSION HARDENING` (stress, inelastic strain, rate) and
+  `*CONCRETE TENSION STIFFENING, TYPE=DISPLACEMENT` (stress, crack opening, crack-opening rate).
+  The compression rate column is the legacy curve-family control rate (an explicit *legacy
+  rate-axis mapping*, not a reconstructed inelastic strain rate); the tension rate is the
+  existing legacy mapping `w_dot = strain_rate × l_ch` [mm/s].
+- **Temperature dependent** — exact legacy temperature families with temperature columns and a
+  temperature-dependent `*ELASTIC` table `E(T), nu, T`. `E(T)` is the legacy modulus used to
+  build the exported inelastic strains; `nu` is held constant (legacy constant-nu assumption).
+
+Damage policy for dependent exports: **omit** (default) or **reuse reference damage if
+Abaqus-valid**. Abaqus damage has no rate column and the legacy kernel has no `damage(T)`, so
+reference damage is one reused function and is validated against every family with that
+family's modulus; incompatible combinations are rejected (for the default rates 0/2/30/100 1/s
+and for the temperature cases they are). No rate × temperature surfaces are produced.
+
+```python
+from cdp_generator.application import (
+    AbaqusLegacyDependentRequest, run_abaqus_legacy_dependent_material,
+    abaqus_legacy_dependent_material_text,
+)
+result = run_abaqus_legacy_dependent_material(
+    AbaqusLegacyDependentRequest(mode="strain_rate", strain_rates=(0.0, 2.0, 30.0, 100.0))
+)
+print(abaqus_legacy_dependent_material_text(result))
+```
+
+Optional real-solver gate (never part of plain `pytest -q`):
+
+```bash
+uv run python scripts/qualify_abaqus.py          # exit 0 PASS, 1 FAIL, 3 NOT_AVAILABLE
+uv run pytest -q -m abaqus_external
+```
+
+`NOT_AVAILABLE` is never reported as a pass. A PASS shows only that the keywords are accepted
+and that single-element compression/tension paths execute with consistent state variables; it
+says nothing about experimental, structural or normative validity. See
+[qualification/abaqus/README.md](qualification/abaqus/README.md),
+[dependent-table research](docs/research/abaqus_dependent_tables.md) and the
+[ABAQUS-Q1 handoff](docs/abaqus_q1_handoff.md).

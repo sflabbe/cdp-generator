@@ -248,6 +248,40 @@ def validate_abaqus_legacy_material_tables(
 ) -> dict[str, Any]:
     """Validate documented Abaqus inelastic→plastic conversion constraints."""
 
+    report = abaqus_table_checks(
+        E0=E0,
+        compression_hardening=compression_hardening,
+        compression_damage=compression_damage,
+        tension_stiffening=tension_stiffening,
+        tension_damage=tension_damage,
+        damage_conversion_reference_length_mm=damage_conversion_reference_length_mm,
+        tolerance=tolerance,
+    )
+    if report["hard_failures"]:
+        raise AbaqusLegacyValidationError(
+            "Abaqus backend validity checks failed: " + ", ".join(report["hard_failures"])
+        )
+    return report
+
+
+def abaqus_table_checks(
+    *,
+    E0: float,
+    compression_hardening: list[dict[str, float]],
+    compression_damage: list[dict[str, float]] | None,
+    tension_stiffening: list[dict[str, float]],
+    tension_damage: list[dict[str, float]] | None,
+    damage_conversion_reference_length_mm: float,
+    tolerance: float = 1e-12,
+) -> dict[str, Any]:
+    """Evaluate the documented Abaqus conversion checks without raising on check failure.
+
+    Malformed inputs (non-positive E0/REF LENGTH, empty or non-finite tables) still raise
+    :class:`AbaqusLegacyValidationError`. Individual check outcomes are reported in the
+    returned mapping (``passed``/``hard_failures``) so callers that validate several
+    dependency families can attribute failures to a family and branch.
+    """
+
     if not math.isfinite(E0) or E0 <= 0.0:
         raise AbaqusLegacyValidationError("E0 must be finite and positive for validation.")
     if (
@@ -354,10 +388,6 @@ def validate_abaqus_legacy_material_tables(
             default=0.0,
         ),
     }
-    if hard_failures:
-        raise AbaqusLegacyValidationError(
-            "Abaqus backend validity checks failed: " + ", ".join(hard_failures)
-        )
     return report
 
 
