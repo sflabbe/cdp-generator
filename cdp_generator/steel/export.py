@@ -5,6 +5,7 @@ This module provides Excel export functionality for steel stress-strain curves
 and material properties, following the style of the CDP concrete export.
 """
 
+from io import BytesIO
 from typing import Any, Dict, Optional
 
 import numpy as np
@@ -14,7 +15,7 @@ from .johnson_cook import JohnsonCookParams
 from .standards import SteelSpec
 
 
-def export_steel_to_excel(
+def _write_steel_excel(
     results: Dict[str, Any], filename: str = "Steel-JC-Results.xlsx", verbose: bool = True
 ) -> None:
     """
@@ -223,6 +224,20 @@ def export_steel_to_excel(
         print(f"   Total sheets: {3 + int(has_eng) + int(has_true) + 2}")
 
 
+def build_steel_excel_bytes(results: Dict[str, Any]) -> bytes:
+    """Build the historical workbook in memory, including its existing interpolation."""
+    buffer = BytesIO()
+    _write_steel_excel(results, filename=buffer, verbose=False)
+    return buffer.getvalue()
+
+
+def export_steel_to_excel(
+    results: Dict[str, Any], filename: str = "Steel-JC-Results.xlsx", verbose: bool = True
+) -> None:
+    """Preserve filesystem export and progress messages."""
+    _write_steel_excel(results, filename=filename, verbose=verbose)
+
+
 def _build_curve_dataframe(
     curves: list, x_key: str, y_key: str, x_label: str, y_label: str
 ) -> pd.DataFrame:
@@ -313,13 +328,12 @@ def print_steel_properties(spec: Optional[SteelSpec], params: JohnsonCookParams,
     print("\n" + "=" * 70)
 
 
-def export_abaqus_material_card(
+def build_abaqus_material_card_text(
     params: JohnsonCookParams,
     E: float,
     nu: float = 0.30,
     density: Optional[float] = None,
-    filename: str = "steel_abaqus_material.inp",
-) -> None:
+) -> str:
     """
     Export ABAQUS material card for Johnson-Cook plasticity.
 
@@ -358,6 +372,18 @@ def export_abaqus_material_card(
 
     content = "\n".join(lines) + "\n"
 
+    return content
+
+
+def export_abaqus_material_card(
+    params: JohnsonCookParams,
+    E: float,
+    nu: float = 0.30,
+    density: Optional[float] = None,
+    filename: str = "steel_abaqus_material.inp",
+) -> None:
+    """Write the EXPERIMENTAL template; verify against your ABAQUS version."""
+    content = build_abaqus_material_card_text(params, E, nu, density)
     with open(filename, "w") as f:
         f.write(content)
 

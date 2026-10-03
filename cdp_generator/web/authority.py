@@ -18,6 +18,7 @@ from cdp_generator.application import (
     run_cdpm2_conversion,
 )
 from cdp_generator.application.authority_requests import JSONScalar
+from cdp_generator.web.shared import add_to_compare
 
 
 def _json_download(label: str, data: object, filename: str) -> None:
@@ -201,6 +202,9 @@ def render_authority() -> None:
                     hide_index=True,
                 )
                 st.write("Displayed LCHAR [mm]", result.backend["characteristic_length"])
+    add_to_compare(
+        result, "authority_concrete", f"{material.physical_profile} {material.concrete_class}"
+    )
     with exports:
         st.json(result.to_dict())
         _json_download(

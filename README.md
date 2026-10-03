@@ -653,8 +653,6 @@ Run the complete qualification in UTF-8 mode with a fail-fast PowerShell script:
 
 ```powershell
 .\scripts\qualify_web.ps1
-# After qualification, also commit and push the portability fix:
-.\scripts\qualify_web.ps1 -CommitAndPush
 ```
 
 `.gitattributes` pins scientific text artifacts to LF. For an existing Windows
@@ -695,3 +693,55 @@ result, semantic JSON when READY, and backend JSON when valid runtime context
 has been supplied. Physical authority, Grassl calibration, and legacy24
 compatibility remain distinct. No modern EC2/fib stress-strain curves or solver
 execution are introduced. See [M2 handoff](docs/web_m2_handoff.md).
+
+
+## Steel and comparison workspace (WEB-M3)
+
+The same application now routes four workflows: **Legacy curves**,
+**Authority-aware material / CDPM2**, **Steel Johnson-Cook**, and **Compare**.
+Install and launch with the existing optional extra; no new dependencies:
+
+```bash
+uv sync --locked --extra web
+uv run --locked --extra web streamlit run cdp_generator/web/app.py
+```
+
+Steel selects EC2, ACI or NCh grades from the existing database, or accepts a
+custom material with explicit `fu` or `fu/fy`. **Built-in approximate preset —
+verify against the applicable standard / project data.** These presets are not
+verified normative authorities. Explicit property overrides remain identified
+in the result; custom inputs are labeled `user_provided`, not verified.
+
+The existing Johnson-Cook calibrator supplies all eight parameters. Neutral
+rate/temperature behavior defaults to `C=m=0`. Disable neutral to enter `C` and
+`m`; select explicit `n` or retain the existing automatic heuristic (not an
+experimental fit). Choose rates, temperatures, point count, strain limit and
+true/engineering output, then press **Calculate steel**. Changing controls does
+not calculate automatically; invalid attempts preserve the displayed result.
+Inspect Plotly curves, resolved material/metadata, calibration, parameters and
+raw data. Download strict JSON, the historical XLSX workbook, or ABAQUS text.
+**Experimental template — verify against the ABAQUS documentation/version used.**
+The filesystem export APIs, interactive `cdp-steel`, and Matplotlib remain valid.
+The XLSX retains its historical common-grid interpolation; canonical JSON and
+Plotly arrays are copied directly without interpolation or resampling.
+
+Every result has **Add to Compare** in the sidebar. Enter a unique, editable
+case label to save a snapshot, with up to four cases per family. **Compare**
+allows selecting cases, renaming/removing cases and clearing the selected family.
+Cases last only for the current session. Legacy concrete, authority-aware
+concrete and steel remain separate. Curve overlays require equal quantities,
+units and stress representations. Engineering total strain is not true total
+strain; plastic strain stays true in both outputs, while its stress representation
+still differs. No comparison-layer conversion is performed.
+
+Authority comparison shows physical values/units/resolution (`—` for unresolved
+values), readiness/blockers, and semantic CDPM2 parameters only when at least
+two selected cases are READY. LCHAR and legacy24 slots are excluded. Steel
+comparison shows material/JC values, units and approximate/custom status.
+Comparison is descriptive: it produces no rankings or material recommendations.
+
+See [M3 handoff](docs/web_m3_handoff.md) for qualification and the remaining
+TS-GATE. Authentication/users, persistent projects, shareable URLs, complex
+client interactions, large responsive interfaces, background jobs or integration
+into a broader web product could justify a FastAPI + React/TypeScript migration.
+Until those needs arise, Streamlit remains a valid internal scientific frontend.
